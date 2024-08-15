@@ -10,9 +10,9 @@ public class PawnPiece : IPiece
     public int Col { get; set; }
 
     public Color Color { get; }
+    public PieceType PieceType { get; } = PieceType.Pawn;
     public int Value { get; } = PieceValues.Pawn;
 
-    public bool IsKing { get; } = false;
     public bool HasMoved { get; set; } = false;
 
 

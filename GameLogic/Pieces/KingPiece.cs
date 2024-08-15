@@ -9,9 +9,9 @@ public class KingPiece : IPiece
     public int Col { get; set; }
 
     public Color Color { get; }
+    public PieceType PieceType { get; } = PieceType.King;
     public int Value { get; }
 
-    public bool IsKing { get; } = true;
     public bool HasMoved { get; set; } = false;
 
 

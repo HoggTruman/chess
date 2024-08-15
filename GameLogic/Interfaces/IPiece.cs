@@ -13,11 +13,13 @@ public interface IPiece
     // The color of a piece (White or Black)
     Color Color { get; }
 
+    // The type of a piece (e.g. Pawn, King, ...)
+    PieceType PieceType { get; }
+
     // The point-value of a piece. e.g. 5 for a rook 
     int Value { get; }
 
-    // True if the piece is a king
-    bool IsKing { get; }
+
 
 
     /// <summary>

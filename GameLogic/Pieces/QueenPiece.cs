@@ -11,9 +11,8 @@ public class QueenPiece : IPiece
     public int Col { get; set; }
 
     public Color Color { get; }
+    public PieceType PieceType { get; } = PieceType.Queen;
     public int Value { get; }
-
-    public bool IsKing { get; } = false;
 
 
     /// <summary>

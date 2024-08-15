@@ -11,9 +11,8 @@ public class KnightPiece : IPiece
     public int Col { get; set; }
 
     public Color Color { get; }
+    public PieceType PieceType { get; } = PieceType.Knight;
     public int Value { get; }
-
-    public bool IsKing { get; } = false;
 
 
     /// <summary>

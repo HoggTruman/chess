@@ -11,9 +11,8 @@ public class BishopPiece : IPiece
     public int Col { get; set; }
 
     public Color Color { get; }
+    public PieceType PieceType { get; } = PieceType.Bishop;
     public int Value { get; }
-
-    public bool IsKing { get; } = false;
 
 
     /// <summary>

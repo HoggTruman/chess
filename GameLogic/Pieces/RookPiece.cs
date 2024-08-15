@@ -11,9 +11,9 @@ public class RookPiece : IPiece
     public int Col { get; set; }
 
     public Color Color { get; }
+    public PieceType PieceType { get; } = PieceType.Rook;
     public int Value { get; }
 
-    public bool IsKing { get; } = false;
     public bool HasMoved { get; set; } = false;
 
 
