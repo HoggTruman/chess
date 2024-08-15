@@ -1,3 +1,4 @@
+using GameLogic.Constants;
 using GameLogic.Enums;
 using GameLogic.Interfaces;
 
@@ -10,7 +11,7 @@ public class KingPiece : IPiece
 
     public Color Color { get; }
     public PieceType PieceType { get; } = PieceType.King;
-    public int Value { get; }
+    public int Value { get; } = PieceValues.King;
 
     public bool HasMoved { get; set; } = false;
 
