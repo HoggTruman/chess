@@ -21,7 +21,6 @@ public interface IPiece
 
 
 
-
     /// <summary>
     /// Returns a list of the squares which the piece threatens with a capture.
     /// Whether or not these squares are valid moves is not considered.
@@ -30,14 +29,13 @@ public interface IPiece
     /// <returns>A list of (row, col) tuples</returns>
     List<(int row, int col)> GetTargetedSquares(Board board);
 
+
     /// <summary>
-    /// Returns a list of valid moves for the piece
+    /// Returns a list of the squares which the piece can reach in a single move.
+    /// Whether or not these squares are valid moves is not considered.
     /// </summary>
     /// <param name="board"></param>
     /// <returns>A list of (row, col) tuples</returns>
-    List<(int row, int col)> GetValidMoves(Board board);
+    List<(int row, int col)> GetReachableSquares(Board board);
 
-
-    //void Move(int row, int col);
-    //void Take(IPiece target);
 }
