@@ -43,9 +43,23 @@ public class QueenPiece : IPiece
         return targetedSquares;
     }
 
-    public List<(int row, int col)> GetValidMoves(Board board)
+
+    public List<(int row, int col)> GetReachableSquares(Board board)
     {
-        throw new NotImplementedException();
+        List<(int row, int col)> reachableSquares = [];
+
+        // Get targeted squares on the piece's row and column
+        reachableSquares.AddRange(PieceHelpers.ScanRowAndCol(Row, Col, board));
+
+        // Get targeted squares on the piece's diagonals
+        reachableSquares.AddRange(PieceHelpers.ScanDiagonals(Row, Col, board));
+
+        // Remove squares with a piece of the same color as the moving piece
+        reachableSquares = reachableSquares
+            .Where(p => board.State[p.row, p.col]?.Color != Color)
+            .ToList();
+
+        return reachableSquares;
     }
 
 
