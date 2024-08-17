@@ -67,9 +67,9 @@ public class PawnPiece : IPiece
         return targetedSquares;
     }
 
-
-    public List<(int row, int col)> GetValidMoves(Board board)
+    public List<(int row, int col)> GetReachableSquares(Board board)
     {
         throw new NotImplementedException();
     }
+
 }

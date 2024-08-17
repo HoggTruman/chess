@@ -38,8 +38,9 @@ public class RookPiece : IPiece
         return PieceHelpers.ScanRowAndCol(Row, Col, board);
     }
 
-    public List<(int row, int col)> GetValidMoves(Board board)
+    public List<(int row, int col)> GetReachableSquares(Board board)
     {
         throw new NotImplementedException();
     }
+
 }

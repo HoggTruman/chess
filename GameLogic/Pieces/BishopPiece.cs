@@ -35,10 +35,9 @@ public class BishopPiece : IPiece
         return PieceHelpers.ScanDiagonals(Row, Col, board);
     }
 
-    public List<(int row, int col)> GetValidMoves(Board board)
+    public List<(int row, int col)> GetReachableSquares(Board board)
     {
         throw new NotImplementedException();
     }
-
 
 }
