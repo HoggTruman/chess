@@ -1,6 +1,9 @@
 using GameLogic.Enums;
 using GameLogic.Helpers;
 using GameLogic.Interfaces;
+using GameLogic.Pieces;
+
+
 
 namespace GameLogic;
 
@@ -14,37 +17,46 @@ public class Board
 
     #endregion 
 
-    #region fields
 
-    private List<IPiece> _pieces;
-
-    #endregion
 
     #region properties
 
-    public List<IPiece> Pieces
-    {
-        get => _pieces;
-    }
-
     public IPiece?[,] State { get; set; }
 
+    public Dictionary<Color, KingPiece?> Kings { get; }
+
     #endregion
+
+
 
     #region constructor
 
     public Board(List<IPiece> pieces = null!)
     {
-        _pieces = pieces ?? new List<IPiece>();
         State = new IPiece?[BoardSize, BoardSize];
-
-        foreach (var piece in _pieces)
+        Kings = new()
         {
-            State[piece.Row, piece.Col] = piece;
+            [Color.White] = null,
+            [Color.Black] = null
+        };
+
+        if (pieces != null)
+        {
+            foreach (var piece in pieces)
+            {
+                State[piece.Row, piece.Col] = piece;
+
+                if (piece.PieceType == PieceType.King)
+                {
+                    Kings[piece.Color] = (KingPiece)piece;
+                }
+            }
         }
     }
 
     #endregion
+
+
 
     #region public methods
 
@@ -85,7 +97,7 @@ public class Board
 
     public bool UnderCheck(Color color)
     {
-        var king = GetKingByColor(color);
+        var king = Kings[color];
 
         if (king == null)
         { 
@@ -103,16 +115,19 @@ public class Board
 
     private List<IPiece> GetPiecesByColor(Color color)
     {
-        return _pieces.Where(x => x.Color == color).ToList();
-    }
+        // THIS IS STILL PRETTY INEFFICIENT CONSIDERING IT WILL BE CALLED FOR EVERY TEST MOVE. REFACTOR TO A PROPERTY LATER WHICH HAS PIECES REMOVED WHEN TAKEN??
+        List<IPiece> pieces = [];
 
+        for (int i = MinIndex; i <= MaxIndex; i++)
+        {
+            for (int j = MinIndex; j <= MaxIndex; j++)
+            {
+                if (State[i, j] != null && State[i, j]?.Color == color)
+                    pieces.Add(State[i, j]!);
+            }
+        }
 
-    private IPiece? GetKingByColor(Color color)
-    {
-        return _pieces.FirstOrDefault(x => 
-            x.PieceType == PieceType.King &&
-            x.Color == color
-        );
+        return pieces;
     }
 
 
@@ -130,9 +145,6 @@ public class Board
         movingPiece.Row = to.row;
         movingPiece.Col = to.col;
 
-        if (targetPiece != null)
-            _pieces.Remove(targetPiece);
-
         // record the result
         bool result = UnderCheck(movingPiece.Color);
 
@@ -141,9 +153,6 @@ public class Board
         movingPiece.Row = from.row;
         movingPiece.Col = from.col;
         State[to.row, to.col] = targetPiece;
-
-        if (targetPiece != null)
-            _pieces.Add(targetPiece);
 
         
         return result;

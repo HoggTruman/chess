@@ -18,7 +18,6 @@ public class BoardTests
         IPiece?[,] emptyBoardState = new IPiece?[Board.BoardSize, Board.BoardSize];
 
         // Assert
-        testBoard.Pieces.Should().BeEmpty();
         testBoard.State.Should().BeEquivalentTo(emptyBoardState);
     }
 
@@ -33,12 +32,12 @@ public class BoardTests
         Board testBoard = new(pieces);
 
         // Assert
-        testBoard.Pieces.Should().BeEquivalentTo(pieces);
         testBoard.State[1, 1].Should().BeEquivalentTo(queen);
         testBoard.State[4, 5].Should().BeEquivalentTo(pawn);
     }
 
     #endregion
+
 
 
     #region UnderCheck Tests
