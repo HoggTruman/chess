@@ -24,4 +24,20 @@ public static class BoardHelpers
 
         return copy;
     }
+
+
+    /// <summary>
+    /// Filters a list of squares to keep those which are in bounds on a board
+    /// </summary>
+    /// <param name="squares"></param>
+    /// <returns></returns>
+    public static List<(int row, int col)> KeepInBoundsSquares(List<(int row, int col)> squares)
+    {
+        return squares.Where(p => 
+            p.row >= Board.MinIndex &&
+            p.row <= Board.MaxIndex &&
+            p.col >= Board.MinIndex &&
+            p.col <= Board.MaxIndex
+        ).ToList();
+    }
 }

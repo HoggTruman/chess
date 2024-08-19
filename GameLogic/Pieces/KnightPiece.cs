@@ -1,5 +1,6 @@
 using GameLogic.Constants;
 using GameLogic.Enums;
+using GameLogic.Helpers;
 
 namespace GameLogic.Pieces;
 
@@ -34,12 +35,7 @@ public class KnightPiece : Piece
         ];
 
         // Filter to keep only in bounds squares
-        targetedSquares = targetedSquares.Where(p => 
-            p.row >= Board.MinIndex &&
-            p.row <= Board.MaxIndex &&
-            p.col >= Board.MinIndex &&
-            p.col <= Board.MaxIndex
-        ).ToList();
+        targetedSquares = BoardHelpers.KeepInBoundsSquares(targetedSquares);
 
         return targetedSquares;
     }
