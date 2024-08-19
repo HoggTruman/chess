@@ -1,20 +1,10 @@
 using GameLogic.Constants;
 using GameLogic.Enums;
-using GameLogic.Helpers;
-using GameLogic.Interfaces;
 
 namespace GameLogic.Pieces;
 
-public class KnightPiece : IPiece
+public class KnightPiece : Piece
 {
-    public int Row { get; set; }
-    public int Col { get; set; }
-
-    public Color Color { get; }
-    public PieceType PieceType { get; } = PieceType.Knight;
-    public int Value { get; }
-
-
     /// <summary>
     /// Constructor
     /// </summary>
@@ -23,15 +13,13 @@ public class KnightPiece : IPiece
     /// <param name="color"></param>
     /// <param name="value">The value of the piece. Defaults to knight value but can be set manually for pawn promotion</param>
     public KnightPiece(int row, int col, Color color=Color.White, int value=PieceValues.Knight)
+        : base(row, col, color, PieceType.Knight, value)
     {
-        Row = row;
-        Col = col;
-        Color = color;
-        Value = value;
+
     }
 
 
-    public List<(int row, int col)> GetTargetedSquares(Board board)
+    public override List<(int row, int col)> GetTargetedSquares(Board board)
     {
         // Get all squares in range (including those out of bounds)
         List<(int row, int col)> targetedSquares = [
@@ -56,7 +44,7 @@ public class KnightPiece : IPiece
         return targetedSquares;
     }
 
-    public List<(int row, int col)> GetReachableSquares(Board board)
+    public override List<(int row, int col)> GetReachableSquares(Board board)
     {
         throw new NotImplementedException();
     }

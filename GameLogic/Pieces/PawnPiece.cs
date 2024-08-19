@@ -1,20 +1,11 @@
 using GameLogic.Constants;
 using GameLogic.Enums;
-using GameLogic.Interfaces;
 
 namespace GameLogic.Pieces;
 
-public class PawnPiece : IPiece
+public class PawnPiece : Piece
 {
-    public int Row { get; set; }
-    public int Col { get; set; }
-
-    public Color Color { get; }
-    public PieceType PieceType { get; } = PieceType.Pawn;
-    public int Value { get; } = PieceValues.Pawn;
-
     public bool HasMoved { get; set; } = false;
-
 
     /// <summary>
     /// Constructor
@@ -23,10 +14,9 @@ public class PawnPiece : IPiece
     /// <param name="col">Col index from 0 to 7</param>
     /// <param name="color"></param>
     public PawnPiece(int row, int col, Color color=Color.White)
+        : base(row, col, color, PieceType.Pawn, PieceValues.Pawn)
     {
-        Row = row;
-        Col = col;
-        Color = color;
+
     }
 
 
@@ -36,7 +26,7 @@ public class PawnPiece : IPiece
     /// </summary>
     /// <param name="board"></param>
     /// <returns>A list of (row, col) tuples</returns>
-    public List<(int row, int col)> GetTargetedSquares(Board board)
+    public override List<(int row, int col)> GetTargetedSquares(Board board)
     {
         List<(int row, int col)> targetedSquares = [];
 
@@ -67,7 +57,7 @@ public class PawnPiece : IPiece
         return targetedSquares;
     }
 
-    public List<(int row, int col)> GetReachableSquares(Board board)
+    public override List<(int row, int col)> GetReachableSquares(Board board)
     {
         throw new NotImplementedException();
     }

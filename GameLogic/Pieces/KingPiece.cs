@@ -1,18 +1,10 @@
 using GameLogic.Constants;
 using GameLogic.Enums;
-using GameLogic.Interfaces;
 
 namespace GameLogic.Pieces;
 
-public class KingPiece : IPiece
+public class KingPiece : Piece
 {
-    public int Row { get; set; }
-    public int Col { get; set; }
-
-    public Color Color { get; }
-    public PieceType PieceType { get; } = PieceType.King;
-    public int Value { get; } = PieceValues.King;
-
     public bool HasMoved { get; set; } = false;
 
 
@@ -23,14 +15,13 @@ public class KingPiece : IPiece
     /// <param name="col">Col index from 0 to 7</param>
     /// <param name="color"></param>
     public KingPiece(int row, int col, Color color=Color.White)
+        : base(row, col, color, PieceType.Bishop, PieceValues.King)
     {
-        Row = row;
-        Col = col;
-        Color = color;
+
     }
 
 
-    public List<(int row, int col)> GetTargetedSquares(Board board)
+    public override List<(int row, int col)> GetTargetedSquares(Board board)
     {
         // Get all squares in range (including those out of bounds)
         List<(int row, int col)> targetedSquares = [
@@ -55,7 +46,7 @@ public class KingPiece : IPiece
         return targetedSquares;
     }
 
-    public List<(int row, int col)> GetReachableSquares(Board board)
+    public override List<(int row, int col)> GetReachableSquares(Board board)
     {
         throw new NotImplementedException();
     }

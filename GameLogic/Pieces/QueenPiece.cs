@@ -1,20 +1,11 @@
 using GameLogic.Constants;
 using GameLogic.Enums;
-using GameLogic.Interfaces;
 using GameLogic.Helpers;
 
 namespace GameLogic.Pieces;
 
-public class QueenPiece : IPiece
+public class QueenPiece : Piece
 {
-    public int Row { get; set; }
-    public int Col { get; set; }
-
-    public Color Color { get; }
-    public PieceType PieceType { get; } = PieceType.Queen;
-    public int Value { get; }
-
-
     /// <summary>
     /// Constructor
     /// </summary>
@@ -23,14 +14,12 @@ public class QueenPiece : IPiece
     /// <param name="color"></param>
     /// <param name="value">The value of the piece. Defaults to queen value but can be set manually for pawn promotion</param>
     public QueenPiece(int row, int col, Color color=Color.White, int value=PieceValues.Queen)
+        : base(row, col, color, PieceType.Queen, value)
     {
-        Row = row;
-        Col = col;
-        Color = color;
-        Value = value;
+
     }
 
-    public List<(int row, int col)> GetTargetedSquares(Board board)
+    public override List<(int row, int col)> GetTargetedSquares(Board board)
     {
         List<(int row, int col)> targetedSquares = [];
 
@@ -44,7 +33,7 @@ public class QueenPiece : IPiece
     }
 
 
-    public List<(int row, int col)> GetReachableSquares(Board board)
+    public override List<(int row, int col)> GetReachableSquares(Board board)
     {
         List<(int row, int col)> reachableSquares = [];
 

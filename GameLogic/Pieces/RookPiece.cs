@@ -1,19 +1,11 @@
 using GameLogic.Constants;
 using GameLogic.Enums;
 using GameLogic.Helpers;
-using GameLogic.Interfaces;
 
 namespace GameLogic.Pieces;
 
-public class RookPiece : IPiece
+public class RookPiece : Piece
 {
-    public int Row { get; set; }
-    public int Col { get; set; }
-
-    public Color Color { get; }
-    public PieceType PieceType { get; } = PieceType.Rook;
-    public int Value { get; }
-
     public bool HasMoved { get; set; } = false;
 
 
@@ -25,20 +17,18 @@ public class RookPiece : IPiece
     /// <param name="color"></param>
     /// <param name="value">The value of the piece. Defaults to rook value but can be set manually for pawn promotion</param>
     public RookPiece(int row, int col, Color color=Color.White, int value=PieceValues.Rook)
+        : base(row, col, color, PieceType.Rook, value)
     {
-        Row = row;
-        Col = col;
-        Color = color;
-        Value = value;
+
     }
 
 
-    public List<(int row, int col)> GetTargetedSquares(Board board)
+    public override List<(int row, int col)> GetTargetedSquares(Board board)
     {
         return PieceHelpers.ScanRowAndCol(Row, Col, board);
     }
 
-    public List<(int row, int col)> GetReachableSquares(Board board)
+    public override List<(int row, int col)> GetReachableSquares(Board board)
     {
         throw new NotImplementedException();
     }
