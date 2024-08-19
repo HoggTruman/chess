@@ -10,6 +10,8 @@ public interface IPiece
     // The column index of a piece from 0 to 7
     int Col { get; set; }
 
+    (int row, int col) Square { get; set; }
+
     // The color of a piece (White or Black)
     Color Color { get; }
 

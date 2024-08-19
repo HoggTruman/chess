@@ -31,6 +31,11 @@ public abstract class Piece : IPiece
     public (int row, int col) Square
     {
         get { return (_row, _col); }
+        set
+        {
+            _row = value.row;
+            _col = value.col;
+        }
     }
 
     public Color Color { get; }
