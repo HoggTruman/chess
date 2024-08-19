@@ -26,7 +26,15 @@ public class BishopPiece : Piece
 
     public override List<(int row, int col)> GetReachableSquares(Board board)
     {
-        throw new NotImplementedException();
+        // Get targeted squares
+        List<(int row, int col)> squares = PieceHelpers.ScanDiagonals(Row, Col, board);
+
+        // Remove squares with a piece of the same color
+        squares = squares
+            .Where(p => board.State[p.row, p.col]?.Color != Color)
+            .ToList();
+
+        return squares;
     }
 
 }
