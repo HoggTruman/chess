@@ -68,19 +68,19 @@ public class Board
     }
 
 
-    public void MovePiece((int row, int col) from, (int row, int col) to)
-    {
-        var movingPiece = State[from.row, from.col];
+    // public void MovePiece((int row, int col) from, (int row, int col) to)
+    // {
+    //     var movingPiece = State[from.row, from.col];
 
-        if (movingPiece == null)
-            throw new ArgumentException("No piece at from location");
+    //     if (movingPiece == null)
+    //         throw new ArgumentException("No piece at from location");
 
-        State[to.row, to.col] = movingPiece;
-        State[from.row, from.col] = null;
+    //     State[to.row, to.col] = movingPiece;
+    //     State[from.row, from.col] = null;
         
-        movingPiece.Row = to.row;
-        movingPiece.Col = to.col;
-    }
+    //     movingPiece.Row = to.row;
+    //     movingPiece.Col = to.col;
+    // }
 
 
     public bool UnderCheck(Color color)
@@ -89,14 +89,12 @@ public class Board
 
         if (king == null)
         { 
-            throw new ArgumentException("No king of specified color can be found");
+            throw new ArgumentException($"No {color} king can be found");
         }
-
-        (int row, int col) kingSquare = (king.Row, king.Col);
 
         var enemyPieces = GetPiecesByColor(ColorHelpers.OppositeColor(color));
 
-        return enemyPieces.Any(piece => piece.GetTargetedSquares(this).Contains(kingSquare));
+        return enemyPieces.Any(piece => piece.GetTargetedSquares(this).Contains(king.Square));
     }
 
     #endregion
