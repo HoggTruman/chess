@@ -16,7 +16,7 @@ public class KingPiece : Piece
     /// <param name="col">Col index from 0 to 7</param>
     /// <param name="color"></param>
     public KingPiece(int row, int col, Color color=Color.White)
-        : base(row, col, color, PieceType.Bishop, PieceValues.King)
+        : base(row, col, color, PieceType.King, PieceValues.King)
     {
 
     }
