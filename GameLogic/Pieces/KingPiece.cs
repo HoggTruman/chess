@@ -44,7 +44,24 @@ public class KingPiece : Piece
 
     public override List<(int row, int col)> GetReachableSquares(Board board)
     {
-        throw new NotImplementedException();
+        // Get all squares in range (including those out of bounds)
+        List<(int row, int col)> squares = [
+            new(Row - 1, Col),
+            new(Row + 1, Col),
+            new(Row, Col - 1),
+            new(Row, Col + 1),
+            new(Row - 1, Col - 1),
+            new(Row - 1, Col + 1),
+            new(Row + 1, Col - 1),
+            new(Row + 1, Col + 1)
+        ];
+
+        // Remove squares with a piece of the same color
+        squares = squares
+            .Where(p => board.State[p.row, p.col]?.Color != Color)
+            .ToList();
+
+        return squares;
     }
 
 }
