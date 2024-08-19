@@ -42,7 +42,26 @@ public class KnightPiece : Piece
 
     public override List<(int row, int col)> GetReachableSquares(Board board)
     {
-        throw new NotImplementedException();
+        // Get all squares in range (including those out of bounds)
+        List<(int row, int col)> squares = [
+            new(Row - 2, Col - 1),
+            new(Row - 2, Col + 1),
+            new(Row + 2, Col - 1),
+            new(Row + 2, Col + 1),
+            new(Row - 1, Col - 2),
+            new(Row + 1, Col - 2),
+            new(Row - 1, Col + 2),
+            new(Row + 1, Col + 2)
+        ];
+
+        // Remove squares with a piece of the same color
+        squares = squares
+            .Where(p => 
+                board.State[p.row, p.col] == null ||
+                board.State[p.row, p.col]?.Color != Color)
+            .ToList();
+
+        return squares;
     }
 
 }
