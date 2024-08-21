@@ -69,5 +69,19 @@ public abstract class Piece : IPiece
 
     public abstract List<(int row, int col)> GetReachableSquares(Board board);
 
+
+    public bool HasMoved(Board board)
+    {
+        foreach (IMove move in board.MoveHistory)
+        {
+            if (move.MovingPiece == this)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     #endregion
 }

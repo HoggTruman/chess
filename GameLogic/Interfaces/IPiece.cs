@@ -40,4 +40,11 @@ public interface IPiece
     /// <returns>A list of (row, col) tuples</returns>
     List<(int row, int col)> GetReachableSquares(Board board);
 
+    /// <summary>
+    /// Returns a bool of whether the piece has moved or not
+    /// </summary>
+    /// <param name="board"></param>
+    /// <returns></returns>
+    bool HasMoved(Board board);
+
 }

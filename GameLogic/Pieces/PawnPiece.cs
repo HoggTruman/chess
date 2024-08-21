@@ -6,8 +6,6 @@ namespace GameLogic.Pieces;
 
 public class PawnPiece : Piece
 {
-    public bool HasMoved { get; set; } = false;
-
     /// <summary>
     /// Constructor
     /// </summary>
@@ -56,6 +54,8 @@ public class PawnPiece : Piece
     public override List<(int row, int col)> GetReachableSquares(Board board)
     {
         throw new NotImplementedException();
+
+        // en passant requires move history to check that the opponent's pawn moved into position last turn
     }
 
 }

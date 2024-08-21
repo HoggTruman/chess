@@ -6,9 +6,6 @@ namespace GameLogic.Pieces;
 
 public class KingPiece : Piece
 {
-    public bool HasMoved { get; set; } = false;
-
-
     /// <summary>
     /// Constructor
     /// </summary>
