@@ -10,17 +10,25 @@ public class CastleMove : IMove
     // From and To squares of the king
     public (int row, int col) From { get; }
     public (int row, int col) To { get; }
+    public IPiece MovingPiece { get; }
 
     // From and To squares of the rook
     public (int row, int col) RookFrom { get; }
     public (int row, int col) RookTo { get; }
 
 
-    public CastleMove((int row, int col) from, (int row, int col) to, (int row, int col) rookFrom, (int row, int col) rookTo)
+    public CastleMove(
+        (int row, int col) from, 
+        (int row, int col) to, 
+        (int row, int col) rookFrom, 
+        (int row, int col) rookTo, 
+        IPiece movingPiece
+    )
     {
         From = from;
         To = to;
         RookFrom = rookFrom;
         RookTo = rookTo;
+        MovingPiece = movingPiece;
     }
 }
