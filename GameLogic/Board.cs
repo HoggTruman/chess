@@ -25,6 +25,8 @@ public class Board
 
     public Dictionary<Color, KingPiece?> Kings { get; }
 
+    public List<IMove> MoveHistory { get; } = [];
+
     #endregion
 
 
