@@ -25,7 +25,7 @@ public class PawnPiece : Piece
 
 
     /// <summary>
-    /// Returns the targeted squares diagonally in front of a pawn based on color.
+    /// Returns the targeted squares diagonally in front of a pawn.
     /// En Passant is not considered here
     /// </summary>
     /// <param name="board"></param>
@@ -34,19 +34,21 @@ public class PawnPiece : Piece
     {
         List<(int row, int col)> targetedSquares = [];
 
-        // Add targeted squares based on color of piece
-        targetedSquares = [
-            (Row + _fwd, Col - 1),
-            (Row + _fwd, Col + 1)
-        ];
-
-        // Filter to keep only in bounds squares
-        targetedSquares = targetedSquares.Where(BoardHelpers.SquareIsInBounds).ToList();
+        // Add targeted squares (if in bounds)
+        if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col - 1)))
+            targetedSquares.Add((Row + _fwd, Col - 1));
+        
+        if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col + 1)))
+            targetedSquares.Add((Row + _fwd, Col + 1));
 
         return targetedSquares;
     }
 
-
+    /// <summary>
+    /// Returns the squares which the pawn can reach in a single move
+    /// </summary>
+    /// <param name="board"></param>
+    /// <returns>A list of (row, col) tuples</returns>
     public override List<(int row, int col)> GetReachableSquares(Board board)
     {
         List<(int row, int col)> squares = [];
@@ -84,7 +86,11 @@ public class PawnPiece : Piece
         return squares;
     }
 
-
+    /// <summary>
+    /// Returns a (row, col) tuple if En Passant is possible. Otherwise, returns null
+    /// </summary>
+    /// <param name="board"></param>
+    /// <returns></returns>
     private (int row, int col)? GetEnPassantSquare(Board board)
     {
         IMove? lastMove = board.MoveHistory.LastOrDefault();
