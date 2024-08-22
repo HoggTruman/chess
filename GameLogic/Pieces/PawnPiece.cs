@@ -7,6 +7,10 @@ namespace GameLogic.Pieces;
 
 public class PawnPiece : Piece
 {
+    // The forward direction for the piece (+1 for White, -1 for Black)
+    private readonly int _fwd;
+
+
     /// <summary>
     /// Constructor
     /// </summary>
@@ -16,7 +20,7 @@ public class PawnPiece : Piece
     public PawnPiece(int row, int col, Color color=Color.White)
         : base(row, col, color, PieceType.Pawn, PieceValues.Pawn)
     {
-
+        _fwd = color == Color.White? 1: -1;
     }
 
 
@@ -31,20 +35,10 @@ public class PawnPiece : Piece
         List<(int row, int col)> targetedSquares = [];
 
         // Add targeted squares based on color of piece
-        if (Color == Color.White)
-        {
-            targetedSquares = [
-                new(Row + 1, Col - 1),
-                new(Row + 1, Col + 1)
-            ];
-        }
-        else if (Color == Color.Black)
-        {
-            targetedSquares = [
-                new(Row - 1, Col - 1),
-                new(Row - 1, Col + 1)
-            ];
-        }
+        targetedSquares = [
+            (Row + _fwd, Col - 1),
+            (Row + _fwd, Col + 1)
+        ];
 
         // Filter to keep only in bounds squares
         targetedSquares = targetedSquares.Where(BoardHelpers.SquareIsInBounds).ToList();
@@ -58,47 +52,27 @@ public class PawnPiece : Piece
         List<(int row, int col)> squares = [];
 
         // Add non-capturing move squares
-        if (Color == Color.White)
+        if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col)) && board.State[Row + _fwd, Col] == null)
         {
-            if (BoardHelpers.SquareIsInBounds((Row + 1, Col)) && board.State[Row + 1, Col] == null)
-            {
-                squares.Add((Row + 1, Col));
+            squares.Add((Row + _fwd, Col));
 
-                if (HasMoved(board) == false && board.State[Row + 2, Col] == null)
-                {
-                    squares.Add((Row + 2, Col));
-                }
-            }
-        }
-        else if (Color == Color.Black)
-        {
-            if (BoardHelpers.SquareIsInBounds((Row - 1, Col)) && board.State[Row - 1, Col] == null)
+            if (HasMoved(board) == false && board.State[Row + 2 * _fwd, Col] == null)
             {
-                squares.Add((Row - 1, Col));
-
-                if (HasMoved(board) == false && board.State[Row - 2, Col] == null)
-                {
-                    squares.Add((Row - 2, Col));
-                }
+                squares.Add((Row + 2 * _fwd, Col));
             }
         }
 
         // Add standard capturing moves (not En Passant)
-        if (Color == Color.White)
+        if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col - 1)) && 
+            board.State[Row + _fwd, Col - 1]?.Color == ColorHelpers.OppositeColor(Color))
         {
-            if (BoardHelpers.SquareIsInBounds((Row + 1, Col - 1)) && board.State[Row + 1, Col - 1]?.Color == Color.Black)
-                squares.Add((Row + 1, Col - 1));
-            
-            if (BoardHelpers.SquareIsInBounds((Row + 1, Col + 1)) && board.State[Row + 1, Col + 1]?.Color == Color.Black)
-                squares.Add((Row + 1, Col + 1));
+            squares.Add((Row + _fwd, Col - 1));
         }
-        else if (Color == Color.Black)
-        {
-            if (BoardHelpers.SquareIsInBounds((Row - 1, Col - 1)) && board.State[Row - 1, Col - 1]?.Color == Color.White)
-                squares.Add((Row - 1, Col - 1));
             
-            if (BoardHelpers.SquareIsInBounds((Row - 1, Col + 1)) && board.State[Row - 1, Col + 1]?.Color == Color.White)
-                squares.Add((Row - 1, Col + 1));
+        if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col + 1)) && 
+            board.State[Row + _fwd, Col + 1]?.Color == ColorHelpers.OppositeColor(Color))
+        {
+            squares.Add((Row + _fwd, Col + 1));
         }
 
         // Add En Passant square if there is one
@@ -109,6 +83,7 @@ public class PawnPiece : Piece
         
         return squares;
     }
+
 
     private (int row, int col)? GetEnPassantSquare(Board board)
     {
@@ -123,13 +98,11 @@ public class PawnPiece : Piece
         {
             if (Col == lastMove.To.col - 1 || Col == lastMove.To.col + 1)
             {
-                return ((lastMove.From.row + lastMove.To.row) / 2, lastMove.To.col);
+                return (lastMove.To.row - _fwd, lastMove.To.col);
             }
         }
 
         return null;
     }
-
-
 
 }
