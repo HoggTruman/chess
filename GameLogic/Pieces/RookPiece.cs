@@ -12,9 +12,8 @@ public class RookPiece : Piece
     /// <param name="row">Row index from 0 to 7</param>
     /// <param name="col">Col index from 0 to 7</param>
     /// <param name="color"></param>
-    /// <param name="value">The value of the piece. Defaults to rook value but can be set manually for pawn promotion</param>
-    public RookPiece(int row, int col, Color color=Color.White, int value=PieceValues.Rook)
-        : base(row, col, color, PieceType.Rook, value)
+    public RookPiece(int row, int col, Color color=Color.White)
+        : base(row, col, color, PieceType.Rook, PieceValues.Rook)
     {
 
     }
