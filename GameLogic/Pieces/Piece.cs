@@ -72,15 +72,7 @@ public abstract class Piece : IPiece
 
     public bool HasMoved(Board board)
     {
-        foreach (IMove move in board.MoveHistory)
-        {
-            if (move.MovingPiece == this)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return board.MoveHistory.Any(move => move.MovingPiece == this);
     }
 
     #endregion
