@@ -47,7 +47,7 @@ public class PawnPiece : Piece
         }
 
         // Filter to keep only in bounds squares
-        targetedSquares = BoardHelpers.KeepInBoundsSquares(targetedSquares);
+        targetedSquares = targetedSquares.Where(BoardHelpers.SquareIsInBounds).ToList();
 
         return targetedSquares;
     }
@@ -60,25 +60,25 @@ public class PawnPiece : Piece
         // Add non-capturing move squares
         if (Color == Color.White)
         {
-            if (Row + 1 <= Board.MaxIndex && board.State[Row + 1, Col] == null)
+            if (BoardHelpers.SquareIsInBounds((Row + 1, Col)) && board.State[Row + 1, Col] == null)
             {
-                squares.Add(new(Row + 1, Col));
+                squares.Add((Row + 1, Col));
 
                 if (HasMoved(board) == false && board.State[Row + 2, Col] == null)
                 {
-                    squares.Add(new(Row + 2, Col));
+                    squares.Add((Row + 2, Col));
                 }
             }
         }
         else if (Color == Color.Black)
         {
-            if (Row - 1 >= Board.MinIndex && board.State[Row - 1, Col] == null)
+            if (BoardHelpers.SquareIsInBounds((Row - 1, Col)) && board.State[Row - 1, Col] == null)
             {
-                squares.Add(new(Row - 1, Col));
+                squares.Add((Row - 1, Col));
 
                 if (HasMoved(board) == false && board.State[Row - 2, Col] == null)
                 {
-                    squares.Add(new(Row - 2, Col));
+                    squares.Add((Row - 2, Col));
                 }
             }
         }
@@ -86,19 +86,19 @@ public class PawnPiece : Piece
         // Add standard capturing moves (not En Passant)
         if (Color == Color.White)
         {
-            if (Col - 1 >= Board.MinIndex && Row + 1 <= Board.MaxIndex && board.State[Row + 1, Col - 1]?.Color == Color.Black)
-                squares.Add(new(Row + 1, Col - 1));
+            if (BoardHelpers.SquareIsInBounds((Row + 1, Col - 1)) && board.State[Row + 1, Col - 1]?.Color == Color.Black)
+                squares.Add((Row + 1, Col - 1));
             
-            if (Col + 1 <= Board.MaxIndex && Row + 1 <= Board.MaxIndex && board.State[Row + 1, Col + 1]?.Color == Color.Black)
-                squares.Add(new(Row + 1, Col + 1));
+            if (BoardHelpers.SquareIsInBounds((Row + 1, Col + 1)) && board.State[Row + 1, Col + 1]?.Color == Color.Black)
+                squares.Add((Row + 1, Col + 1));
         }
         else if (Color == Color.Black)
         {
-            if (Col - 1 >= Board.MinIndex && Row - 1 >= Board.MinIndex && board.State[Row - 1, Col - 1]?.Color == Color.Black)
-                squares.Add(new(Row - 1, Col - 1));
+            if (BoardHelpers.SquareIsInBounds((Row - 1, Col - 1)) && board.State[Row - 1, Col - 1]?.Color == Color.White)
+                squares.Add((Row - 1, Col - 1));
             
-            if (Col + 1 <= Board.MaxIndex && Row - 1 >= Board.MinIndex && board.State[Row - 1, Col + 1]?.Color == Color.Black)
-                squares.Add(new(Row - 1, Col + 1));
+            if (BoardHelpers.SquareIsInBounds((Row - 1, Col + 1)) && board.State[Row - 1, Col + 1]?.Color == Color.White)
+                squares.Add((Row - 1, Col + 1));
         }
 
         // Add En Passant square if there is one

@@ -34,7 +34,7 @@ public class KingPiece : Piece
         ];
 
         // Filter to keep only in bounds squares
-        targetedSquares = BoardHelpers.KeepInBoundsSquares(targetedSquares);
+        targetedSquares = targetedSquares.Where(BoardHelpers.SquareIsInBounds).ToList();
 
         return targetedSquares;
     }

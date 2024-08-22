@@ -31,13 +31,13 @@ public static class BoardHelpers
     /// </summary>
     /// <param name="squares"></param>
     /// <returns></returns>
-    public static List<(int row, int col)> KeepInBoundsSquares(List<(int row, int col)> squares)
+    public static bool SquareIsInBounds((int row, int col) square)
     {
-        return squares.Where(p => 
-            p.row >= Board.MinIndex &&
-            p.row <= Board.MaxIndex &&
-            p.col >= Board.MinIndex &&
-            p.col <= Board.MaxIndex
-        ).ToList();
+        return (
+            square.row >= Board.MinIndex &&
+            square.row <= Board.MaxIndex &&
+            square.col >= Board.MinIndex &&
+            square.col <= Board.MaxIndex
+        );
     }
 }
