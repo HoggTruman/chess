@@ -29,7 +29,8 @@ public class BoardTests
         PawnPiece pawn = new(4, 5);
         List<IPiece> pieces = [queen, pawn];
 
-        Board testBoard = new(pieces);
+        Board testBoard = new();
+        testBoard.AddPieces(pieces);
 
         // Assert
         testBoard.State[1, 1].Should().BeEquivalentTo(queen);
@@ -51,7 +52,8 @@ public class BoardTests
 
         List<IPiece> pieces = [whiteQueen, blackKing];
 
-        Board testBoard = new(pieces);
+        Board testBoard = new();
+        testBoard.AddPieces(pieces);
 
         // Act
         var result = testBoard.UnderCheck(blackKing.Color);
@@ -68,7 +70,8 @@ public class BoardTests
 
         List<IPiece> pieces = [blackQueen, whiteKing];
 
-        Board testBoard = new(pieces);
+        Board testBoard = new();
+        testBoard.AddPieces(pieces);
 
         // Act
         var result = testBoard.UnderCheck(whiteKing.Color);
@@ -89,7 +92,8 @@ public class BoardTests
 
         List<IPiece> pieces = [whiteKing, whiteQueen, blackKing, blackQueen];
 
-        Board testBoard = new(pieces);
+        Board testBoard = new();
+        testBoard.AddPieces(pieces);
 
         // Act
         var result = testBoard.UnderCheck(testColor);

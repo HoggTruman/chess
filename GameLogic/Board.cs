@@ -34,7 +34,11 @@ public class Board
 
     #region constructor
 
-    public Board(List<IPiece> pieces = null!)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="pieces"></param>
+    public Board()
     {
         State = new IPiece?[BoardSize, BoardSize];
         Kings = new()
@@ -42,19 +46,6 @@ public class Board
             [Color.White] = null,
             [Color.Black] = null
         };
-
-        if (pieces != null)
-        {
-            foreach (var piece in pieces)
-            {
-                State[piece.Row, piece.Col] = piece;
-
-                if (piece.PieceType == PieceType.King)
-                {
-                    Kings[piece.Color] = (KingPiece)piece;
-                }
-            }
-        }
     }
 
     #endregion
@@ -62,6 +53,22 @@ public class Board
 
 
     #region public methods
+
+    public void AddPieces(List<IPiece> pieces)
+    {
+        // add additional checking for no overlapping pieces, pieces already present, two kings etc...
+
+        foreach (var piece in pieces)
+        {
+            State[piece.Row, piece.Col] = piece;
+
+            if (piece.PieceType == PieceType.King)
+            {
+                Kings[piece.Color] = (KingPiece)piece;
+            }
+        }
+    }
+
 
     public List<(int row, int col)> GetValidMoves(IPiece piece) 
     {
