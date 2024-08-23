@@ -1,6 +1,7 @@
 using GameLogic.Enums;
 using GameLogic.Helpers;
 using GameLogic.Interfaces;
+using GameLogic.Moves;
 using GameLogic.Pieces;
 
 
@@ -82,19 +83,47 @@ public class Board
     }
 
 
-    // public void MovePiece((int row, int col) from, (int row, int col) to)
-    // {
-    //     var movingPiece = State[from.row, from.col];
+    public void MovePiece((int row, int col) from, (int row, int col) to)
+    {
+        MoveType moveType = MoveType.Move;
+        var movingPiece = State[from.row, from.col];
+        var capturedPiece = State[to.row, to.col];
 
-    //     if (movingPiece == null)
-    //         throw new ArgumentException("No piece at from location");
+        if (movingPiece == null)
+            throw new ArgumentException("No piece at from location");
 
-    //     State[to.row, to.col] = movingPiece;
-    //     State[from.row, from.col] = null;
+        // Adjust for En Passant (may be a better way to handle this)
+        if (capturedPiece == null && movingPiece.PieceType == PieceType.Pawn && to.col != from.col)
+        {
+            capturedPiece = State[from.row, to.col];
+            moveType = MoveType.EnPassant;
+        }
+            
+        // Add entry in MoveHistory
+        Move move = new(moveType, from, to, movingPiece, capturedPiece);
+        MoveHistory.Add(move);
         
-    //     movingPiece.Row = to.row;
-    //     movingPiece.Col = to.col;
-    // }
+        // Update State
+        State[to.row, to.col] = movingPiece;
+        State[from.row, from.col] = null;
+        
+        // Update the movingPiece
+        movingPiece.Row = to.row;
+        movingPiece.Col = to.col;
+    }
+
+
+    public void PawnPromote((int row, int col) from, (int row, int col) to, PieceType promoteTo)
+    {
+        throw new NotImplementedException();
+    }
+
+
+    // king location may not be needed since king always castles from same square
+    public void Castle((int row, int col) kingFrom, (int row, int col) rookFrom)
+    {
+        throw new NotImplementedException();
+    }
 
 
     public bool UnderCheck(Color color)
