@@ -82,47 +82,15 @@ public class Board
         return validMoves;
     }
 
-
-    public void MovePiece((int row, int col) from, (int row, int col) to)
+    public void HandleMove(IMove move)
     {
-        MoveType moveType = MoveType.Move;
-        var movingPiece = State[from.row, from.col];
-        var capturedPiece = State[to.row, to.col];
-
-        if (movingPiece == null)
-            throw new ArgumentException("No piece at from location");
-
-        // Adjust for En Passant (may be a better way to handle this)
-        if (capturedPiece == null && movingPiece.PieceType == PieceType.Pawn && to.col != from.col)
-        {
-            capturedPiece = State[from.row, to.col];
-            moveType = MoveType.EnPassant;
-        }
-            
-        // Add entry in MoveHistory
-        Move move = new(moveType, from, to, movingPiece, capturedPiece);
         MoveHistory.Add(move);
-        
-        // Update State
-        State[to.row, to.col] = movingPiece;
-        State[from.row, from.col] = null;
-        
-        // Update the movingPiece
-        movingPiece.Row = to.row;
-        movingPiece.Col = to.col;
-    }
 
-
-    public void PawnPromote((int row, int col) from, (int row, int col) to, PieceType promoteTo)
-    {
-        throw new NotImplementedException();
-    }
-
-
-    // king location may not be needed since king always castles from same square
-    public void Castle((int row, int col) kingFrom, (int row, int col) rookFrom)
-    {
-        throw new NotImplementedException();
+        if (move.MoveType == MoveType.Move)
+        {
+            MovePiece(move.From, move.To, move.CapturedPieceType);
+        }
+        // add castle + promotion handling
     }
 
 
@@ -141,6 +109,8 @@ public class Board
     }
 
     #endregion
+
+
 
     #region private methods
 
@@ -187,6 +157,51 @@ public class Board
 
         
         return result;
+    }
+
+
+    /// <summary>
+    /// Updates the State of the board to reflect the move. 
+    /// Sets the Row and Col properties of the moving piece to match the 'to' parameter
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <param name="capturedPieceType"></param>
+    /// <exception cref="ArgumentException"></exception>
+    private void MovePiece((int row, int col) from, (int row, int col) to, PieceType? capturedPieceType)
+    {
+        // MoveType moveType = MoveType.Move;
+        var movingPiece = State[from.row, from.col];
+
+        if (movingPiece == null)
+            throw new ArgumentException("No piece at from location");
+
+        // Remove En Passant captured piece from State
+        if (State[to.row, to.col] == null && capturedPieceType == PieceType.Pawn)
+        {
+            State[from.row, to.col] = null;
+        }
+
+        // Update State for the movingPiece
+        State[to.row, to.col] = movingPiece;
+        State[from.row, from.col] = null;
+        
+        // Update the movingPiece row and col
+        movingPiece.Row = to.row;
+        movingPiece.Col = to.col;
+    }
+
+
+    private void PawnPromote((int row, int col) from, (int row, int col) to, PieceType promoteTo)
+    {
+        throw new NotImplementedException();
+    }
+
+
+    // king location may not be needed since king always castles from same square
+    private void Castle((int row, int col) kingFrom, (int row, int col) rookFrom)
+    {
+        throw new NotImplementedException();
     }
 
     #endregion

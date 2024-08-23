@@ -10,5 +10,5 @@ public interface IMove
     (int row, int col) To { get; }
 
     IPiece MovingPiece { get; }
-    IPiece? CapturedPiece { get; }
+    PieceType? CapturedPieceType { get; }
 }

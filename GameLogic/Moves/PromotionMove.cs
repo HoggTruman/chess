@@ -12,11 +12,11 @@ public class PromotionMove : Move
         (int row, int col) from, 
         (int row, int col) to, 
         IPiece movingPiece,
-        IPiece? capturedPiece,
+        PieceType? capturedPieceType,
         PieceType promotedTo,
         IPiece promotionPiece
     ) 
-        :base(MoveType.Promotion, from, to, movingPiece, capturedPiece)
+        :base(MoveType.Promotion, from, to, movingPiece, capturedPieceType)
     {
         PromotedTo = promotedTo;
         PromotionPiece = promotionPiece;
