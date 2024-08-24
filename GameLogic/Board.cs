@@ -74,13 +74,15 @@ public class Board
     {
         List<(int row, int col)> validMoves = [];
 
-        // get all targeted squares
+        // get all reachable squares
         List<(int row, int col)> allMoves = piece.GetReachableSquares(this);
 
         // keep the squares which represent a valid move
+        var king = Kings[piece.Color];
+
         foreach (var move in allMoves)
         {
-            if (MoveLeavesPlayerInCheck((piece.Row, piece.Col), move) == false)
+            if (MoveLeavesPlayerInCheck(piece.Square, move, king) == false)
             {
                 validMoves.Add(move);
             }
@@ -101,27 +103,7 @@ public class Board
     }
 
 
-    public bool UnderCheck(Color color)
-    {
-        var king = Kings[color];
-
-        if (king == null)
-        { 
-            throw new ArgumentException($"No {color} king can be found");
-        }
-
-        var enemyPieces = GetPiecesByColor(ColorHelpers.OppositeColor(color));
-
-        return enemyPieces.Any(piece => piece.GetTargetedSquares(this).Contains(king.Square));
-    }
-
-    #endregion
-
-
-
-    #region private methods
-
-    private List<IPiece> GetPiecesByColor(Color color)
+    public List<IPiece> GetPiecesByColor(Color color)
     {
         // THIS IS STILL PRETTY INEFFICIENT CONSIDERING IT WILL BE CALLED FOR EVERY TEST MOVE. REFACTOR TO A PROPERTY LATER WHICH HAS PIECES REMOVED WHEN TAKEN??
         List<IPiece> pieces = [];
@@ -138,14 +120,24 @@ public class Board
         return pieces;
     }
 
+    #endregion
 
-    private bool MoveLeavesPlayerInCheck((int row, int col) from, (int row, int col) to)
+
+
+    #region private methods
+
+    private bool MoveLeavesPlayerInCheck((int row, int col) from, (int row, int col) to, KingPiece? king)
     {
+        // Return false when no king. Makes testing more convenient for when no king is present
+        if (king == null)
+            return false;
+
         IPiece? movingPiece = State[from.row, from.col];
-        IPiece? targetPiece = State[to.row, to.col];
+        IPiece? targetPiece = State[to.row, to.col]; // DOESNT WORK FOR EN PASSANT
 
         if (movingPiece == null)
             throw new ArgumentException("Piece not found at specified from square");
+    
 
         // make the move
         State[from.row, from.col] = null;
@@ -154,7 +146,7 @@ public class Board
         movingPiece.Col = to.col;
 
         // record the result
-        bool result = UnderCheck(movingPiece.Color);
+        bool result = king.IsChecked(this);
 
         // roll back pieces
         State[from.row, from.col] = movingPiece;

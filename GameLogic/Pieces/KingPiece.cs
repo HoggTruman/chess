@@ -61,4 +61,11 @@ public class KingPiece : Piece
         return squares;
     }
 
+    public bool IsChecked(Board board)
+    {
+        var enemyPieces = board.GetPiecesByColor(ColorHelpers.OppositeColor(Color));
+
+        return enemyPieces.Any(piece => piece.GetTargetedSquares(board).Contains(Square));
+    }
+
 }
