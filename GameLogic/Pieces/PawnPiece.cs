@@ -91,7 +91,7 @@ public class PawnPiece : Piece
     /// </summary>
     /// <param name="board"></param>
     /// <returns></returns>
-    private (int row, int col)? GetEnPassantSquare(Board board)
+    public (int row, int col)? GetEnPassantSquare(Board board)
     {
         IMove? lastMove = board.MoveHistory.LastOrDefault();
 
@@ -104,7 +104,7 @@ public class PawnPiece : Piece
         {
             if (Col == lastMove.To.col - 1 || Col == lastMove.To.col + 1)
             {
-                return (lastMove.To.row - _fwd, lastMove.To.col);
+                return (lastMove.To.row + _fwd, lastMove.To.col);
             }
         }
 
