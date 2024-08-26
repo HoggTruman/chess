@@ -1,5 +1,6 @@
 using GameLogic.Enums;
 using GameLogic.Interfaces;
+using GameLogic.Moves;
 
 namespace GameLogic.Pieces;
 
@@ -71,6 +72,27 @@ public abstract class Piece : IPiece
     public abstract List<(int row, int col)> GetTargetedSquares(Board board);
 
     public abstract List<(int row, int col)> GetReachableSquares(Board board);
+
+    public virtual List<IMove> GetValidMoves(Board board)
+    {
+        List<IMove> validMoves = [];
+
+        // get all reachable squares
+        List<(int row, int col)> allMoves = GetReachableSquares(board);
+
+        // keep the squares which represent a valid move
+        foreach (var toSquare in allMoves)
+        {
+            if (board.MoveLeavesPlayerInCheck(Square, toSquare) == false)
+            {
+                validMoves.Add(
+                    new Move(MoveType.Move, Square, toSquare)
+                );
+            }
+        }
+
+        return validMoves;
+    }
 
 
     public bool HasMoved(Board board)

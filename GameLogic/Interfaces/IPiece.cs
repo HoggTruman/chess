@@ -44,8 +44,17 @@ public interface IPiece
     /// <returns>A list of (row, col) tuples</returns>
     List<(int row, int col)> GetReachableSquares(Board board);
 
+
     /// <summary>
-    /// Returns a bool of whether the piece has moved or not
+    /// Returns a list of moves which are valid for a player to make.
+    /// </summary>
+    /// <param name="board"></param>
+    /// <returns></returns>
+    List<IMove> GetValidMoves(Board board);
+
+
+    /// <summary>
+    /// Returns a bool of whether the piece has moved or not.
     /// </summary>
     /// <param name="board"></param>
     /// <returns></returns>

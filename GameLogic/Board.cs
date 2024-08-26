@@ -70,27 +70,6 @@ public class Board
     }
 
 
-    public List<(int row, int col)> GetValidMoves(IPiece piece) 
-    {
-        List<(int row, int col)> validMoves = [];
-
-        // get all reachable squares
-        List<(int row, int col)> allMoves = piece.GetReachableSquares(this);
-
-        // keep the squares which represent a valid move
-        var king = Kings[piece.Color];
-
-        foreach (var move in allMoves)
-        {
-            if (MoveLeavesPlayerInCheck(piece.Square, move, king) == false)
-            {
-                validMoves.Add(move);
-            }
-        }
-
-        return validMoves;
-    }
-
     public void HandleMove(IMove move)
     {
         MoveHistory.Add(move);
@@ -124,30 +103,41 @@ public class Board
         return pieces;
     }
 
-    #endregion
 
-
-
-    #region private methods
-
-    private bool MoveLeavesPlayerInCheck((int row, int col) from, (int row, int col) to, KingPiece? king)
+    /// <summary>
+    /// Returns a bool of whether the player is left in check by making the move. 
+    /// For En Passant, pass in the captured pawn's square as the "captured" parameter.
+    /// </summary>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <param name="captured"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public bool MoveLeavesPlayerInCheck((int row, int col) from, (int row, int col) to, (int row, int col)? captured = null)
     {
-        // Return false when no king. Makes testing more convenient for when no king is present
-        if (king == null)
-            return false;
-
+        // Ensure there the moving piece is not null
         IPiece? movingPiece = State[from.row, from.col];
-        IPiece? targetPiece = State[to.row, to.col]; // DOESNT WORK FOR EN PASSANT
 
         if (movingPiece == null)
             throw new ArgumentException("Piece not found at specified from square");
-    
+
+        // Return false when no king. Makes testing more convenient for when no king is present
+        KingPiece? king = Kings[movingPiece.Color];
+        if (king == null)
+            return false;
+
+        // Get target piece
+        (int row, int col) capturedSquare = to;
+
+        if (captured != null)
+            capturedSquare = ((int row, int col))captured;
+
+        IPiece? capturedPiece = State[capturedSquare.row, capturedSquare.col];
 
         // make the move
         State[from.row, from.col] = null;
         State[to.row, to.col] = movingPiece;
-        movingPiece.Row = to.row;
-        movingPiece.Col = to.col;
+        movingPiece.Square = to;
 
         // record the result
         bool result = king.IsChecked(this);
@@ -156,12 +146,17 @@ public class Board
         State[from.row, from.col] = movingPiece;
         movingPiece.Row = from.row;
         movingPiece.Col = from.col;
-        State[to.row, to.col] = targetPiece;
+        State[capturedSquare.row, capturedSquare.col] = capturedPiece;
 
         
         return result;
     }
 
+    #endregion
+
+
+
+    #region private methods
 
     /// <summary>
     /// Updates the State of the board to reflect the move. 
