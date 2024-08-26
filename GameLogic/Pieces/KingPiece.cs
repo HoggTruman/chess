@@ -6,6 +6,8 @@ namespace GameLogic.Pieces;
 
 public class KingPiece : Piece
 {
+    #region Constructor
+
     /// <summary>
     /// Constructor
     /// </summary>
@@ -18,20 +20,16 @@ public class KingPiece : Piece
 
     }
 
+    #endregion
+
+
+
+    #region Public Methods
 
     public override List<(int row, int col)> GetTargetedSquares(Board board)
     {
         // Get all squares in range (including those out of bounds)
-        List<(int row, int col)> targetedSquares = [
-            new(Row - 1, Col),
-            new(Row + 1, Col),
-            new(Row, Col - 1),
-            new(Row, Col + 1),
-            new(Row - 1, Col - 1),
-            new(Row - 1, Col + 1),
-            new(Row + 1, Col - 1),
-            new(Row + 1, Col + 1)
-        ];
+        List<(int row, int col)> targetedSquares = GetAllTargetedSquares();
 
         // Filter to keep only in bounds squares
         targetedSquares = targetedSquares.Where(BoardHelpers.SquareIsInBounds).ToList();
@@ -39,19 +37,11 @@ public class KingPiece : Piece
         return targetedSquares;
     }
 
+
     public override List<(int row, int col)> GetReachableSquares(Board board)
     {
         // Get all squares in range (including those out of bounds)
-        List<(int row, int col)> squares = [
-            new(Row - 1, Col),
-            new(Row + 1, Col),
-            new(Row, Col - 1),
-            new(Row, Col + 1),
-            new(Row - 1, Col - 1),
-            new(Row - 1, Col + 1),
-            new(Row + 1, Col - 1),
-            new(Row + 1, Col + 1)
-        ];
+        List<(int row, int col)> squares = GetAllTargetedSquares();
 
         // Remove squares with a piece of the same color
         squares = squares
@@ -61,6 +51,7 @@ public class KingPiece : Piece
         return squares;
     }
 
+
     public bool IsChecked(Board board)
     {
         var enemyPieces = board.GetPiecesByColor(ColorHelpers.OppositeColor(Color));
@@ -68,4 +59,30 @@ public class KingPiece : Piece
         return enemyPieces.Any(piece => piece.GetTargetedSquares(board).Contains(Square));
     }
 
+    #endregion
+
+
+
+    #region Private Methods
+
+    /// <summary>
+    /// Returns a List of all the squares the king could move to including those out of bounds.
+    /// Does not include castling squares.
+    /// </summary>
+    /// <returns></returns>
+    private List<(int row, int col)> GetAllTargetedSquares()
+    {
+        return [
+            new(Row - 1, Col),
+            new(Row + 1, Col),
+            new(Row, Col - 1),
+            new(Row, Col + 1),
+            new(Row - 1, Col - 1),
+            new(Row - 1, Col + 1),
+            new(Row + 1, Col - 1),
+            new(Row + 1, Col + 1)
+        ];
+    }
+
+    #endregion
 }
