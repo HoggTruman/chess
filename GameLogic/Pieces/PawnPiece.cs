@@ -97,7 +97,7 @@ public class PawnPiece : Piece
 
         if (
             lastMove != null &&
-            lastMove.MovingPiece.PieceType == PieceType.Pawn &&
+            board.State[lastMove.To.row, lastMove.To.col]?.PieceType == PieceType.Pawn &&
             Math.Abs(lastMove.From.row - lastMove.To.row) == 2 &&
             lastMove.To.row == Row 
         )

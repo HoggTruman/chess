@@ -39,7 +39,7 @@ public class PawnPieceTests
 
 
         (int row, int col) blackTo = (4, 4);
-        Move blackMove = new(MoveType.Move, blackPawn.Square, blackTo, blackPawn);
+        Move blackMove = new(MoveType.Move, blackPawn.Square, blackTo);
 
         (int row, int col) expected = (5, 4);
 
@@ -72,7 +72,7 @@ public class PawnPieceTests
 
 
         (int row, int col) whiteTo = (3, 3);
-        Move whiteMove = new(MoveType.Move, whitePawn.Square, whiteTo, whitePawn);
+        Move whiteMove = new(MoveType.Move, whitePawn.Square, whiteTo);
 
         (int row, int col) expected = (2, 3);
 
@@ -125,7 +125,7 @@ public class PawnPieceTests
         List<IPiece> pieces = [whitePawn, blackPawn];
 
         (int row, int col) blackTo = (4, 4);
-        Move blackMove = new(MoveType.Move, blackPawn.Square, blackTo, blackPawn);
+        Move blackMove = new(MoveType.Move, blackPawn.Square, blackTo);
 
         testBoard.AddPieces(pieces);
 
@@ -156,7 +156,7 @@ public class PawnPieceTests
 
 
         (int row, int col) whiteTo = (3, 3);
-        Move whiteMove = new(MoveType.Move, whitePawn.Square, whiteTo, whitePawn);
+        Move whiteMove = new(MoveType.Move, whitePawn.Square, whiteTo);
 
         // Act
         testBoard.HandleMove(whiteMove);

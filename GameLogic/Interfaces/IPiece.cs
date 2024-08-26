@@ -10,7 +10,11 @@ public interface IPiece
     // The column index of a piece from 0 to 7
     int Col { get; set; }
 
+    // A tuple with the current position of the piece
     (int row, int col) Square { get; set; }
+
+    // A tuple with the starting square of the piece
+    (int row, int col) StartSquare { get; }
 
     // The color of a piece (White or Black)
     Color Color { get; }

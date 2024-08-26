@@ -38,6 +38,8 @@ public abstract class Piece : IPiece
         }
     }
 
+    public (int row, int col) StartSquare { get; }
+
     public Color Color { get; }
 
     public PieceType PieceType { get; }
@@ -54,6 +56,7 @@ public abstract class Piece : IPiece
     {
         _row = row;
         _col = col;
+        StartSquare = (row, col);
         Color = color;
         PieceType = pieceType;
         Value = value;
@@ -72,7 +75,7 @@ public abstract class Piece : IPiece
 
     public bool HasMoved(Board board)
     {
-        return board.MoveHistory.Any(move => move.MovingPiece == this);
+        return board.MoveHistory.Any(move => move.From == StartSquare);
     }
 
     #endregion

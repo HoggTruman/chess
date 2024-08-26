@@ -10,10 +10,9 @@ public class EnPassantMove : Move
     public EnPassantMove(
         (int row, int col) from, 
         (int row, int col) to,
-        IPiece movingPiece,
         (int row, int col) captured
     ) 
-        :base(MoveType.EnPassant, from, to, movingPiece)
+        :base(MoveType.EnPassant, from, to)
     {
         Captured = captured;
     }
