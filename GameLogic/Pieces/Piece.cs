@@ -77,11 +77,8 @@ public abstract class Piece : IPiece
     {
         List<IMove> validMoves = [];
 
-        // get all reachable squares
-        List<(int row, int col)> allMoves = GetReachableSquares(board);
-
         // keep the squares which represent a valid move
-        foreach (var toSquare in allMoves)
+        foreach (var toSquare in GetReachableSquares(board))
         {
             if (board.MoveLeavesPlayerInCheck(Square, toSquare) == false)
             {
