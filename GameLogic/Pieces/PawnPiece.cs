@@ -2,6 +2,7 @@ using GameLogic.Constants;
 using GameLogic.Enums;
 using GameLogic.Helpers;
 using GameLogic.Interfaces;
+using GameLogic.Moves;
 
 namespace GameLogic.Pieces;
 
@@ -45,7 +46,8 @@ public class PawnPiece : Piece
     }
 
     /// <summary>
-    /// Returns the squares which the pawn can reach in a single move
+    /// Returns the squares which the pawn can reach in a single standard move.
+    /// This does not include En Passant squares.
     /// </summary>
     /// <param name="board"></param>
     /// <returns>A list of (row, col) tuples</returns>
@@ -76,22 +78,67 @@ public class PawnPiece : Piece
         {
             squares.Add((Row + _fwd, Col + 1));
         }
-
-        // Add En Passant square if there is one
-        var enPassantSquare = GetEnPassantSquare(board);
-        if (enPassantSquare != null)
-            squares.Add(((int row, int col))enPassantSquare);
-
         
         return squares;
     }
+
+
+    /// <summary>
+    /// Returns a List of Moves including PromotionMoves and EnPassantMoves where possible.
+    /// </summary>
+    /// <param name="board"></param>
+    /// <returns></returns>
+    public override List<IMove> GetValidMoves(Board board)
+    {
+        List<IMove> validMoves = [];
+
+        // Get valid moves for standard and promotion moves
+        foreach (var toSquare in GetReachableSquares(board))
+        {
+            if (board.MoveLeavesPlayerInCheck(Square, toSquare) == false)
+            {
+                if (toSquare.row == Board.MinIndex || toSquare.row == Board.MaxIndex)
+                {
+                    validMoves.Add(
+                        new PromotionMove(Square, toSquare)
+                    );
+                }
+                else
+                {
+                    validMoves.Add(
+                        new Move(MoveType.Move, Square, toSquare)
+                    );
+                }
+            }
+        }
+
+        // Add En Passant move if available
+        var enPassantSquares = GetEnPassantSquares(board);
+
+        if (enPassantSquares != null)
+        {
+            var to = enPassantSquares.Value.to;
+            var captured = enPassantSquares.Value.captured;
+
+            if (board.MoveLeavesPlayerInCheck(Square, to, captured) == false)
+            {
+                validMoves.Add(
+                    new EnPassantMove(Square, to, captured)
+                );
+            }
+        }
+
+
+        return validMoves;        
+    }
+
 
     /// <summary>
     /// Returns a (row, col) tuple if En Passant is possible. Otherwise, returns null
     /// </summary>
     /// <param name="board"></param>
     /// <returns></returns>
-    public (int row, int col)? GetEnPassantSquare(Board board)
+    public ((int row, int col) to, (int row, int col) captured)? GetEnPassantSquares(Board board)
     {
         IMove? lastMove = board.MoveHistory.LastOrDefault();
 
@@ -104,7 +151,9 @@ public class PawnPiece : Piece
         {
             if (Col == lastMove.To.col - 1 || Col == lastMove.To.col + 1)
             {
-                return (lastMove.To.row + _fwd, lastMove.To.col);
+                (int row, int col) to = (Row + _fwd, lastMove.To.col);
+                (int row, int col) captured = lastMove.To;
+                return (to, captured);
             }
         }
 

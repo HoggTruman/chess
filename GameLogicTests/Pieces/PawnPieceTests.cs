@@ -9,15 +9,6 @@ namespace GameLogicTests.Pieces;
 
 public class PawnPieceTests
 {
-    private Board _board;
-
-    public PawnPieceTests()
-    {
-        _board = new Board();
-    }
-
-
-
     #region GetEnPassantSquare Tests 
 
     [Fact]
@@ -41,15 +32,18 @@ public class PawnPieceTests
         (int row, int col) blackTo = (4, 4);
         Move blackMove = new(MoveType.Move, blackPawn.Square, blackTo);
 
-        (int row, int col) expected = (5, 4);
+        (int row, int col) expectedTo = (5, 4);
+        (int row, int col) expectedCaptured = blackTo;
 
 
         // Act
         testBoard.HandleMove(blackMove);
-        var result = whitePawn.GetEnPassantSquare(testBoard);
+        var result = whitePawn.GetEnPassantSquares(testBoard);
 
         // Assert 
-        result.Should().Be(expected);
+        Assert.NotNull(result);
+        result.Value.to.Should().Be(expectedTo);
+        result.Value.captured.Should().Be(expectedCaptured);
     }
 
 
@@ -74,15 +68,18 @@ public class PawnPieceTests
         (int row, int col) whiteTo = (3, 3);
         Move whiteMove = new(MoveType.Move, whitePawn.Square, whiteTo);
 
-        (int row, int col) expected = (2, 3);
+        (int row, int col) expectedTo = (2, 3);
+        (int row, int col) expectedCaptured = whiteTo;
 
 
         // Act
         testBoard.HandleMove(whiteMove);
-        var result = blackPawn.GetEnPassantSquare(testBoard);
+        var result = blackPawn.GetEnPassantSquares(testBoard);
 
         // Assert 
-        result.Should().Be(expected);
+        Assert.NotNull(result);
+        result.Value.to.Should().Be(expectedTo);
+        result.Value.captured.Should().Be(expectedCaptured);
     }
 
 
@@ -103,7 +100,7 @@ public class PawnPieceTests
         testBoard.AddPieces(pieces);
 
         // Act
-        var result = whitePawn.GetEnPassantSquare(testBoard);
+        var result = whitePawn.GetEnPassantSquares(testBoard);
 
         // Assert 
         result.Should().BeNull();
@@ -131,7 +128,7 @@ public class PawnPieceTests
 
         // Act
         testBoard.HandleMove(blackMove);
-        var result = whitePawn.GetEnPassantSquare(testBoard);
+        var result = whitePawn.GetEnPassantSquares(testBoard);
 
         // Assert 
         result.Should().BeNull();
@@ -160,7 +157,7 @@ public class PawnPieceTests
 
         // Act
         testBoard.HandleMove(whiteMove);
-        var result = blackPawn.GetEnPassantSquare(testBoard);
+        var result = blackPawn.GetEnPassantSquares(testBoard);
 
         // Assert 
         result.Should().BeNull();
