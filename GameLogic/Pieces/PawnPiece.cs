@@ -106,7 +106,7 @@ public class PawnPiece : Piece
                 else
                 {
                     validMoves.Add(
-                        new Move(MoveType.Move, Square, toSquare)
+                        new Move(Square, toSquare)
                     );
                 }
             }

@@ -18,9 +18,9 @@ public class Move : IMove
     #region Constructor
 
     public Move(
-        MoveType moveType,
         (int row, int col) from, 
-        (int row, int col) to
+        (int row, int col) to,
+        MoveType moveType = MoveType.Standard
     )
     {
         MoveType = moveType;

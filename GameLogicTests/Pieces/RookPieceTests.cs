@@ -125,7 +125,7 @@ public class RookPieceTests
 
         testBoard.AddPieces(pieces);
 
-        Move kingMove = new(MoveType.Move, king.Square, StartSquares.WhiteKing);
+        Move kingMove = new(king.Square, StartSquares.WhiteKing);
         testBoard.HandleMove(kingMove);
 
         // Act
@@ -149,7 +149,7 @@ public class RookPieceTests
 
         testBoard.AddPieces(pieces);
 
-        Move rookMove = new(MoveType.Move, rook.Square, StartSquares.WhiteRookK);
+        Move rookMove = new(rook.Square, StartSquares.WhiteRookK);
         testBoard.HandleMove(rookMove);
 
         // Act

@@ -2,7 +2,7 @@ namespace GameLogic.Enums;
 
 public enum MoveType
 {
-    Move,
+    Standard,
     Castle,
     Promotion,
     EnPassant

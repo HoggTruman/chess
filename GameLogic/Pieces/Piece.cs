@@ -83,7 +83,7 @@ public abstract class Piece : IPiece
             if (board.MoveLeavesPlayerInCheck(Square, toSquare) == false)
             {
                 validMoves.Add(
-                    new Move(MoveType.Move, Square, toSquare)
+                    new Move(Square, toSquare)
                 );
             }
         }

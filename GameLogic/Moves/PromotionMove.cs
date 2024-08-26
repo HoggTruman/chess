@@ -17,7 +17,7 @@ public class PromotionMove : Move
         (int row, int col) to, 
         PieceType? promotedTo = null
     ) 
-        :base(MoveType.Promotion, from, to)
+        :base(from, to, MoveType.Promotion)
     {
         PromotedTo = promotedTo;
     }

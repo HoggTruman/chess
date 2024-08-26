@@ -74,7 +74,7 @@ public class Board
     {
         MoveHistory.Add(move);
 
-        if (move.MoveType == MoveType.Move)
+        if (move.MoveType == MoveType.Standard)
         {
             MovePiece((Move)move);
         }
