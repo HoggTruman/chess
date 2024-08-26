@@ -5,19 +5,20 @@ namespace GameLogic.Moves;
 
 public class PromotionMove : Move
 {
-    public PieceType PromotedTo { get; }
-    public IPiece PromotionPiece { get; }
+    /// <summary>
+    /// The type of piece the player chooses to promote to.
+    /// Its value will be filled once the player makes the move.
+    /// </summary>
+    public PieceType? PromotedTo { get; set; }
 
 
     public PromotionMove(
         (int row, int col) from, 
         (int row, int col) to, 
-        PieceType promotedTo,
-        IPiece promotionPiece
+        PieceType? promotedTo = null
     ) 
         :base(MoveType.Promotion, from, to)
     {
         PromotedTo = promotedTo;
-        PromotionPiece = promotionPiece;
     }
 }
