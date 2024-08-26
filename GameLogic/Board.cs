@@ -97,7 +97,11 @@ public class Board
 
         if (move.MoveType == MoveType.Move)
         {
-            MovePiece(move.From, move.To, move.CapturedPieceType);
+            MovePiece((Move)move);
+        }
+        else if (move.MoveType == MoveType.EnPassant)
+        {
+            EnPassant((EnPassantMove)move);
         }
         // add castle + promotion handling
     }
@@ -161,33 +165,38 @@ public class Board
 
     /// <summary>
     /// Updates the State of the board to reflect the move. 
-    /// Sets the Row and Col properties of the moving piece to match the 'to' parameter
+    /// Updates the Row and Col properties of the moving piece
     /// </summary>
-    /// <param name="from"></param>
-    /// <param name="to"></param>
-    /// <param name="capturedPieceType"></param>
-    /// <exception cref="ArgumentException"></exception>
-    private void MovePiece((int row, int col) from, (int row, int col) to, PieceType? capturedPieceType)
+    /// <param name="move"></param>
+    private void MovePiece(IMove move)
     {
-        // MoveType moveType = MoveType.Move;
-        var movingPiece = State[from.row, from.col];
+        var movingPiece = State[move.From.row, move.From.col];
 
         if (movingPiece == null)
             throw new ArgumentException("No piece at from location");
 
-        // Remove En Passant captured piece from State
-        if (State[to.row, to.col] == null && capturedPieceType == PieceType.Pawn)
-        {
-            State[from.row, to.col] = null;
-        }
-
         // Update State for the movingPiece
-        State[to.row, to.col] = movingPiece;
-        State[from.row, from.col] = null;
+        State[move.To.row, move.To.col] = movingPiece;
+        State[move.From.row, move.From.col] = null;
         
         // Update the movingPiece row and col
-        movingPiece.Row = to.row;
-        movingPiece.Col = to.col;
+        movingPiece.Row = move.To.row;
+        movingPiece.Col = move.To.col;
+    }
+
+
+    /// <summary>
+    /// Updates the State of the board to reflect the En Passant move. 
+    /// Updates the Row and Col properties of the moving pawn.
+    /// </summary>
+    /// <param name="move"></param>
+    private void EnPassant(EnPassantMove move)
+    {
+        // Move the pawn
+        MovePiece(move);
+
+        // Remove captured pawn from the board
+        State[move.Captured.row, move.Captured.col] = null;
     }
 
 

@@ -11,21 +11,18 @@ public class Move : IMove
     public (int row, int col) To { get; }
 
     public IPiece MovingPiece { get; }
-    public PieceType? CapturedPieceType { get; }
 
 
     public Move(
         MoveType moveType,
         (int row, int col) from, 
         (int row, int col) to,
-        IPiece movingPiece, 
-        PieceType? capturedPieceType = null
+        IPiece movingPiece
     )
     {
         MoveType = moveType;
         From = from;
         To = to;
         MovingPiece = movingPiece;
-        CapturedPieceType = capturedPieceType;
     }
 }
