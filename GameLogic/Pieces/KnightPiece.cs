@@ -6,6 +6,8 @@ namespace GameLogic.Pieces;
 
 public class KnightPiece : Piece
 {
+    #region Constructors
+
     /// <summary>
     /// Constructor
     /// </summary>
@@ -19,20 +21,16 @@ public class KnightPiece : Piece
 
     }
 
+    #endregion
+
+
+
+    #region Public Methods
 
     public override List<(int row, int col)> GetTargetedSquares()
     {
         // Get all squares in range (including those out of bounds)
-        List<(int row, int col)> targetedSquares = [
-            new(Row - 2, Col - 1),
-            new(Row - 2, Col + 1),
-            new(Row + 2, Col - 1),
-            new(Row + 2, Col + 1),
-            new(Row - 1, Col - 2),
-            new(Row + 1, Col - 2),
-            new(Row - 1, Col + 2),
-            new(Row + 1, Col + 2)
-        ];
+        List<(int row, int col)> targetedSquares = GetAllTargetedSquares();
 
         // Filter to keep only in bounds squares
         targetedSquares = targetedSquares.Where(BoardHelpers.SquareIsInBounds).ToList();
@@ -44,16 +42,7 @@ public class KnightPiece : Piece
     public override List<(int row, int col)> GetReachableSquares()
     {
         // Get all squares in range (including those out of bounds)
-        List<(int row, int col)> squares = [
-            new(Row - 2, Col - 1),
-            new(Row - 2, Col + 1),
-            new(Row + 2, Col - 1),
-            new(Row + 2, Col + 1),
-            new(Row - 1, Col - 2),
-            new(Row + 1, Col - 2),
-            new(Row - 1, Col + 2),
-            new(Row + 1, Col + 2)
-        ];
+        List<(int row, int col)> squares = GetAllTargetedSquares();
 
         // Remove squares with a piece of the same color
         squares = squares
@@ -64,5 +53,27 @@ public class KnightPiece : Piece
 
         return squares;
     }
+
+    #endregion
+
+
+
+    #region Private Methods
+
+    private List<(int row, int col)> GetAllTargetedSquares()
+    {
+        return [
+            new(Row - 2, Col - 1),
+            new(Row - 2, Col + 1),
+            new(Row + 2, Col - 1),
+            new(Row + 2, Col + 1),
+            new(Row - 1, Col - 2),
+            new(Row + 1, Col - 2),
+            new(Row - 1, Col + 2),
+            new(Row + 1, Col + 2)
+        ];
+    }
+
+    #endregion
 
 }
