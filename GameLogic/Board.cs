@@ -163,7 +163,7 @@ public class Board
     /// Updates the Row and Col properties of the moving piece
     /// </summary>
     /// <param name="move"></param>
-    private void MovePiece(IMove move)
+    private void MovePiece(Move move)
     {
         var movingPiece = State[move.From.row, move.From.col];
 
