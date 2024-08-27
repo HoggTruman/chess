@@ -140,21 +140,22 @@ public class PawnPiece : Piece
     /// <returns></returns>
     public ((int row, int col) to, (int row, int col) captured)? GetEnPassantSquares(Board board)
     {
-        IMove? lastMove = board.MoveHistory.LastOrDefault();
-
-        if (
-            lastMove != null &&
+        // 1) Checks that there is a last move and that it is a standard move
+        // 2) Checks that the last moving piece was a pawn
+        // 3) Checks that the enemy pawn advanced two squares
+        // 4) Checks that the enemy pawn is on the same row as this piece
+        // 5) Checks that the enemy pawn is on an adjacent column to this piece
+        
+        if (board.MoveHistory.LastOrDefault() is Move lastMove &&       
             board.State[lastMove.To.row, lastMove.To.col]?.PieceType == PieceType.Pawn &&
             Math.Abs(lastMove.From.row - lastMove.To.row) == 2 &&
-            lastMove.To.row == Row 
+            lastMove.To.row == Row &&
+            (Col == lastMove.To.col - 1 || Col == lastMove.To.col + 1)
         )
         {
-            if (Col == lastMove.To.col - 1 || Col == lastMove.To.col + 1)
-            {
-                (int row, int col) to = (Row + _fwd, lastMove.To.col);
-                (int row, int col) captured = lastMove.To;
-                return (to, captured);
-            }
+            (int row, int col) to = (Row + _fwd, lastMove.To.col);
+            (int row, int col) captured = lastMove.To;
+            return (to, captured);
         }
 
         return null;

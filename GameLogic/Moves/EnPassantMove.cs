@@ -1,11 +1,10 @@
 using GameLogic.Enums;
-using GameLogic.Interfaces;
 
 namespace GameLogic.Moves;
 
 public class EnPassantMove : Move
 {
-    public (int row, int col) Captured{ get; }
+    public (int row, int col) Captured { get; }
 
     public EnPassantMove(
         (int row, int col) from, 
