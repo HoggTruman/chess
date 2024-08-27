@@ -30,7 +30,7 @@ public class PawnPieceTests
 
 
         (int row, int col) blackTo = (4, 4);
-        Move blackMove = new(blackPawn.Square, blackTo);
+        StandardMove blackMove = new(blackPawn.Square, blackTo);
 
         (int row, int col) expectedTo = (5, 4);
         (int row, int col) expectedCaptured = blackTo;
@@ -66,7 +66,7 @@ public class PawnPieceTests
 
 
         (int row, int col) whiteTo = (3, 3);
-        Move whiteMove = new(whitePawn.Square, whiteTo);
+        StandardMove whiteMove = new(whitePawn.Square, whiteTo);
 
         (int row, int col) expectedTo = (2, 3);
         (int row, int col) expectedCaptured = whiteTo;
@@ -122,7 +122,7 @@ public class PawnPieceTests
         List<IPiece> pieces = [whitePawn, blackPawn];
 
         (int row, int col) blackTo = (4, 4);
-        Move blackMove = new(blackPawn.Square, blackTo);
+        StandardMove blackMove = new(blackPawn.Square, blackTo);
 
         testBoard.AddPieces(pieces);
 
@@ -153,7 +153,7 @@ public class PawnPieceTests
 
 
         (int row, int col) whiteTo = (3, 3);
-        Move whiteMove = new(whitePawn.Square, whiteTo);
+        StandardMove whiteMove = new(whitePawn.Square, whiteTo);
 
         // Act
         testBoard.HandleMove(whiteMove);

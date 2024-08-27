@@ -11,7 +11,7 @@ public class EnPassantMove : Move
         (int row, int col) to,
         (int row, int col) captured
     ) 
-        :base(from, to, MoveType.EnPassant)
+        :base(MoveType.EnPassant, from, to)
     {
         Captured = captured;
     }

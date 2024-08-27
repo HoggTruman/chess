@@ -76,7 +76,7 @@ public class Board
 
         if (move.MoveType == MoveType.Standard)
         {
-            MovePiece((Move)move);
+            MovePiece((StandardMove)move);
         }
         else if (move.MoveType == MoveType.EnPassant)
         {

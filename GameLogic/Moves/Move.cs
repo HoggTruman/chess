@@ -3,7 +3,7 @@ using GameLogic.Interfaces;
 
 namespace GameLogic.Moves;
 
-public class Move : IMove
+public abstract class Move : IMove
 {
     #region Properties
 
@@ -18,9 +18,9 @@ public class Move : IMove
     #region Constructor
 
     public Move(
+        MoveType moveType,
         (int row, int col) from, 
-        (int row, int col) to,
-        MoveType moveType = MoveType.Standard
+        (int row, int col) to
     )
     {
         MoveType = moveType;

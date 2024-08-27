@@ -17,7 +17,7 @@ public class CastleMove : Move
         (int row, int col) rookFrom,
         (int row, int col) rookTo
     ) 
-        :base(kingFrom, kingTo, MoveType.Castle)
+        :base(MoveType.Castle, kingFrom, kingTo)
     {
         RookFrom = rookFrom;
         RookTo = rookTo;
