@@ -54,22 +54,6 @@ public class Board
 
     #region public methods
 
-    public void AddPieces(List<IPiece> pieces)
-    {
-        // add additional checking for no overlapping pieces, pieces already present, two kings etc...
-
-        foreach (var piece in pieces)
-        {
-            State[piece.Row, piece.Col] = piece;
-
-            if (piece.PieceType == PieceType.King)
-            {
-                Kings[piece.Color] = (KingPiece)piece;
-            }
-        }
-    }
-
-
     public void HandleMove(IMove move)
     {
         MoveHistory.Add(move);
@@ -140,7 +124,7 @@ public class Board
         movingPiece.Square = to;
 
         // record the result
-        bool result = king.IsChecked(this);
+        bool result = king.IsChecked();
 
         // roll back pieces
         State[from.row, from.col] = movingPiece;

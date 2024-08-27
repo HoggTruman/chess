@@ -13,13 +13,18 @@ public class KingPiece : Piece
     /// <summary>
     /// Constructor
     /// </summary>
+    /// <param name="board">The Board object the piece will be placed on</param>
     /// <param name="row">Row index from 0 to 7</param>
     /// <param name="col">Col index from 0 to 7</param>
     /// <param name="color"></param>
-    public KingPiece(int row, int col, Color color=Color.White)
-        : base(row, col, color, PieceType.King, PieceValues.King)
+    public KingPiece(Board board, int row, int col, Color color=Color.White)
+        : base(board, row, col, color, PieceType.King, PieceValues.King)
     {
-
+        // Ensure a king of the same colour does not exist on the board before registering it
+        if (board.Kings[color] != null)
+            throw new ArgumentException($"{color} King already exists on the board");
+        
+        board.Kings[color] = this;
     }
 
     #endregion
@@ -28,7 +33,7 @@ public class KingPiece : Piece
 
     #region Public Methods
 
-    public override List<(int row, int col)> GetTargetedSquares(Board board)
+    public override List<(int row, int col)> GetTargetedSquares()
     {
         // Get all squares in range (including those out of bounds)
         List<(int row, int col)> targetedSquares = GetAllTargetedSquares();
@@ -40,14 +45,14 @@ public class KingPiece : Piece
     }
 
 
-    public override List<(int row, int col)> GetReachableSquares(Board board)
+    public override List<(int row, int col)> GetReachableSquares()
     {
         // Get all squares in range (including those out of bounds)
         List<(int row, int col)> squares = GetAllTargetedSquares();
 
         // Remove squares with a piece of the same color
         squares = squares
-            .Where(p => board.State[p.row, p.col]?.Color != Color)
+            .Where(s => _board.State[s.row, s.col]?.Color != Color)
             .ToList();
 
         return squares;
@@ -57,20 +62,19 @@ public class KingPiece : Piece
     /// <summary>
     /// Returns a List of Moves including CastleMoves where possible.
     /// </summary>
-    /// <param name="board"></param>
     /// <returns></returns>
-    public override List<IMove> GetValidMoves(Board board)
+    public override List<IMove> GetValidMoves()
     {
         // Get all valid standard moves
-        var validMoves = base.GetValidMoves(board);
+        var validMoves = base.GetValidMoves();
 
         // Add valid castling moves
-        var rooks = (List<RookPiece>)board.GetPiecesByColor(Color)
+        var rooks = (List<RookPiece>)_board.GetPiecesByColor(Color)
             .Where(x => x is RookPiece);
 
         foreach (var rook in rooks)
         {
-            var castleSquares = GetCastleSquares(board, rook);
+            var castleSquares = GetCastleSquares(rook);
 
             if (castleSquares != null)
             {
@@ -89,12 +93,11 @@ public class KingPiece : Piece
     /// <summary>
     /// Returns a tuple containing the squares of the king and rook after castling if they can castle. Otherwise, returns null.
     /// </summary>
-    /// <param name="board"></param>
-    /// <param name="rook"></param>
+    /// <param name="rook">The RookPiece to castle with</param>
     /// <returns></returns>
-    public ((int row, int col) kingTo, (int row, int col) rookTo)? GetCastleSquares(Board board, RookPiece rook)
+    public ((int row, int col) kingTo, (int row, int col) rookTo)? GetCastleSquares(RookPiece rook)
     {
-        if (rook.Color == Color && rook.CanCastle(board))
+        if (rook.Color == Color && rook.CanCastle())
         {
             int kingDirection = Math.Sign(rook.Row - Row);
 
@@ -108,11 +111,15 @@ public class KingPiece : Piece
     }
 
 
-    public bool IsChecked(Board board)
+    /// <summary>
+    /// Determines if this KingPiece is under check.
+    /// </summary>
+    /// <returns>true if under check, otherwise false</returns>
+    public bool IsChecked()
     {
-        var enemyPieces = board.GetPiecesByColor(ColorHelpers.OppositeColor(Color));
+        var enemyPieces = _board.GetPiecesByColor(ColorHelpers.OppositeColor(Color));
 
-        return enemyPieces.Any(piece => piece.GetTargetedSquares(board).Contains(Square));
+        return enemyPieces.Any(piece => piece.GetTargetedSquares().Contains(Square));
     }
 
     #endregion

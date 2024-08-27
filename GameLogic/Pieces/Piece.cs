@@ -8,6 +8,7 @@ public abstract class Piece : IPiece
 {
     #region Fields
 
+    protected readonly Board _board;
     private int _row;
     private int _col;
 
@@ -53,8 +54,16 @@ public abstract class Piece : IPiece
 
     #region Constructor
 
-    protected Piece(int row, int col, Color color, PieceType pieceType, int value)
+    protected Piece(Board board, int row, int col, Color color, PieceType pieceType, int value)
     {
+        // Ensure a piece doesn't already exist at the specified square before adding it
+        if (board.State[row, col] != null)
+            throw new ArgumentException($"Board already contains a piece at (row: {row}, col: {col})");
+
+        board.State[row, col] = this;
+        
+        // Set fields and properties
+        _board = board;
         _row = row;
         _col = col;
         StartSquare = (row, col);
@@ -69,18 +78,20 @@ public abstract class Piece : IPiece
 
     #region Methods
 
-    public abstract List<(int row, int col)> GetTargetedSquares(Board board);
+    public abstract List<(int row, int col)> GetTargetedSquares();
 
-    public abstract List<(int row, int col)> GetReachableSquares(Board board);
 
-    public virtual List<IMove> GetValidMoves(Board board)
+    public abstract List<(int row, int col)> GetReachableSquares();
+
+
+    public virtual List<IMove> GetValidMoves()
     {
         List<IMove> validMoves = [];
 
         // keep the squares which represent a valid move
-        foreach (var toSquare in GetReachableSquares(board))
+        foreach (var toSquare in GetReachableSquares())
         {
-            if (board.MoveLeavesPlayerInCheck(Square, toSquare) == false)
+            if (_board.MoveLeavesPlayerInCheck(Square, toSquare) == false)
             {
                 validMoves.Add(
                     new StandardMove(Square, toSquare)
@@ -92,9 +103,9 @@ public abstract class Piece : IPiece
     }
 
 
-    public bool HasMoved(Board board)
+    public bool HasMoved()
     {
-        return board.MoveHistory.Any(move => move.MovesSquare(StartSquare));
+        return _board.MoveHistory.Any(move => move.MovesSquare(StartSquare));
     }
 
     #endregion

@@ -9,28 +9,31 @@ public class BishopPiece : Piece
     /// <summary>
     /// Constructor
     /// </summary>
+    /// <param name="board">The Board object the piece will be placed on</param>
     /// <param name="row">Row index from 0 to 7</param>
     /// <param name="col">Col index from 0 to 7</param>
     /// <param name="color"></param>
-    public BishopPiece(int row, int col, Color color=Color.White) 
-        : base(row, col, color, PieceType.Bishop, PieceValues.Bishop)
+    public BishopPiece(Board board, int row, int col, Color color=Color.White) 
+        : base(board, row, col, color, PieceType.Bishop, PieceValues.Bishop)
     {
     
     }
 
-    public override List<(int row, int col)> GetTargetedSquares(Board board)
+
+    public override List<(int row, int col)> GetTargetedSquares()
     {
-        return PieceHelpers.ScanDiagonals(Row, Col, board);
+        return PieceHelpers.ScanDiagonals(Row, Col, _board);
     }
 
-    public override List<(int row, int col)> GetReachableSquares(Board board)
+
+    public override List<(int row, int col)> GetReachableSquares()
     {
         // Get targeted squares
-        List<(int row, int col)> squares = PieceHelpers.ScanDiagonals(Row, Col, board);
+        List<(int row, int col)> squares = PieceHelpers.ScanDiagonals(Row, Col, _board);
 
         // Remove squares with a piece of the same color
         squares = squares
-            .Where(p => board.State[p.row, p.col]?.Color != Color)
+            .Where(s => _board.State[s.row, s.col]?.Color != Color)
             .ToList();
 
         return squares;

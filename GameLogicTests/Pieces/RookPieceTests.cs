@@ -2,7 +2,6 @@ using FluentAssertions;
 using GameLogic;
 using GameLogic.Constants;
 using GameLogic.Enums;
-using GameLogic.Interfaces;
 using GameLogic.Moves;
 using GameLogic.Pieces;
 
@@ -18,15 +17,11 @@ public class RookPieceTests
         // Arrange
         Board testBoard = new();
 
-        KingPiece king = new(StartSquares.WhiteKing.row, StartSquares.WhiteKing.col);
-        RookPiece rook = new(StartSquares.WhiteRookK.row, StartSquares.WhiteRookK.col);
-
-        List<IPiece> pieces = [king, rook];
-
-        testBoard.AddPieces(pieces);
+        KingPiece king = new(testBoard, StartSquares.WhiteKing.row, StartSquares.WhiteKing.col);
+        RookPiece rook = new(testBoard, StartSquares.WhiteRookK.row, StartSquares.WhiteRookK.col);
 
         // Act
-        var result = rook.CanCastle(testBoard);
+        var result = rook.CanCastle();
 
         // Assert 
         result.Should().BeTrue();
@@ -41,17 +36,13 @@ public class RookPieceTests
         // Arrange
         Board testBoard = new();
 
-        KingPiece king = new(StartSquares.WhiteKing.row, StartSquares.WhiteKing.col);
-        RookPiece rook = new(StartSquares.WhiteRookK.row, StartSquares.WhiteRookK.col);
+        KingPiece king = new(testBoard, StartSquares.WhiteKing.row, StartSquares.WhiteKing.col);
+        RookPiece rook = new(testBoard, StartSquares.WhiteRookK.row, StartSquares.WhiteRookK.col);
 
-        QueenPiece blockingPiece = new(StartSquares.WhiteKing.row, blockedCol);
-
-        List<IPiece> pieces = [king, rook, blockingPiece];
-
-        testBoard.AddPieces(pieces);
+        QueenPiece blockingPiece = new(testBoard, StartSquares.WhiteKing.row, blockedCol);
 
         // Act
-        var result = rook.CanCastle(testBoard);
+        var result = rook.CanCastle();
 
         // Assert 
         result.Should().BeFalse();
@@ -70,17 +61,13 @@ public class RookPieceTests
         // Arrange
         Board testBoard = new();
 
-        KingPiece king = new(StartSquares.WhiteKing.row, StartSquares.WhiteKing.col, Color.White);
-        RookPiece rook = new(StartSquares.WhiteRookK.row, StartSquares.WhiteRookK.col, Color.White);
+        KingPiece king = new(testBoard, StartSquares.WhiteKing.row, StartSquares.WhiteKing.col, Color.White);
+        RookPiece rook = new(testBoard, StartSquares.WhiteRookK.row, StartSquares.WhiteRookK.col, Color.White);
 
-        RookPiece enemyPiece = new(StartSquares.BlackKing.row, targetedCol, Color.Black);
-
-        List<IPiece> pieces = [king, rook, enemyPiece];
-
-        testBoard.AddPieces(pieces);
+        RookPiece enemyPiece = new(testBoard, StartSquares.BlackKing.row, targetedCol, Color.Black);
 
         // Act
-        var result = rook.CanCastle(testBoard);
+        var result = rook.CanCastle();
 
         // Assert 
         result.Should().BeFalse();
@@ -95,17 +82,13 @@ public class RookPieceTests
         // Arrange
         Board testBoard = new();
 
-        KingPiece king = new(StartSquares.WhiteKing.row, StartSquares.WhiteKing.col, Color.White);
-        RookPiece rook = new(StartSquares.WhiteRookK.row, StartSquares.WhiteRookK.col, Color.White);
+        KingPiece king = new(testBoard, StartSquares.WhiteKing.row, StartSquares.WhiteKing.col, Color.White);
+        RookPiece rook = new(testBoard, StartSquares.WhiteRookK.row, StartSquares.WhiteRookK.col, Color.White);
 
-        RookPiece enemyPiece = new(StartSquares.BlackKing.row, StartSquares.WhiteRookK.col, Color.Black);
-
-        List<IPiece> pieces = [king, rook, enemyPiece];
-
-        testBoard.AddPieces(pieces);
+        RookPiece enemyPiece = new(testBoard, StartSquares.BlackKing.row, StartSquares.WhiteRookK.col, Color.Black);
 
         // Act
-        var result = rook.CanCastle(testBoard);
+        var result = rook.CanCastle();
 
         // Assert 
         result.Should().BeTrue();
@@ -118,18 +101,14 @@ public class RookPieceTests
         // Arrange
         Board testBoard = new();
 
-        KingPiece king = new(StartSquares.WhiteKing.row + 1, StartSquares.WhiteKing.col);
-        RookPiece rook = new(StartSquares.WhiteRookK.row, StartSquares.WhiteRookK.col);
-
-        List<IPiece> pieces = [king, rook];
-
-        testBoard.AddPieces(pieces);
+        KingPiece king = new(testBoard, StartSquares.WhiteKing.row + 1, StartSquares.WhiteKing.col);
+        RookPiece rook = new(testBoard, StartSquares.WhiteRookK.row, StartSquares.WhiteRookK.col);
 
         StandardMove kingMove = new(king.Square, StartSquares.WhiteKing);
         testBoard.HandleMove(kingMove);
 
         // Act
-        var result = rook.CanCastle(testBoard);
+        var result = rook.CanCastle();
 
         // Assert 
         result.Should().BeFalse();
@@ -142,18 +121,14 @@ public class RookPieceTests
         // Arrange
         Board testBoard = new();
 
-        KingPiece king = new(StartSquares.WhiteKing.row, StartSquares.WhiteKing.col);
-        RookPiece rook = new(StartSquares.WhiteRookK.row + 1, StartSquares.WhiteRookK.col);
-
-        List<IPiece> pieces = [king, rook];
-
-        testBoard.AddPieces(pieces);
+        KingPiece king = new(testBoard, StartSquares.WhiteKing.row, StartSquares.WhiteKing.col);
+        RookPiece rook = new(testBoard, StartSquares.WhiteRookK.row + 1, StartSquares.WhiteRookK.col);
 
         StandardMove rookMove = new(rook.Square, StartSquares.WhiteRookK);
         testBoard.HandleMove(rookMove);
 
         // Act
-        var result = rook.CanCastle(testBoard);
+        var result = rook.CanCastle();
 
         // Assert 
         result.Should().BeFalse();

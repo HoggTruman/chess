@@ -9,30 +9,31 @@ public class RookPiece : Piece
     /// <summary>
     /// Constructor
     /// </summary>
+    /// <param name="board">The Board object the piece will be placed on</param>
     /// <param name="row">Row index from 0 to 7</param>
     /// <param name="col">Col index from 0 to 7</param>
     /// <param name="color"></param>
-    public RookPiece(int row, int col, Color color=Color.White)
-        : base(row, col, color, PieceType.Rook, PieceValues.Rook)
+    public RookPiece(Board board, int row, int col, Color color=Color.White)
+        : base(board, row, col, color, PieceType.Rook, PieceValues.Rook)
     {
 
     }
 
 
-    public override List<(int row, int col)> GetTargetedSquares(Board board)
+    public override List<(int row, int col)> GetTargetedSquares()
     {
-        return PieceHelpers.ScanRowAndCol(Row, Col, board);
+        return PieceHelpers.ScanRowAndCol(Row, Col, _board);
     }
 
 
-    public override List<(int row, int col)> GetReachableSquares(Board board)
+    public override List<(int row, int col)> GetReachableSquares()
     {
         // Get targeted squares
-        List<(int row, int col)> squares = PieceHelpers.ScanRowAndCol(Row, Col, board);
+        List<(int row, int col)> squares = PieceHelpers.ScanRowAndCol(Row, Col, _board);
 
         // Remove squares with a piece of the same color
         squares = squares
-            .Where(p => board.State[p.row, p.col]?.Color != Color)
+            .Where(s => _board.State[s.row, s.col]?.Color != Color)
             .ToList();
 
         return squares;
@@ -42,18 +43,17 @@ public class RookPiece : Piece
     /// <summary>
     /// Returns true if all conditions are met for castling with this piece.
     /// </summary>
-    /// <param name="board"></param>
     /// <returns></returns>
-    public bool CanCastle(Board board)
+    public bool CanCastle()
     {
         // Ensure there is a king to castle with
-        var king = board.Kings[Color];
+        var king = _board.Kings[Color];
 
         if (king == null)
             return false;
 
         // Ensure the rook and king have not moved
-        if (HasMoved(board) || king.HasMoved(board))
+        if (HasMoved() || king.HasMoved())
             return false;
 
         // Ensure there are no pieces between the two
@@ -65,7 +65,7 @@ public class RookPiece : Piece
         if (Col > king.Col)
             betweenSquares = [(Row, Col - 1), (Row, Col - 2)];
 
-        if (betweenSquares.Any(x => board.State[x.row, x.col] != null))
+        if (betweenSquares.Any(s => _board.State[s.row, s.col] != null))
             return false;
 
         // Ensure the king does not pass through check
@@ -77,11 +77,11 @@ public class RookPiece : Piece
         if (Col > king.Col)
             kingSquares = [king.Square, (king.Row, king.Col + 1), (king.Row, king.Col + 2)];
         
-        var enemyPieces = board.GetPiecesByColor(ColorHelpers.OppositeColor(Color));
+        var enemyPieces = _board.GetPiecesByColor(ColorHelpers.OppositeColor(Color));
 
         foreach (var piece in enemyPieces)
         {
-            if (piece.GetTargetedSquares(board).Intersect(kingSquares).Any())
+            if (piece.GetTargetedSquares().Intersect(kingSquares).Any())
                 return false;
         }
         

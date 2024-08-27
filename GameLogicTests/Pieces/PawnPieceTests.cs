@@ -21,13 +21,8 @@ public class PawnPieceTests
         // Arrange
         Board testBoard = new();
 
-        PawnPiece whitePawn = new(4, 3, Color.White);
-        PawnPiece blackPawn = new(6, 4, Color.Black);
-
-        List<IPiece> pieces = [whitePawn, blackPawn];
-
-        testBoard.AddPieces(pieces);
-
+        PawnPiece whitePawn = new(testBoard, 4, 3, Color.White);
+        PawnPiece blackPawn = new(testBoard, 6, 4, Color.Black);
 
         (int row, int col) blackTo = (4, 4);
         StandardMove blackMove = new(blackPawn.Square, blackTo);
@@ -38,7 +33,7 @@ public class PawnPieceTests
 
         // Act
         testBoard.HandleMove(blackMove);
-        var result = whitePawn.GetEnPassantSquares(testBoard);
+        var result = whitePawn.GetEnPassantSquares();
 
         // Assert 
         Assert.NotNull(result);
@@ -57,13 +52,8 @@ public class PawnPieceTests
         // Arrange
         Board testBoard = new();
 
-        PawnPiece whitePawn = new(1, 3, Color.White);
-        PawnPiece blackPawn = new(3, 4, Color.Black);
-
-        List<IPiece> pieces = [whitePawn, blackPawn];
-
-        testBoard.AddPieces(pieces);
-
+        PawnPiece whitePawn = new(testBoard, 1, 3, Color.White);
+        PawnPiece blackPawn = new(testBoard, 3, 4, Color.Black);
 
         (int row, int col) whiteTo = (3, 3);
         StandardMove whiteMove = new(whitePawn.Square, whiteTo);
@@ -74,7 +64,7 @@ public class PawnPieceTests
 
         // Act
         testBoard.HandleMove(whiteMove);
-        var result = blackPawn.GetEnPassantSquares(testBoard);
+        var result = blackPawn.GetEnPassantSquares();
 
         // Assert 
         Assert.NotNull(result);
@@ -92,15 +82,12 @@ public class PawnPieceTests
         // Arrange
         Board testBoard = new();
 
-        PawnPiece whitePawn = new(4, 3, Color.White);
-        PawnPiece blackPawn = new(4, 4, Color.Black);
+        PawnPiece whitePawn = new(testBoard, 4, 3, Color.White);
+        PawnPiece blackPawn = new(testBoard, 4, 4, Color.Black);
 
-        List<IPiece> pieces = [whitePawn, blackPawn];
-
-        testBoard.AddPieces(pieces);
 
         // Act
-        var result = whitePawn.GetEnPassantSquares(testBoard);
+        var result = whitePawn.GetEnPassantSquares();
 
         // Assert 
         result.Should().BeNull();
@@ -116,19 +103,15 @@ public class PawnPieceTests
         // Arrange
         Board testBoard = new();
 
-        PawnPiece whitePawn = new(4, 3, Color.White);
-        PawnPiece blackPawn = new(5, 4, Color.Black);
-
-        List<IPiece> pieces = [whitePawn, blackPawn];
+        PawnPiece whitePawn = new(testBoard, 4, 3, Color.White);
+        PawnPiece blackPawn = new(testBoard, 5, 4, Color.Black);
 
         (int row, int col) blackTo = (4, 4);
         StandardMove blackMove = new(blackPawn.Square, blackTo);
 
-        testBoard.AddPieces(pieces);
-
         // Act
         testBoard.HandleMove(blackMove);
-        var result = whitePawn.GetEnPassantSquares(testBoard);
+        var result = whitePawn.GetEnPassantSquares();
 
         // Assert 
         result.Should().BeNull();
@@ -144,20 +127,15 @@ public class PawnPieceTests
         // Arrange
         Board testBoard = new();
 
-        PawnPiece whitePawn = new(2, 3, Color.White);
-        PawnPiece blackPawn = new(3, 4, Color.Black);
-
-        List<IPiece> pieces = [whitePawn, blackPawn];
-
-        testBoard.AddPieces(pieces);
-
+        PawnPiece whitePawn = new(testBoard, 2, 3, Color.White);
+        PawnPiece blackPawn = new(testBoard, 3, 4, Color.Black);
 
         (int row, int col) whiteTo = (3, 3);
         StandardMove whiteMove = new(whitePawn.Square, whiteTo);
 
         // Act
         testBoard.HandleMove(whiteMove);
-        var result = blackPawn.GetEnPassantSquares(testBoard);
+        var result = blackPawn.GetEnPassantSquares();
 
         // Assert 
         result.Should().BeNull();

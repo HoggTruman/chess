@@ -31,33 +31,29 @@ public interface IPiece
     /// Returns a list of the squares which the piece threatens with a capture.
     /// Whether or not these squares are valid moves is not considered.
     /// </summary>
-    /// <param name="board"></param>
     /// <returns>A list of (row, col) tuples</returns>
-    List<(int row, int col)> GetTargetedSquares(Board board);
+    List<(int row, int col)> GetTargetedSquares();
 
 
     /// <summary>
     /// Returns a list of the squares which the piece can reach in a single move.
     /// Whether or not these squares are valid moves is not considered.
     /// </summary>
-    /// <param name="board"></param>
     /// <returns>A list of (row, col) tuples</returns>
-    List<(int row, int col)> GetReachableSquares(Board board);
+    List<(int row, int col)> GetReachableSquares();
 
 
     /// <summary>
     /// Returns a list of moves which are valid for a player to make.
     /// </summary>
-    /// <param name="board"></param>
     /// <returns></returns>
-    List<IMove> GetValidMoves(Board board);
+    List<IMove> GetValidMoves();
 
 
     /// <summary>
     /// Returns a bool of whether the piece has moved or not.
     /// </summary>
-    /// <param name="board"></param>
     /// <returns></returns>
-    bool HasMoved(Board board);
+    bool HasMoved();
 
 }

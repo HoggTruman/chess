@@ -9,17 +9,18 @@ public class KnightPiece : Piece
     /// <summary>
     /// Constructor
     /// </summary>
+    /// <param name="board">The Board object the piece will be placed on</param>
     /// <param name="row">Row index from 0 to 7</param>
     /// <param name="col">Col index from 0 to 7</param>
     /// <param name="color"></param>
-    public KnightPiece(int row, int col, Color color=Color.White)
-        : base(row, col, color, PieceType.Knight, PieceValues.Knight)
+    public KnightPiece(Board board, int row, int col, Color color=Color.White)
+        : base(board, row, col, color, PieceType.Knight, PieceValues.Knight)
     {
 
     }
 
 
-    public override List<(int row, int col)> GetTargetedSquares(Board board)
+    public override List<(int row, int col)> GetTargetedSquares()
     {
         // Get all squares in range (including those out of bounds)
         List<(int row, int col)> targetedSquares = [
@@ -39,7 +40,8 @@ public class KnightPiece : Piece
         return targetedSquares;
     }
 
-    public override List<(int row, int col)> GetReachableSquares(Board board)
+
+    public override List<(int row, int col)> GetReachableSquares()
     {
         // Get all squares in range (including those out of bounds)
         List<(int row, int col)> squares = [
@@ -55,9 +57,9 @@ public class KnightPiece : Piece
 
         // Remove squares with a piece of the same color
         squares = squares
-            .Where(p => 
-                board.State[p.row, p.col] == null ||
-                board.State[p.row, p.col]?.Color != Color)
+            .Where(s => 
+                _board.State[s.row, s.col] == null ||
+                _board.State[s.row, s.col]?.Color != Color)
             .ToList();
 
         return squares;

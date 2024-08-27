@@ -49,10 +49,10 @@ public class PieceHelpersTests
 		int testCol = 4;
 		Board testBoard = new();
 
-		testBoard.State[testRow, 2] = new QueenPiece(testRow, 2);
-		testBoard.State[testRow, 6] = new QueenPiece(testRow, 6);
-		testBoard.State[2, testCol] = new QueenPiece(2, testCol);
-		testBoard.State[6, testCol] = new QueenPiece(6, testCol);
+		var testQueen1 = new QueenPiece(testBoard, testRow, 2);
+		var testQueen2 = new QueenPiece(testBoard, testRow, 6);
+		var testQueen3 = new QueenPiece(testBoard, 2, testCol);
+		var testQueen4 = new QueenPiece(testBoard, 6, testCol);
 
 		List<(int row, int col)> expected = [
 			new(testRow, 3),
@@ -147,10 +147,10 @@ public class PieceHelpersTests
 		int testCol = 4;
 		Board testBoard = new();
 
-		testBoard.State[testRow, testCol - 1] = new QueenPiece(testRow, testCol - 1);
-		testBoard.State[testRow, testCol + 1] = new QueenPiece(testRow, testCol + 1);
-		testBoard.State[testRow - 1, testCol] = new QueenPiece(testRow - 1, testCol);
-		testBoard.State[testRow + 1, testCol] = new QueenPiece(testRow + 1, testCol);
+		var testQueen1 = new QueenPiece(testBoard, testRow, testCol - 1);
+		var testQueen2 = new QueenPiece(testBoard, testRow, testCol + 1);
+		var testQueen3 = new QueenPiece(testBoard, testRow - 1, testCol);
+		var testQueen4 = new QueenPiece(testBoard, testRow + 1, testCol);
 
 		List<(int row, int col)> expected = [
 			new(testRow, testCol - 1),
@@ -236,10 +236,10 @@ public class PieceHelpersTests
 		int testCol = 4;
 		Board testBoard = new();
 
-		testBoard.State[testRow - 1, testCol - 1] = new QueenPiece(testRow - 1, testCol - 1);
-		testBoard.State[testRow + 1, testCol + 1] = new QueenPiece(testRow + 1, testCol + 1);
-		testBoard.State[testRow - 1, testCol + 1] = new QueenPiece(testRow - 1, testCol + 1);
-		testBoard.State[testRow + 1, testCol - 1] = new QueenPiece(testRow + 1, testCol - 1);
+		var testQueen1 = new QueenPiece(testBoard, testRow - 1, testCol - 1);
+		var testQueen2 = new QueenPiece(testBoard, testRow + 1, testCol + 1);
+		var testQueen3 = new QueenPiece(testBoard, testRow - 1, testCol + 1);
+		var testQueen4 = new QueenPiece(testBoard, testRow + 1, testCol - 1);
 
 		List<(int row, int col)> expected = [
 			new(testRow - 1, testCol - 1),
