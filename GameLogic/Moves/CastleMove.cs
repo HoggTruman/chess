@@ -4,8 +4,7 @@ using GameLogic.Interfaces;
 namespace GameLogic.Moves;
 
 /// <summary>
-/// Holds data for a Castle Move.
-/// From and To refer to the position of the king
+/// A Castle move. Describes movement of the King and Rook
 /// </summary>
 public class CastleMove : IMove
 {

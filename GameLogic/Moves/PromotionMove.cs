@@ -2,6 +2,9 @@ using GameLogic.Enums;
 
 namespace GameLogic.Moves;
 
+/// <summary>
+/// A Pawn Promotion move. Contains the PieceType promoted to 
+/// </summary>
 public class PromotionMove : SinglePieceMove
 {
     /// <summary>
