@@ -146,7 +146,7 @@ public class PawnPiece : Piece
         // 4) Checks that the enemy pawn is on the same row as this piece
         // 5) Checks that the enemy pawn is on an adjacent column to this piece
 
-        if (board.MoveHistory.LastOrDefault() is Move lastMove &&       
+        if (board.MoveHistory.LastOrDefault() is StandardMove lastMove &&       
             board.State[lastMove.To.row, lastMove.To.col]?.PieceType == PieceType.Pawn &&
             Math.Abs(lastMove.From.row - lastMove.To.row) == 2 &&
             lastMove.To.row == Row &&

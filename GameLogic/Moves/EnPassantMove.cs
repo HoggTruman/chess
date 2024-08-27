@@ -2,7 +2,7 @@ using GameLogic.Enums;
 
 namespace GameLogic.Moves;
 
-public class EnPassantMove : Move
+public class EnPassantMove : SinglePieceMove
 {
     public (int row, int col) Captured { get; }
 

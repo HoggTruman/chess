@@ -1,9 +1,8 @@
 using GameLogic.Enums;
-using GameLogic.Interfaces;
 
 namespace GameLogic.Moves;
 
-public class PromotionMove : Move
+public class PromotionMove : SinglePieceMove
 {
     /// <summary>
     /// The type of piece the player chooses to promote to.

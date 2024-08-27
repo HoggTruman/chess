@@ -2,7 +2,7 @@ using GameLogic.Enums;
 
 namespace GameLogic.Moves;
 
-public class StandardMove : Move
+public class StandardMove : SinglePieceMove
 {
     public StandardMove(
         (int row, int col) from, 

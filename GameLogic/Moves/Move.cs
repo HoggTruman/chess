@@ -3,7 +3,10 @@ using GameLogic.Interfaces;
 
 namespace GameLogic.Moves;
 
-public abstract class Move : IMove
+/// <summary>
+/// An abstract class for moves that only move a single piece (any move other than castling)
+/// </summary>
+public abstract class SinglePieceMove : IMove
 {
     #region Properties
 
@@ -17,7 +20,7 @@ public abstract class Move : IMove
 
     #region Constructor
 
-    public Move(
+    public SinglePieceMove(
         MoveType moveType,
         (int row, int col) from, 
         (int row, int col) to
