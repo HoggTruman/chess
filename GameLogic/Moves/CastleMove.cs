@@ -1,4 +1,5 @@
 using GameLogic.Enums;
+using GameLogic.Interfaces;
 
 namespace GameLogic.Moves;
 
@@ -6,10 +7,21 @@ namespace GameLogic.Moves;
 /// Holds data for a Castle Move.
 /// From and To refer to the position of the king
 /// </summary>
-public class CastleMove : Move
+public class CastleMove : IMove
 {
+    #region Properties
+
+    public MoveType MoveType { get; } = MoveType.Castle;
+    public (int row, int col) KingFrom { get; }
+    public (int row, int col) KingTo { get; }
     public (int row, int col) RookFrom { get; }
     public (int row, int col) RookTo { get; }
+
+    #endregion
+
+
+
+    #region Constructor
 
     public CastleMove(
         (int row, int col) kingFrom,
@@ -17,9 +29,23 @@ public class CastleMove : Move
         (int row, int col) rookFrom,
         (int row, int col) rookTo
     ) 
-        :base(MoveType.Castle, kingFrom, kingTo)
     {
+        KingFrom = kingFrom;
+        KingTo = kingTo;
         RookFrom = rookFrom;
         RookTo = rookTo;
     }
+
+    #endregion
+
+
+
+    #region Methods
+
+    public bool MovesSquare((int row, int col) square)
+    {
+        return square == KingFrom || square == RookFrom;
+    }
+
+    #endregion
 }

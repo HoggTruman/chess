@@ -94,7 +94,7 @@ public abstract class Piece : IPiece
 
     public bool HasMoved(Board board)
     {
-        return board.MoveHistory.Any(move => move.From == StartSquare);
+        return board.MoveHistory.Any(move => move.MovesSquare(StartSquare));
     }
 
     #endregion

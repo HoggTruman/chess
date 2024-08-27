@@ -28,4 +28,15 @@ public abstract class Move : IMove
         To = to;
     }
     #endregion
+
+
+
+    #region Methods
+
+    public bool MovesSquare((int row, int col) square)
+    {
+        return square == From;
+    }
+
+    #endregion
 }
