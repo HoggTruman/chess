@@ -13,11 +13,9 @@ public class BoardHelperTests
     public void CopyState_ReturnsIndependentArray()
     {
         // Arrange
-        Board testBoard = new();
-        IPiece?[,] originalState = new IPiece?[Board.BoardSize, Board.BoardSize];
-
-        QueenPiece testPiece = new(testBoard, 3, 3);
-        originalState[3, 3] = testPiece;
+        Board board = new();
+        QueenPiece testPiece = board.AddNewPiece<QueenPiece>(3, 3);
+        IPiece?[,] originalState = board.State;
 
         // Act
         IPiece?[,] copiedState = BoardHelpers.CopyState(originalState);
