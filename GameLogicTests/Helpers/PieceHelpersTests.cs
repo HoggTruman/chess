@@ -13,9 +13,10 @@ public class PieceHelpersTests
 	public void ScanRowAndCol_WithEmptyBoard_ReturnsAllSquares()
 	{
 		// Arrange
+        Board board = new();
 		int testRow = 3;
 		int testCol = 3;
-		Board testBoard = new();
+
 		List<(int row, int col)> expected = [
 			new(testRow, 0),
 			new(testRow, 1),
@@ -34,7 +35,7 @@ public class PieceHelpersTests
 		];
 
 		// Act
-		var result = PieceHelpers.ScanRowAndCol(testRow, testCol, testBoard);
+		var result = PieceHelpers.ScanRowAndCol(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);
@@ -45,14 +46,14 @@ public class PieceHelpersTests
 	public void ScanRowAndCol_WithBlockingPieces_ReturnsTargetableSquares()
 	{
 		// Arrange
+        Board board = new();
 		int testRow = 4;
 		int testCol = 4;
-		Board testBoard = new();
 
-		var testQueen1 = new QueenPiece(testBoard, testRow, 2);
-		var testQueen2 = new QueenPiece(testBoard, testRow, 6);
-		var testQueen3 = new QueenPiece(testBoard, 2, testCol);
-		var testQueen4 = new QueenPiece(testBoard, 6, testCol);
+		var queen1 = board.AddNewPiece<QueenPiece>(testRow, 2);
+		var queen2 = board.AddNewPiece<QueenPiece>(testRow, 6);
+		var queen3 = board.AddNewPiece<QueenPiece>(2, testCol);
+		var queen4 = board.AddNewPiece<QueenPiece>(6, testCol);
 
 		List<(int row, int col)> expected = [
 			new(testRow, 3),
@@ -66,7 +67,7 @@ public class PieceHelpersTests
 		];
 
 		// Act 
-		var result = PieceHelpers.ScanRowAndCol(testRow, testCol, testBoard);
+		var result = PieceHelpers.ScanRowAndCol(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);
@@ -74,12 +75,12 @@ public class PieceHelpersTests
 
 
 	[Fact]
-	public void ScanRowAndCol_WithPieceInMinCorner_ReturnsInBoundsSquares()
+	public void ScanRowAndCol_InMinCorner_ReturnsInBoundsSquares()
 	{
 		// Arrange
+        Board board = new();
 		int testRow = 0;
 		int testCol = 0;
-		Board testBoard = new();
 
 		List<(int row, int col)> expected = [
 			new(testRow, 1),
@@ -99,7 +100,7 @@ public class PieceHelpersTests
 		];
 
 		// Act 
-		var result = PieceHelpers.ScanRowAndCol(testRow, testCol, testBoard);
+		var result = PieceHelpers.ScanRowAndCol(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);
@@ -107,12 +108,12 @@ public class PieceHelpersTests
 
 
 	[Fact]
-	public void ScanRowAndCol_WithPieceInMaxCorner_ReturnsInBoundsSquares()
+	public void ScanRowAndCol_InMaxCorner_ReturnsInBoundsSquares()
 	{
 		// Arrange
+        Board board = new();
 		int testRow = 7;
 		int testCol = 7;
-		Board testBoard = new();
 
 		List<(int row, int col)> expected = [
 			new(testRow, 0),
@@ -132,7 +133,7 @@ public class PieceHelpersTests
 		];
 
 		// Act 
-		var result = PieceHelpers.ScanRowAndCol(testRow, testCol, testBoard);
+		var result = PieceHelpers.ScanRowAndCol(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);
@@ -143,14 +144,14 @@ public class PieceHelpersTests
 	public void ScanRowAndCol_WhenSurrounded_ReturnsSurroundingSquares()
 	{
 		// Arrange
+        Board board = new();
 		int testRow = 3;
 		int testCol = 4;
-		Board testBoard = new();
-
-		var testQueen1 = new QueenPiece(testBoard, testRow, testCol - 1);
-		var testQueen2 = new QueenPiece(testBoard, testRow, testCol + 1);
-		var testQueen3 = new QueenPiece(testBoard, testRow - 1, testCol);
-		var testQueen4 = new QueenPiece(testBoard, testRow + 1, testCol);
+		
+		var queen1 = board.AddNewPiece<QueenPiece>(testRow, testCol - 1);
+		var queen2 = board.AddNewPiece<QueenPiece>(testRow, testCol + 1);
+		var queen3 = board.AddNewPiece<QueenPiece>(testRow - 1, testCol);
+		var queen4 = board.AddNewPiece<QueenPiece>(testRow + 1, testCol);
 
 		List<(int row, int col)> expected = [
 			new(testRow, testCol - 1),
@@ -160,7 +161,7 @@ public class PieceHelpersTests
 		];
 
 		// Act
-		var result = PieceHelpers.ScanRowAndCol(testRow, testCol, testBoard);
+		var result = PieceHelpers.ScanRowAndCol(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);
@@ -168,16 +169,18 @@ public class PieceHelpersTests
 
 	#endregion
 
+
+
 	#region ScanDiagonals Tests
 
 	[Fact]
 	public void ScanDiagonals_withEmptyBoard_ReturnsAllSquares()
 	{
 		// Arrange
+        Board board = new();
 		int testRow = 3;
 		int testCol = 3;
-		Board testBoard = new();
-
+		
 		List<(int row, int col)> expected = [
 			new(0, 0),
 			new(1, 1),
@@ -195,7 +198,7 @@ public class PieceHelpersTests
 		];
 
 		// Act
-		var result = PieceHelpers.ScanDiagonals(testRow, testCol, testBoard);
+		var result = PieceHelpers.ScanDiagonals(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);
@@ -206,9 +209,9 @@ public class PieceHelpersTests
 	public void ScanDiagonals_InCorner_ReturnsInBoundSquares()
 	{
 		// Arrange
+        Board board = new();
 		int testRow = 0;
 		int testCol = 0;
-		Board testBoard = new();
 
 		List<(int row, int col)> expected = [
 			new(1, 1),
@@ -221,7 +224,7 @@ public class PieceHelpersTests
 		];
 
 		// Act
-		var result = PieceHelpers.ScanDiagonals(testRow, testCol, testBoard);
+		var result = PieceHelpers.ScanDiagonals(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);
@@ -232,14 +235,14 @@ public class PieceHelpersTests
 	public void ScanDiagonals_WhenSurrounded_ReturnsSurroundingSquares()
 	{
 		// Arrange
+        Board board = new();
 		int testRow = 3;
 		int testCol = 4;
-		Board testBoard = new();
 
-		var testQueen1 = new QueenPiece(testBoard, testRow - 1, testCol - 1);
-		var testQueen2 = new QueenPiece(testBoard, testRow + 1, testCol + 1);
-		var testQueen3 = new QueenPiece(testBoard, testRow - 1, testCol + 1);
-		var testQueen4 = new QueenPiece(testBoard, testRow + 1, testCol - 1);
+		var queen1 = board.AddNewPiece<QueenPiece>(testRow - 1, testCol - 1);
+		var queen2 = board.AddNewPiece<QueenPiece>(testRow + 1, testCol + 1);
+		var queen3 = board.AddNewPiece<QueenPiece>(testRow - 1, testCol + 1);
+		var queen4 = board.AddNewPiece<QueenPiece>(testRow + 1, testCol - 1);
 
 		List<(int row, int col)> expected = [
 			new(testRow - 1, testCol - 1),
@@ -249,7 +252,7 @@ public class PieceHelpersTests
 		];
 
 		// Act
-		var result = PieceHelpers.ScanDiagonals(testRow, testCol, testBoard);
+		var result = PieceHelpers.ScanDiagonals(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);

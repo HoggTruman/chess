@@ -15,10 +15,10 @@ public class RookPieceTests
     public void CanCastle_WhiteKingSideRook_ReturnsTrue()
     {
         // Arrange
-        Board testBoard = new();
+        Board board = new();
 
-        KingPiece king = new(testBoard, StartSquares.WhiteKing.row, StartSquares.WhiteKing.col);
-        RookPiece rook = new(testBoard, StartSquares.WhiteRookK.row, StartSquares.WhiteRookK.col);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK);
 
         // Act
         var result = rook.CanCastle();
@@ -34,12 +34,12 @@ public class RookPieceTests
     public void CanCastle_WhiteKingSideWhenBlocked_ReturnsFalse(int blockedCol)
     {
         // Arrange
-        Board testBoard = new();
+        Board board = new();
 
-        KingPiece king = new(testBoard, StartSquares.WhiteKing.row, StartSquares.WhiteKing.col);
-        RookPiece rook = new(testBoard, StartSquares.WhiteRookK.row, StartSquares.WhiteRookK.col);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK);
 
-        QueenPiece blockingPiece = new(testBoard, StartSquares.WhiteKing.row, blockedCol);
+        var blockingPiece = board.AddNewPiece<QueenPiece>(StartSquares.WhiteKing.row, blockedCol);
 
         // Act
         var result = rook.CanCastle();
@@ -55,16 +55,16 @@ public class RookPieceTests
     [InlineData(6)] // knight col
     public void CanCastle_WhiteKingSideWhenKingTargeted_ReturnsFalse(int targetedCol)
     {
-        // Tests that CanCastle returns false when each of the squares the king passes
+        // Tests that CanCastle returns false when any of the squares the king passes
         // through (including its starting square) are targeted by an enemy piece
 
         // Arrange
-        Board testBoard = new();
+        Board board = new();
 
-        KingPiece king = new(testBoard, StartSquares.WhiteKing.row, StartSquares.WhiteKing.col, Color.White);
-        RookPiece rook = new(testBoard, StartSquares.WhiteRookK.row, StartSquares.WhiteRookK.col, Color.White);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, Color.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, Color.White);
 
-        RookPiece enemyPiece = new(testBoard, StartSquares.BlackKing.row, targetedCol, Color.Black);
+        var enemyRook = board.AddNewPiece<RookPiece>(StartSquares.BlackKing.row, targetedCol, Color.Black);
 
         // Act
         var result = rook.CanCastle();
@@ -73,19 +73,20 @@ public class RookPieceTests
         result.Should().BeFalse();
     }
 
+
     [Fact]
     public void CanCastle_WhiteKingSideWhenOnlyRookTargeted_ReturnsTrue()
     {
-        // Tests that CanCastle returns true when each of the squares that only the rook
+        // Tests that CanCastle returns true when any of the squares that only the rook
         // passes through are targeted by an enemy piece
 
         // Arrange
-        Board testBoard = new();
+        Board board = new();
 
-        KingPiece king = new(testBoard, StartSquares.WhiteKing.row, StartSquares.WhiteKing.col, Color.White);
-        RookPiece rook = new(testBoard, StartSquares.WhiteRookK.row, StartSquares.WhiteRookK.col, Color.White);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, Color.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, Color.White);
 
-        RookPiece enemyPiece = new(testBoard, StartSquares.BlackKing.row, StartSquares.WhiteRookK.col, Color.Black);
+        var enemyRook = board.AddNewPiece<RookPiece>(StartSquares.BlackKing.row, StartSquares.WhiteRookK.col, Color.Black);
 
         // Act
         var result = rook.CanCastle();
@@ -99,13 +100,13 @@ public class RookPieceTests
     public void CanCastle_WhiteKingSideWhenKingHasMoved_ReturnsFalse()
     {
         // Arrange
-        Board testBoard = new();
+        Board board = new();
 
-        KingPiece king = new(testBoard, StartSquares.WhiteKing.row + 1, StartSquares.WhiteKing.col);
-        RookPiece rook = new(testBoard, StartSquares.WhiteRookK.row, StartSquares.WhiteRookK.col);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing.row + 1, StartSquares.WhiteKing.col);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK);
 
         StandardMove kingMove = new(king.Square, StartSquares.WhiteKing);
-        testBoard.HandleMove(kingMove);
+        board.HandleMove(kingMove);
 
         // Act
         var result = rook.CanCastle();
@@ -119,13 +120,13 @@ public class RookPieceTests
     public void CanCastle_WhiteKingSideWhenRookHasMoved_ReturnsFalse()
     {
         // Arrange
-        Board testBoard = new();
+        Board board = new();
 
-        KingPiece king = new(testBoard, StartSquares.WhiteKing.row, StartSquares.WhiteKing.col);
-        RookPiece rook = new(testBoard, StartSquares.WhiteRookK.row + 1, StartSquares.WhiteRookK.col);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK.row + 1, StartSquares.WhiteRookK.col);
 
         StandardMove rookMove = new(rook.Square, StartSquares.WhiteRookK);
-        testBoard.HandleMove(rookMove);
+        board.HandleMove(rookMove);
 
         // Act
         var result = rook.CanCastle();

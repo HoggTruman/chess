@@ -19,10 +19,10 @@ public class PawnPieceTests
         // The GetEnPassantSquare method should return the square where the white pawn lands after performing the move.
 
         // Arrange
-        Board testBoard = new();
+        Board board = new();
 
-        PawnPiece whitePawn = new(testBoard, 4, 3, Color.White);
-        PawnPiece blackPawn = new(testBoard, 6, 4, Color.Black);
+        var whitePawn = board.AddNewPiece<PawnPiece>(4, 3, Color.White);
+        var blackPawn = board.AddNewPiece<PawnPiece>(6, 4, Color.Black);
 
         (int row, int col) blackTo = (4, 4);
         StandardMove blackMove = new(blackPawn.Square, blackTo);
@@ -32,7 +32,7 @@ public class PawnPieceTests
 
 
         // Act
-        testBoard.HandleMove(blackMove);
+        board.HandleMove(blackMove);
         var result = whitePawn.GetEnPassantSquares();
 
         // Assert 
@@ -50,10 +50,10 @@ public class PawnPieceTests
         // The GetEnPassantSquare method should return the square where the black pawn lands after performing the move.
 
         // Arrange
-        Board testBoard = new();
+        Board board = new();
 
-        PawnPiece whitePawn = new(testBoard, 1, 3, Color.White);
-        PawnPiece blackPawn = new(testBoard, 3, 4, Color.Black);
+        var whitePawn = board.AddNewPiece<PawnPiece>(1, 3, Color.White);
+        var blackPawn = board.AddNewPiece<PawnPiece>(3, 4, Color.Black);
 
         (int row, int col) whiteTo = (3, 3);
         StandardMove whiteMove = new(whitePawn.Square, whiteTo);
@@ -63,7 +63,7 @@ public class PawnPieceTests
 
 
         // Act
-        testBoard.HandleMove(whiteMove);
+        board.HandleMove(whiteMove);
         var result = blackPawn.GetEnPassantSquares();
 
         // Assert 
@@ -80,10 +80,10 @@ public class PawnPieceTests
         // The result should be null
 
         // Arrange
-        Board testBoard = new();
+        Board board = new();
 
-        PawnPiece whitePawn = new(testBoard, 4, 3, Color.White);
-        PawnPiece blackPawn = new(testBoard, 4, 4, Color.Black);
+        var whitePawn = board.AddNewPiece<PawnPiece>(4, 3, Color.White);
+        var blackPawn = board.AddNewPiece<PawnPiece>(4, 4, Color.Black);
 
 
         // Act
@@ -101,16 +101,16 @@ public class PawnPieceTests
         // The result should be null
 
         // Arrange
-        Board testBoard = new();
+        Board board = new();
 
-        PawnPiece whitePawn = new(testBoard, 4, 3, Color.White);
-        PawnPiece blackPawn = new(testBoard, 5, 4, Color.Black);
+        var whitePawn = board.AddNewPiece<PawnPiece>(4, 3, Color.White);
+        var blackPawn = board.AddNewPiece<PawnPiece>(5, 4, Color.Black);
 
         (int row, int col) blackTo = (4, 4);
         StandardMove blackMove = new(blackPawn.Square, blackTo);
 
         // Act
-        testBoard.HandleMove(blackMove);
+        board.HandleMove(blackMove);
         var result = whitePawn.GetEnPassantSquares();
 
         // Assert 
@@ -125,16 +125,16 @@ public class PawnPieceTests
         // The result should be null
 
         // Arrange
-        Board testBoard = new();
+        Board board = new();
 
-        PawnPiece whitePawn = new(testBoard, 2, 3, Color.White);
-        PawnPiece blackPawn = new(testBoard, 3, 4, Color.Black);
+        var whitePawn = board.AddNewPiece<PawnPiece>(2, 3, Color.White);
+        var blackPawn = board.AddNewPiece<PawnPiece>(3, 4, Color.Black);
 
         (int row, int col) whiteTo = (3, 3);
         StandardMove whiteMove = new(whitePawn.Square, whiteTo);
 
         // Act
-        testBoard.HandleMove(whiteMove);
+        board.HandleMove(whiteMove);
         var result = blackPawn.GetEnPassantSquares();
 
         // Assert 

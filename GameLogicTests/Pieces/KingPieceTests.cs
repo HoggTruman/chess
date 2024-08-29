@@ -14,10 +14,10 @@ public class KingPieceTests
     public void IsChecked_WithBlackUnderCheck_ReturnsTrue()
     {
         // Arrange
-        Board testBoard = new();
+        Board board = new();
 
-        QueenPiece whiteQueen = new(testBoard, 0, 0, Color.White);
-        KingPiece blackKing = new(testBoard, 7, 0, Color.Black);
+        var whiteQueen = board.AddNewPiece<QueenPiece>(0, 0, Color.White);
+        var blackKing = board.AddNewPiece<KingPiece>(7, 0, Color.Black);
 
         // Act
         var result = blackKing.IsChecked();
@@ -30,10 +30,10 @@ public class KingPieceTests
     [Fact]
     public void IsChecked_WithWhiteUnderCheck_ReturnsTrue()
     {
-        Board testBoard = new();
+        Board board = new();
 
-        QueenPiece blackQueen = new(testBoard, 0, 0, Color.Black);
-        KingPiece whiteKing = new(testBoard, 7, 0, Color.White);
+        var blackQueen = board.AddNewPiece<QueenPiece>(0, 0, Color.Black);
+        var whiteKing = board.AddNewPiece<KingPiece>(7, 0, Color.White);
 
         // Act
         var result = whiteKing.IsChecked();
@@ -47,12 +47,12 @@ public class KingPieceTests
     public void IsChecked_WithNoCheck_ReturnsFalse()
     {
         // Arrange 
-        Board testBoard = new();
+        Board board = new();
 
-        KingPiece whiteKing = new(testBoard, 0, 0, Color.White);
-        QueenPiece whiteQueen = new(testBoard, 1, 0, Color.White);
-        KingPiece blackKing = new(testBoard, 0, 7, Color.Black);
-        QueenPiece blackQueen = new(testBoard, 1, 7, Color.Black);       
+        var whiteKing = board.AddNewPiece<KingPiece>(0, 0, Color.White);
+        var whiteQueen = board.AddNewPiece<QueenPiece>(1, 0, Color.White);
+        var blackKing = board.AddNewPiece<KingPiece>(0, 7, Color.Black);
+        var blackQueen = board.AddNewPiece<QueenPiece>(1, 7, Color.Black);       
 
         // Act
         var whiteChecked = whiteKing.IsChecked();

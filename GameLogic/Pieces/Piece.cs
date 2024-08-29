@@ -56,13 +56,6 @@ public abstract class Piece : IPiece
 
     protected Piece(Board board, int row, int col, Color color, PieceType pieceType, int value)
     {
-        // Ensure a piece doesn't already exist at the specified square before adding it
-        if (board.State[row, col] != null)
-            throw new ArgumentException($"Board already contains a piece at (row: {row}, col: {col})");
-
-        board.State[row, col] = this;
-        
-        // Set fields and properties
         _board = board;
         _row = row;
         _col = col;

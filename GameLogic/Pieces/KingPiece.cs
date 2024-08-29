@@ -20,11 +20,7 @@ public class KingPiece : Piece
     public KingPiece(Board board, int row, int col, Color color=Color.White)
         : base(board, row, col, color, PieceType.King, PieceValues.King)
     {
-        // Ensure a king of the same colour does not exist on the board before registering it
-        if (board.Kings[color] != null)
-            throw new ArgumentException($"{color} King already exists on the board");
-        
-        board.Kings[color] = this;
+
     }
 
     #endregion

@@ -37,7 +37,6 @@ public class Board
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="pieces"></param>
     public Board()
     {
         State = new IPiece?[BoardSize, BoardSize];
@@ -53,6 +52,60 @@ public class Board
 
 
     #region public methods
+
+    /// <summary>
+    /// Adds a new piece to the Board of specified PieceType at (row, col).
+    /// New pieces should always be created in this way.
+    /// </summary>
+    /// <typeparam name="T">A child of the Piece abstract class</typeparam>
+    /// <param name="row">The row to place the new piece at.</param>
+    /// <param name="col">The column to place the new piece at.</param>
+    /// <param name="color">The Color of the new piece.</param>
+    /// <returns>The new piece of type T</returns>
+    /// <exception cref="ArgumentException"></exception>
+    public T AddNewPiece<T>(int row, int col, Color color=Color.White) where T : Piece
+    {
+        // Ensure the square is empty before creating a piece there
+        if (State[row, col] != null)
+        {
+            throw new ArgumentException($"Board already contains a piece at (row: {row}, column: {col})");
+        }
+
+        // Create a piece of type T
+        T piece = (T)(Activator.CreateInstance(typeof(T), this, row, col, color) ?? throw new Exception());
+
+        // Handle king case
+        if (typeof(T) == typeof(KingPiece))
+        {
+            if (Kings[color] != null)
+            {   
+                throw new ArgumentException($"{color} King already exists on the board");
+            }
+
+            Kings[color] = piece as KingPiece;
+        }
+        
+        // Update the board state with the piece
+        State[row, col] = piece;
+            
+        return piece;
+    }
+
+
+    /// <summary>
+    /// Adds a new piece to the Board of specified PieceType at the provided square.
+    /// New pieces should always be created in this way.
+    /// </summary>
+    /// <typeparam name="T">A child of the Piece abstract class</typeparam>
+    /// <param name="pieceType">The PieceType of the new piece.</param>
+    /// <param name="square">The (row, column) square to place the new piece at.</param>
+    /// <param name="color">The Color of the new piece.</param>
+    /// <returns>The new IPiece</returns>
+    public T AddNewPiece<T>((int row, int col) square, Color color = Color.White) where T : Piece
+    {
+        return AddNewPiece<T>(square.row, square.col, color);
+    }
+
 
     public void HandleMove(IMove move)
     {
