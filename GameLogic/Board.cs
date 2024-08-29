@@ -35,7 +35,7 @@ public class Board
     #region constructor
 
     /// <summary>
-    /// 
+    /// Initializes a new instance of the Board class.
     /// </summary>
     public Board()
     {

@@ -7,13 +7,13 @@ namespace GameLogic.Pieces;
 public class RookPiece : Piece
 {
     /// <summary>
-    /// Constructor
+    /// Initializes a new instance of the RookPiece class.
     /// </summary>
-    /// <param name="board">The Board object the piece will be placed on</param>
-    /// <param name="row">Row index from 0 to 7</param>
-    /// <param name="col">Col index from 0 to 7</param>
-    /// <param name="color"></param>
-    public RookPiece(Board board, int row, int col, Color color=Color.White)
+    /// <param name="board">The Board object the piece will be placed on.</param>
+    /// <param name="row">Row index from 0 to 7.</param>
+    /// <param name="col">Column index from 0 to 7.</param>
+    /// <param name="color">The Color of the piece.</param>
+    public RookPiece(Board board, int row, int col, Color color)
         : base(board, row, col, color, PieceType.Rook, PieceValues.Rook)
     {
 

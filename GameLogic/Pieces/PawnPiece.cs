@@ -8,23 +8,37 @@ namespace GameLogic.Pieces;
 
 public class PawnPiece : Piece
 {
-    // The forward direction for the piece (+1 for White, -1 for Black)
-    private readonly int _fwd;
-
+    #region Fields
 
     /// <summary>
-    /// Constructor
+    /// The forward direction for the piece (+1 for White, -1 for Black)
     /// </summary>
-    /// <param name="board">The Board object the piece will be placed on</param>
-    /// <param name="row">Row index from 0 to 7</param>
-    /// <param name="col">Col index from 0 to 7</param>
-    /// <param name="color"></param>
-    public PawnPiece(Board board, int row, int col, Color color=Color.White)
+    private readonly int _fwd;
+
+    #endregion
+
+
+
+    #region Constructors
+
+    /// <summary>
+    /// Initializes a new instance of the PawnPiece class.
+    /// </summary>
+    /// <param name="board">The Board object the piece will be placed on.</param>
+    /// <param name="row">Row index from 0 to 7.</param>
+    /// <param name="col">Column index from 0 to 7.</param>
+    /// <param name="color">The Color of the piece.</param>
+    public PawnPiece(Board board, int row, int col, Color color)
         : base(board, row, col, color, PieceType.Pawn, PieceValues.Pawn)
     {
         _fwd = color == Color.White? 1: -1;
     }
 
+    #endregion
+
+
+
+    #region Public Methods
 
     /// <summary>
     /// Returns the targeted squares diagonally in front of a pawn.
@@ -158,5 +172,5 @@ public class PawnPiece : Piece
 
         return null;
     }
-
+    #endregion
 }

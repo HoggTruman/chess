@@ -54,6 +54,15 @@ public abstract class Piece : IPiece
 
     #region Constructor
 
+    /// <summary>
+    /// Base constructor for the abstract Piece Class
+    /// </summary>
+    /// <param name="board">The Board object the piece will be placed on.</param>
+    /// <param name="row">Row index from 0 to 7.</param>
+    /// <param name="col">Column index from 0 to 7.</param>
+    /// <param name="color">The Color of the piece.</param>
+    /// <param name="pieceType">The type of a piece. (e.g. Pawn, King, ...)</param>
+    /// <param name="value">The point-value of a piece. e.g. 5 for a rook</param>
     protected Piece(Board board, int row, int col, Color color, PieceType pieceType, int value)
     {
         _board = board;

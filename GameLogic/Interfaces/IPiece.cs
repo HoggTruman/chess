@@ -4,28 +4,48 @@ namespace GameLogic.Interfaces;
 
 public interface IPiece
 {
-    // The row index of a piece from 0 to 7
+    #region Properties
+
+    /// <summary>
+    /// The row index of a piece from 0 to 7
+    /// </summary>
     int Row { get; set; }
 
-    // The column index of a piece from 0 to 7
+    /// <summary>
+    /// The column index of a piece from 0 to 7
+    /// </summary>
     int Col { get; set; }
 
-    // A tuple with the current position of the piece
+    /// <summary>
+    /// A (row, col) tuple with the current position of the piece
+    /// </summary>
     (int row, int col) Square { get; set; }
 
-    // A tuple with the starting square of the piece
+    /// <summary>
+    /// A (row, col) tuple with the starting square of the piece
+    /// </summary>
     (int row, int col) StartSquare { get; }
 
-    // The color of a piece (White or Black)
+    /// <summary>
+    /// The color of a piece (White or Black)
+    /// </summary>
     Color Color { get; }
 
-    // The type of a piece (e.g. Pawn, King, ...)
+    /// <summary>
+    /// The type of a piece (e.g. Pawn, King, ...)
+    /// </summary>
     PieceType PieceType { get; }
 
-    // The point-value of a piece. e.g. 5 for a rook 
+    /// <summary>
+    /// The point-value of a piece. e.g. 5 for a rook 
+    /// </summary>
     int Value { get; }
 
+    #endregion
 
+
+
+    #region Methods
 
     /// <summary>
     /// Returns a list of the squares which the piece threatens with a capture.
@@ -56,4 +76,5 @@ public interface IPiece
     /// <returns></returns>
     bool HasMoved();
 
+    #endregion
 }

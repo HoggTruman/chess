@@ -9,13 +9,13 @@ public class KnightPiece : Piece
     #region Constructors
 
     /// <summary>
-    /// Constructor
+    /// Initializes a new instance of the KnightPiece class.
     /// </summary>
-    /// <param name="board">The Board object the piece will be placed on</param>
-    /// <param name="row">Row index from 0 to 7</param>
-    /// <param name="col">Col index from 0 to 7</param>
-    /// <param name="color"></param>
-    public KnightPiece(Board board, int row, int col, Color color=Color.White)
+    /// <param name="board">The Board object the piece will be placed on.</param>
+    /// <param name="row">Row index from 0 to 7.</param>
+    /// <param name="col">Column index from 0 to 7.</param>
+    /// <param name="color">The Color of the piece.</param>
+    public KnightPiece(Board board, int row, int col, Color color)
         : base(board, row, col, color, PieceType.Knight, PieceValues.Knight)
     {
 
