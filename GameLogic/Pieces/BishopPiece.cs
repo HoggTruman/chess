@@ -22,14 +22,14 @@ public class BishopPiece : Piece
 
     public override List<(int row, int col)> GetTargetedSquares()
     {
-        return PieceHelpers.ScanDiagonals(Row, Col, _board);
+        return PieceHelpers.GetTargetedDiagonalSquares(Row, Col, _board);
     }
 
 
     public override List<(int row, int col)> GetReachableSquares()
     {
         // Get targeted squares
-        List<(int row, int col)> squares = PieceHelpers.ScanDiagonals(Row, Col, _board);
+        var squares = PieceHelpers.GetTargetedDiagonalSquares(Row, Col, _board);
 
         // Remove squares with a piece of the same color
         squares = squares

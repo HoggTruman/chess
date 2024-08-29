@@ -7,10 +7,10 @@ namespace GameLogicTests.Helpers;
 
 public class PieceHelpersTests
 {
-    #region ScanRowAndCol Tests
+    #region GetTargetedRowColSquares Tests
 
     [Fact]
-	public void ScanRowAndCol_WithEmptyBoard_ReturnsAllSquares()
+	public void GetTargetedRowColSquares_WithEmptyBoard_ReturnsAllSquares()
 	{
 		// Arrange
         Board board = new();
@@ -35,7 +35,7 @@ public class PieceHelpersTests
 		];
 
 		// Act
-		var result = PieceHelpers.ScanRowAndCol(testRow, testCol, board);
+		var result = PieceHelpers.GetTargetedRowColSquares(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);
@@ -43,7 +43,7 @@ public class PieceHelpersTests
 
 
 	[Fact]
-	public void ScanRowAndCol_WithBlockingPieces_ReturnsTargetableSquares()
+	public void GetTargetedRowColSquares_WithBlockingPieces_ReturnsTargetableSquares()
 	{
 		// Arrange
         Board board = new();
@@ -67,7 +67,7 @@ public class PieceHelpersTests
 		];
 
 		// Act 
-		var result = PieceHelpers.ScanRowAndCol(testRow, testCol, board);
+		var result = PieceHelpers.GetTargetedRowColSquares(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);
@@ -75,7 +75,7 @@ public class PieceHelpersTests
 
 
 	[Fact]
-	public void ScanRowAndCol_InMinCorner_ReturnsInBoundsSquares()
+	public void GetTargetedRowColSquares_InMinCorner_ReturnsInBoundsSquares()
 	{
 		// Arrange
         Board board = new();
@@ -100,7 +100,7 @@ public class PieceHelpersTests
 		];
 
 		// Act 
-		var result = PieceHelpers.ScanRowAndCol(testRow, testCol, board);
+		var result = PieceHelpers.GetTargetedRowColSquares(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);
@@ -108,7 +108,7 @@ public class PieceHelpersTests
 
 
 	[Fact]
-	public void ScanRowAndCol_InMaxCorner_ReturnsInBoundsSquares()
+	public void GetTargetedRowColSquares_InMaxCorner_ReturnsInBoundsSquares()
 	{
 		// Arrange
         Board board = new();
@@ -133,7 +133,7 @@ public class PieceHelpersTests
 		];
 
 		// Act 
-		var result = PieceHelpers.ScanRowAndCol(testRow, testCol, board);
+		var result = PieceHelpers.GetTargetedRowColSquares(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);
@@ -141,7 +141,7 @@ public class PieceHelpersTests
 
 
 	[Fact]
-	public void ScanRowAndCol_WhenSurrounded_ReturnsSurroundingSquares()
+	public void GetTargetedRowColSquares_WhenSurrounded_ReturnsSurroundingSquares()
 	{
 		// Arrange
         Board board = new();
@@ -161,7 +161,7 @@ public class PieceHelpersTests
 		];
 
 		// Act
-		var result = PieceHelpers.ScanRowAndCol(testRow, testCol, board);
+		var result = PieceHelpers.GetTargetedRowColSquares(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);
@@ -171,10 +171,10 @@ public class PieceHelpersTests
 
 
 
-	#region ScanDiagonals Tests
+	#region GetTargetedDiagonalSquares Tests
 
 	[Fact]
-	public void ScanDiagonals_withEmptyBoard_ReturnsAllSquares()
+	public void GetTargetedDiagonalSquares_withEmptyBoard_ReturnsAllSquares()
 	{
 		// Arrange
         Board board = new();
@@ -198,7 +198,7 @@ public class PieceHelpersTests
 		];
 
 		// Act
-		var result = PieceHelpers.ScanDiagonals(testRow, testCol, board);
+		var result = PieceHelpers.GetTargetedDiagonalSquares(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);
@@ -206,7 +206,7 @@ public class PieceHelpersTests
 
 
 	[Fact]
-	public void ScanDiagonals_InCorner_ReturnsInBoundSquares()
+	public void GetTargetedDiagonalSquares_InCorner_ReturnsInBoundSquares()
 	{
 		// Arrange
         Board board = new();
@@ -224,7 +224,7 @@ public class PieceHelpersTests
 		];
 
 		// Act
-		var result = PieceHelpers.ScanDiagonals(testRow, testCol, board);
+		var result = PieceHelpers.GetTargetedDiagonalSquares(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);
@@ -232,7 +232,7 @@ public class PieceHelpersTests
 
 
 	[Fact]
-	public void ScanDiagonals_WhenSurrounded_ReturnsSurroundingSquares()
+	public void GetTargetedDiagonalSquares_WhenSurrounded_ReturnsSurroundingSquares()
 	{
 		// Arrange
         Board board = new();
@@ -252,7 +252,7 @@ public class PieceHelpersTests
 		];
 
 		// Act
-		var result = PieceHelpers.ScanDiagonals(testRow, testCol, board);
+		var result = PieceHelpers.GetTargetedDiagonalSquares(testRow, testCol, board);
 
 		// Assert
 		result.Should().BeEquivalentTo(expected);

@@ -25,10 +25,10 @@ public class QueenPiece : Piece
         List<(int row, int col)> targetedSquares = [];
 
         // Get targeted squares on the piece's row and column
-        targetedSquares.AddRange(PieceHelpers.ScanRowAndCol(Row, Col, _board));
+        targetedSquares.AddRange(PieceHelpers.GetTargetedRowColSquares(Row, Col, _board));
 
         // Get targeted squares on the piece's diagonals
-        targetedSquares.AddRange(PieceHelpers.ScanDiagonals(Row, Col, _board));
+        targetedSquares.AddRange(PieceHelpers.GetTargetedDiagonalSquares(Row, Col, _board));
 
         return targetedSquares;
     }
@@ -39,10 +39,10 @@ public class QueenPiece : Piece
         List<(int row, int col)> reachableSquares = [];
 
         // Get targeted squares on the piece's row and column
-        reachableSquares.AddRange(PieceHelpers.ScanRowAndCol(Row, Col, _board));
+        reachableSquares.AddRange(PieceHelpers.GetTargetedRowColSquares(Row, Col, _board));
 
         // Get targeted squares on the piece's diagonals
-        reachableSquares.AddRange(PieceHelpers.ScanDiagonals(Row, Col, _board));
+        reachableSquares.AddRange(PieceHelpers.GetTargetedDiagonalSquares(Row, Col, _board));
 
         // Remove squares with a piece of the same color as the moving piece
         reachableSquares = reachableSquares

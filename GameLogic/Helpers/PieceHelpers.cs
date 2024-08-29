@@ -9,7 +9,7 @@ public static class PieceHelpers
     /// <param name="pieceCol"></param>
     /// <param name="board"></param>
     /// <returns>List of (row, col) tuples</returns>
-    public static List<(int row, int col)> ScanRowAndCol(int pieceRow, int pieceCol, Board board)
+    public static List<(int row, int col)> GetTargetedRowColSquares(int pieceRow, int pieceCol, Board board)
     {
         List<(int row, int col)> targetedSquares = [];
 
@@ -67,11 +67,11 @@ public static class PieceHelpers
     /// <param name="pieceCol"></param>
     /// <param name="board"></param>
     /// <returns>List of (row, col) tuples</returns>
-    public static List<(int row, int col)> ScanDiagonals(int pieceRow, int pieceCol, Board board)
+    public static List<(int row, int col)> GetTargetedDiagonalSquares(int pieceRow, int pieceCol, Board board)
     {
         List<(int row, int col)> targetedSquares = [];
 
-        // scan diagonal with lower index row and lower index col
+        // Scan diagonal with lower index row and lower index col
         for 
         (
             int rowIndex = pieceRow - 1, colIndex = pieceCol - 1; 
@@ -87,7 +87,7 @@ public static class PieceHelpers
             }
         }
 
-        // scan diagonal with lower index row and higher index col
+        // Scan diagonal with lower index row and higher index col
         for (
             int rowIndex = pieceRow - 1, colIndex = pieceCol + 1; 
             rowIndex >= Board.MinIndex && colIndex <= Board.MaxIndex;
@@ -102,7 +102,7 @@ public static class PieceHelpers
             }
         }
 
-        // scan diagonal with higher index row and higher index col
+        // Scan diagonal with higher index row and higher index col
         for (
             int rowIndex = pieceRow + 1, colIndex = pieceCol + 1; 
             rowIndex <= Board.MaxIndex && colIndex <= Board.MaxIndex;
@@ -117,7 +117,7 @@ public static class PieceHelpers
             }
         }
 
-        // scan diagonal with higher index row and lower index col
+        // Scan diagonal with higher index row and lower index col
         for (
             int rowIndex = pieceRow + 1, colIndex = pieceCol - 1; 
             rowIndex <= Board.MaxIndex && colIndex >= Board.MinIndex;

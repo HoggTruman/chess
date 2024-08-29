@@ -22,14 +22,14 @@ public class RookPiece : Piece
 
     public override List<(int row, int col)> GetTargetedSquares()
     {
-        return PieceHelpers.ScanRowAndCol(Row, Col, _board);
+        return PieceHelpers.GetTargetedRowColSquares(Row, Col, _board);
     }
 
 
     public override List<(int row, int col)> GetReachableSquares()
     {
         // Get targeted squares
-        List<(int row, int col)> squares = PieceHelpers.ScanRowAndCol(Row, Col, _board);
+        var squares = PieceHelpers.GetTargetedRowColSquares(Row, Col, _board);
 
         // Remove squares with a piece of the same color
         squares = squares
