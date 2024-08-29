@@ -232,7 +232,7 @@ public class Board
     }
 
 
-    private void PawnPromote((int row, int col) from, (int row, int col) to, PieceType promoteTo)
+    private void PawnPromote(PromotionMove move)
     {
         throw new NotImplementedException();
     }
