@@ -68,7 +68,7 @@ public class Board
     /// <param name="row">The row index to place the new piece at.</param>
     /// <param name="col">The column index to place the new piece at.</param>
     /// <param name="color">The Color of the new piece.</param>
-    /// <returns>The new piece of type T</returns>
+    /// <returns>The new piece of type <typeparamref name="T"/></returns>
     /// <exception cref="ArgumentException"></exception>
     public T AddNewPiece<T>(int row, int col, Color color=Color.White) where T : Piece
     {
@@ -123,7 +123,7 @@ public class Board
 
         if (move.MoveType == MoveType.Standard)
         {
-            MovePiece((StandardMove)move);
+            StandardMove((StandardMove)move);
         }
         else if (move.MoveType == MoveType.EnPassant)
         {
@@ -136,7 +136,7 @@ public class Board
     /// <summary>
     /// Determines if a player will leave themself in check by moving the piece at "from" to "to".
     /// For En Passant, pass in the captured pawn's square as the "captured" parameter.
-    /// Castling does its own testing and is not passed through this method.
+    /// Castling does its own verification and is not passed through this method.
     /// </summary>
     /// <param name="from"></param>
     /// <param name="to"></param>
@@ -167,15 +167,12 @@ public class Board
         {
             // Set capturedPiece for En Passant
             capturedPiece = State[captured.Value.row, captured.Value.col];
-        }
 
-        // Make the move
-        if (captured != null)
-        {   
             // Set the "captured" square to null for En Passant
             State[captured.Value.row, captured.Value.col] = null;
         }
 
+        // Make the move
         State[from.row, from.col] = null;
         State[to.row, to.col] = movingPiece;
         movingPiece.Square = to;
@@ -219,18 +216,13 @@ public class Board
     #region Private Methods
 
     /// <summary>
-    /// Updates the State of the board to reflect the move. 
+    /// Updates the State of the board to reflect the StandardMove. 
     /// Updates the Row and Col properties of the moving piece.
-    /// If a piece is captured, it is removed from Pieces.
+    /// Removes captured piece from Pieces
     /// </summary>
     /// <param name="move"></param>
-    private void MovePiece(SinglePieceMove move)
+    private void StandardMove(StandardMove move)
     {
-        var movingPiece = State[move.From.row, move.From.col];
-
-        if (movingPiece == null)
-            throw new ArgumentException($"A piece does not exist on the board at (row:{move.From.row}, col: {move.From.col})");
-
         // Remove captured piece from Pieces
         var capturedPiece = State[move.To.row, move.To.col];
         if (capturedPiece != null)
@@ -238,12 +230,8 @@ public class Board
             Pieces[capturedPiece.Color].Remove(capturedPiece);
         }
 
-        // Update State for the movingPiece
-        State[move.To.row, move.To.col] = movingPiece;
-        State[move.From.row, move.From.col] = null;
-        
-        // Update the movingPiece row and col
-        movingPiece.Square = move.To;
+        // Move the piece 
+        MovePiece(move.From, move.To);
     }
 
 
@@ -255,17 +243,16 @@ public class Board
     /// <param name="move"></param>
     private void EnPassant(EnPassantMove move)
     {
-        // Move the pawn
-        MovePiece(move);
-
         // Remove captured pawn from the board
         var capturedPawn = State[move.Captured.row, move.Captured.col];
         if (capturedPawn != null)
         {
             Pieces[capturedPawn.Color].Remove(capturedPawn);
+            State[move.Captured.row, move.Captured.col] = null;
         }
-        
-        State[move.Captured.row, move.Captured.col] = null;
+
+        // Move the pawn
+        MovePiece(move.From, move.To);
     }
 
 
@@ -279,6 +266,32 @@ public class Board
     private void Castle((int row, int col) kingFrom, (int row, int col) rookFrom)
     {
         throw new NotImplementedException();
+    }
+
+
+
+    /// <summary>
+    /// Updates the State of the board to reflect the move. 
+    /// Updates the Row and Col properties of the moving piece.
+    /// </summary>
+    /// <param name="from">The square the piece is moving from</param>
+    /// <param name="to">The square the piece is moving to</param>
+    /// <exception cref="ArgumentException"></exception>
+    private void MovePiece((int row, int col) from, (int row, int col) to)
+    {
+        var movingPiece = State[from.row, from.col];
+
+        if (movingPiece == null)
+        {
+            throw new ArgumentException($"A piece does not exist on the board at (row:{from.row}, col: {from.col})");
+        }
+
+        // Update State for the movingPiece
+        State[to.row, to.col] = movingPiece;
+        State[from.row, from.col] = null;
+        
+        // Update the movingPiece row and col
+        movingPiece.Square = to;
     }
 
     #endregion
