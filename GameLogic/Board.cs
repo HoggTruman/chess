@@ -65,8 +65,8 @@ public class Board
     /// New pieces should always be created in this way.
     /// </summary>
     /// <typeparam name="T">A child of the Piece abstract class</typeparam>
-    /// <param name="row">The row to place the new piece at.</param>
-    /// <param name="col">The column to place the new piece at.</param>
+    /// <param name="row">The row index to place the new piece at.</param>
+    /// <param name="col">The column index to place the new piece at.</param>
     /// <param name="color">The Color of the new piece.</param>
     /// <returns>The new piece of type T</returns>
     /// <exception cref="ArgumentException"></exception>
@@ -108,10 +108,9 @@ public class Board
     /// New pieces should always be created in this way.
     /// </summary>
     /// <typeparam name="T">A child of the Piece abstract class</typeparam>
-    /// <param name="pieceType">The PieceType of the new piece.</param>
     /// <param name="square">The (row, column) square to place the new piece at.</param>
     /// <param name="color">The Color of the new piece.</param>
-    /// <returns>The new IPiece</returns>
+    /// <returns>The new piece of type <typeparamref name="T"/></returns>
     public T AddNewPiece<T>((int row, int col) square, Color color = Color.White) where T : Piece
     {
         return AddNewPiece<T>(square.row, square.col, color);
@@ -135,13 +134,14 @@ public class Board
 
 
     /// <summary>
-    /// Returns a bool of whether the player is left in check by making the move. 
+    /// Determines if a player will leave themself in check by moving the piece at "from" to "to".
     /// For En Passant, pass in the captured pawn's square as the "captured" parameter.
+    /// Castling does its own testing and is not passed through this method.
     /// </summary>
     /// <param name="from"></param>
     /// <param name="to"></param>
     /// <param name="captured"></param>
-    /// <returns></returns>
+    /// <returns>true if the player would be in check after the move. Otherwise, false</returns>
     /// <exception cref="ArgumentException"></exception>
     public bool MoveLeavesPlayerInCheck((int row, int col) from, (int row, int col) to, (int row, int col)? captured = null)
     {
@@ -149,19 +149,33 @@ public class Board
         IPiece? movingPiece = State[from.row, from.col];
 
         if (movingPiece == null)
-            throw new ArgumentException("Piece not found at specified from square");
-
-        // Return false when no king. Makes testing more convenient for when no king is present
-        KingPiece? king = Kings[movingPiece.Color];
-        if (king == null)
+        {
+            throw new ArgumentException($"Piece not found at \"from\": (row: {from.row}, col: {from.col})");
+        }
+            
+        // Return false when no king.
+        KingPiece? playerKing = Kings[movingPiece.Color];
+        if (playerKing == null)
+        {
             return false;
+        }
 
         // Get target piece
-        (int row, int col) capturedSquare = captured ?? to;
-        IPiece? capturedPiece = State[capturedSquare.row, capturedSquare.col];
+        IPiece? capturedPiece = State[to.row, to.col];
 
-        // make the move
-        State[capturedSquare.row, capturedSquare.col] = null;
+        if (captured != null)
+        {
+            // Set capturedPiece for En Passant
+            capturedPiece = State[captured.Value.row, captured.Value.col];
+        }
+
+        // Make the move
+        if (captured != null)
+        {   
+            // Set the "captured" square to null for En Passant
+            State[captured.Value.row, captured.Value.col] = null;
+        }
+
         State[from.row, from.col] = null;
         State[to.row, to.col] = movingPiece;
         movingPiece.Square = to;
@@ -171,13 +185,23 @@ public class Board
             Pieces[capturedPiece.Color].Remove(capturedPiece);
         }
 
-        // record the result
-        bool result = king.IsChecked();
+        // Record the result
+        bool result = playerKing.IsChecked();
 
-        // roll back pieces
+        // Roll back pieces
         State[from.row, from.col] = movingPiece;
         movingPiece.Square = from;
-        State[capturedSquare.row, capturedSquare.col] = capturedPiece;
+        
+        if (captured != null)
+        {
+            // En Passant revert
+            State[to.row, to.col] = null;
+            State[captured.Value.row, captured.Value.col] = capturedPiece;
+        }
+        else
+        {
+            State[to.row, to.col] = capturedPiece;
+        }
 
         if (capturedPiece != null)
         {
