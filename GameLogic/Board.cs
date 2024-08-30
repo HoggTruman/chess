@@ -117,6 +117,7 @@ public class Board
     }
 
 
+    // REFACTOR OUT LATER
     public void HandleMove(IMove move)
     {
         MoveHistory.Add(move);
@@ -129,7 +130,11 @@ public class Board
         {
             EnPassant((EnPassantMove)move);
         }
-        // add castle + promotion handling
+        else if (move.MoveType == MoveType.Promotion)
+        {
+            PawnPromote((PromotionMove)move);
+        }
+        // add castle handling
     }
 
 
@@ -228,6 +233,7 @@ public class Board
         if (capturedPiece != null)
         {
             Pieces[capturedPiece.Color].Remove(capturedPiece);
+            State[move.To.row, move.To.col] = null;
         }
 
         // Move the piece 
@@ -256,9 +262,54 @@ public class Board
     }
 
 
+    /// <summary>
+    /// Updates <see cref="State"/> with a new queen, rook, knight or bishop replacing the pawn. <br/>
+    /// Replaces the pawn in <see cref="Pieces"/> with the new piece. <br/>
+    /// If the move captures a piece, it is removed from Pieces.
+    /// </summary>
+    /// <param name="move">A PromotionMove instance</param>
+    /// <exception cref="ArgumentException"></exception>
     private void PawnPromote(PromotionMove move)
     {
-        throw new NotImplementedException();
+        // Remove pawn
+        var pawn = State[move.From.row, move.From.col];
+        if (pawn == null)
+        {
+            throw new ArgumentException($"Piece not found at: (row: {move.From.row}, col:{move.From.col})");
+        }
+        Pieces[pawn.Color].Remove(pawn);
+        State[move.From.row, move.From.col] = null;
+
+        // Remove captured piece
+        var capturedPiece = State[move.To.row, move.To.col];
+        if (capturedPiece != null)
+        {
+            Pieces[capturedPiece.Color].Remove(capturedPiece);
+            State[move.To.row, move.To.col] = null;
+        }
+
+        // Create promoted piece
+        if (move.PromotedTo == PieceType.Queen)
+        {
+            AddNewPiece<QueenPiece>(move.To, pawn.Color);
+        }
+        else if (move.PromotedTo == PieceType.Rook)
+        {
+            AddNewPiece<RookPiece>(move.To, pawn.Color);
+        }
+        else if (move.PromotedTo == PieceType.Knight)
+        {
+            AddNewPiece<KnightPiece>(move.To, pawn.Color);
+        }
+        else if (move.PromotedTo == PieceType.Bishop)
+        {
+            AddNewPiece<BishopPiece>(move.To, pawn.Color);
+        }
+        else
+        {
+            throw new ArgumentException(@$"{move.PromotedTo} is not a valid promotion option." + 
+                " A pawn can only be promoted to a queen, rook, knight or bishop.");
+        }
     }
 
 
