@@ -10,21 +10,23 @@ namespace GameLogic;
 
 public class Board
 {
-    #region constants
+    #region Constants
 
     public const int BoardSize = 8;
     public const int MinIndex = 0;
     public const int MaxIndex = BoardSize - 1;
 
-    #endregion 
+    #endregion
 
 
 
-    #region properties
+    #region Properties
 
     public IPiece?[,] State { get; set; }
 
     public Dictionary<Color, KingPiece?> Kings { get; }
+
+    public Dictionary<Color, List<IPiece>> Pieces { get; }
 
     public List<IMove> MoveHistory { get; } = [];
 
@@ -32,7 +34,7 @@ public class Board
 
 
 
-    #region constructor
+    #region Constructors
 
     /// <summary>
     /// Initializes a new instance of the Board class.
@@ -45,13 +47,18 @@ public class Board
             [Color.White] = null,
             [Color.Black] = null
         };
+        Pieces = new()
+        {
+            [Color.White] = [],
+            [Color.Black] = [],
+        };
     }
 
     #endregion
 
 
 
-    #region public methods
+    #region Public Methods
 
     /// <summary>
     /// Adds a new piece to the Board of specified PieceType at (row, col).
@@ -87,6 +94,10 @@ public class Board
         
         // Update the board state with the piece
         State[row, col] = piece;
+
+        // Update corresponding piece list
+        Pieces[color].Add(piece);
+        
             
         return piece;
     }
@@ -123,24 +134,6 @@ public class Board
     }
 
 
-    public List<IPiece> GetPiecesByColor(Color color)
-    {
-        // THIS IS STILL PRETTY INEFFICIENT CONSIDERING IT WILL BE CALLED FOR EVERY TEST MOVE. REFACTOR TO A PROPERTY LATER WHICH HAS PIECES REMOVED WHEN TAKEN??
-        List<IPiece> pieces = [];
-
-        for (int i = MinIndex; i <= MaxIndex; i++)
-        {
-            for (int j = MinIndex; j <= MaxIndex; j++)
-            {
-                if (State[i, j] != null && State[i, j]?.Color == color)
-                    pieces.Add(State[i, j]!);
-            }
-        }
-
-        return pieces;
-    }
-
-
     /// <summary>
     /// Returns a bool of whether the player is left in check by making the move. 
     /// For En Passant, pass in the captured pawn's square as the "captured" parameter.
@@ -164,26 +157,32 @@ public class Board
             return false;
 
         // Get target piece
-        (int row, int col) capturedSquare = to;
-
-        if (captured != null)
-            capturedSquare = ((int row, int col))captured;
-
+        (int row, int col) capturedSquare = captured ?? to;
         IPiece? capturedPiece = State[capturedSquare.row, capturedSquare.col];
 
         // make the move
+        State[capturedSquare.row, capturedSquare.col] = null;
         State[from.row, from.col] = null;
         State[to.row, to.col] = movingPiece;
         movingPiece.Square = to;
+
+        if (capturedPiece != null)
+        {
+            Pieces[capturedPiece.Color].Remove(capturedPiece);
+        }
 
         // record the result
         bool result = king.IsChecked();
 
         // roll back pieces
         State[from.row, from.col] = movingPiece;
-        movingPiece.Row = from.row;
-        movingPiece.Col = from.col;
+        movingPiece.Square = from;
         State[capturedSquare.row, capturedSquare.col] = capturedPiece;
+
+        if (capturedPiece != null)
+        {
+            Pieces[capturedPiece.Color].Add(capturedPiece);
+        }
 
         
         return result;
@@ -193,11 +192,12 @@ public class Board
 
 
 
-    #region private methods
+    #region Private Methods
 
     /// <summary>
     /// Updates the State of the board to reflect the move. 
-    /// Updates the Row and Col properties of the moving piece
+    /// Updates the Row and Col properties of the moving piece.
+    /// If a piece is captured, it is removed from Pieces.
     /// </summary>
     /// <param name="move"></param>
     private void MovePiece(SinglePieceMove move)
@@ -205,21 +205,28 @@ public class Board
         var movingPiece = State[move.From.row, move.From.col];
 
         if (movingPiece == null)
-            throw new ArgumentException("No piece at from location");
+            throw new ArgumentException($"A piece does not exist on the board at (row:{move.From.row}, col: {move.From.col})");
+
+        // Remove captured piece from Pieces
+        var capturedPiece = State[move.To.row, move.To.col];
+        if (capturedPiece != null)
+        {
+            Pieces[capturedPiece.Color].Remove(capturedPiece);
+        }
 
         // Update State for the movingPiece
         State[move.To.row, move.To.col] = movingPiece;
         State[move.From.row, move.From.col] = null;
         
         // Update the movingPiece row and col
-        movingPiece.Row = move.To.row;
-        movingPiece.Col = move.To.col;
+        movingPiece.Square = move.To;
     }
 
 
     /// <summary>
     /// Updates the State of the board to reflect the En Passant move. 
     /// Updates the Row and Col properties of the moving pawn.
+    /// Removes captured pawn from Pieces
     /// </summary>
     /// <param name="move"></param>
     private void EnPassant(EnPassantMove move)
@@ -228,6 +235,12 @@ public class Board
         MovePiece(move);
 
         // Remove captured pawn from the board
+        var capturedPawn = State[move.Captured.row, move.Captured.col];
+        if (capturedPawn != null)
+        {
+            Pieces[capturedPawn.Color].Remove(capturedPawn);
+        }
+        
         State[move.Captured.row, move.Captured.col] = null;
     }
 

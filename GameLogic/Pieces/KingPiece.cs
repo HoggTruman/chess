@@ -65,7 +65,7 @@ public class KingPiece : Piece
         var validMoves = base.GetValidMoves();
 
         // Add valid castling moves
-        var rooks = (List<RookPiece>)_board.GetPiecesByColor(Color)
+        var rooks = (List<RookPiece>)_board.Pieces[Color]
             .Where(x => x is RookPiece);
 
         foreach (var rook in rooks)
@@ -113,7 +113,7 @@ public class KingPiece : Piece
     /// <returns>true if under check, otherwise false</returns>
     public bool IsChecked()
     {
-        var enemyPieces = _board.GetPiecesByColor(ColorHelpers.OppositeColor(Color));
+        var enemyPieces = _board.Pieces[ColorHelpers.OppositeColor(Color)];
 
         return enemyPieces.Any(piece => piece.GetTargetedSquares().Contains(Square));
     }

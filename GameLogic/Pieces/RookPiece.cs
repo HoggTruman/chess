@@ -77,7 +77,7 @@ public class RookPiece : Piece
         if (Col > king.Col)
             kingSquares = [king.Square, (king.Row, king.Col + 1), (king.Row, king.Col + 2)];
         
-        var enemyPieces = _board.GetPiecesByColor(ColorHelpers.OppositeColor(Color));
+        var enemyPieces = _board.Pieces[ColorHelpers.OppositeColor(Color)];
 
         foreach (var piece in enemyPieces)
         {
