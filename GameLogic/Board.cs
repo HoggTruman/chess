@@ -117,7 +117,7 @@ public class Board
     }
 
 
-    // REFACTOR OUT LATER
+    // REFACTOR OUT LATER?
     public void HandleMove(IMove move)
     {
         MoveHistory.Add(move);
@@ -134,7 +134,10 @@ public class Board
         {
             PawnPromote((PromotionMove)move);
         }
-        // add castle handling
+        else if (move.MoveType == MoveType.Castle)
+        {
+            Castle((CastleMove)move);
+        }
     }
 
 
@@ -221,9 +224,7 @@ public class Board
     #region Private Methods
 
     /// <summary>
-    /// Updates the <see cref="State"/> of the board to reflect the StandardMove. <br/>
-    /// Updates the Row and Col properties of the moving piece. <br/>
-    /// Removes captured piece from <see cref="Pieces"/>
+    /// Updates the Board and involved pieces to reflect the StandardMove.
     /// </summary>
     /// <param name="move">A StandardMove instance</param>
     private void StandardMove(StandardMove move)
@@ -242,9 +243,7 @@ public class Board
 
 
     /// <summary>
-    /// Updates <see cref="State"/> to reflect the EnPassantMove. <br/>
-    /// Updates the Row and Col properties of the moving pawn. <br/>
-    /// Removes captured pawn from <see cref="Pieces"/>
+    /// Updates the Board and involved pieces to reflect the EnPassantMove.
     /// </summary>
     /// <param name="move">An EnPassantMove instance</param>
     private void EnPassant(EnPassantMove move)
@@ -263,9 +262,7 @@ public class Board
 
 
     /// <summary>
-    /// Updates <see cref="State"/> with a new queen, rook, knight or bishop replacing the pawn. <br/>
-    /// Replaces the pawn in <see cref="Pieces"/> with the new piece. <br/>
-    /// If the move captures a piece, it is removed from Pieces.
+    /// Updates the Board and involved pieces to reflect the PromotionMove.
     /// </summary>
     /// <param name="move">A PromotionMove instance</param>
     /// <exception cref="ArgumentException"></exception>
@@ -313,12 +310,18 @@ public class Board
     }
 
 
-    // king location may not be needed since king always castles from same square
-    private void Castle((int row, int col) kingFrom, (int row, int col) rookFrom)
+    /// <summary>
+    /// Updates the Board and the involved king and rook to reflect the CastleMove.
+    /// </summary>
+    /// <param name="move">A CastleMove instance</param>
+    private void Castle(CastleMove move)
     {
-        throw new NotImplementedException();
-    }
+        // Move king
+        MovePiece(move.KingFrom, move.KingTo);
 
+        // Move Rook
+        MovePiece(move.RookFrom, move.RookTo); 
+    }
 
 
     /// <summary>
