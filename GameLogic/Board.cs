@@ -221,11 +221,11 @@ public class Board
     #region Private Methods
 
     /// <summary>
-    /// Updates the State of the board to reflect the StandardMove. 
-    /// Updates the Row and Col properties of the moving piece.
-    /// Removes captured piece from Pieces
+    /// Updates the <see cref="State"/> of the board to reflect the StandardMove. <br/>
+    /// Updates the Row and Col properties of the moving piece. <br/>
+    /// Removes captured piece from <see cref="Pieces"/>
     /// </summary>
-    /// <param name="move"></param>
+    /// <param name="move">A StandardMove instance</param>
     private void StandardMove(StandardMove move)
     {
         // Remove captured piece from Pieces
@@ -242,11 +242,11 @@ public class Board
 
 
     /// <summary>
-    /// Updates the State of the board to reflect the En Passant move. 
-    /// Updates the Row and Col properties of the moving pawn.
-    /// Removes captured pawn from Pieces
+    /// Updates <see cref="State"/> to reflect the EnPassantMove. <br/>
+    /// Updates the Row and Col properties of the moving pawn. <br/>
+    /// Removes captured pawn from <see cref="Pieces"/>
     /// </summary>
-    /// <param name="move"></param>
+    /// <param name="move">An EnPassantMove instance</param>
     private void EnPassant(EnPassantMove move)
     {
         // Remove captured pawn from the board
@@ -322,7 +322,7 @@ public class Board
 
 
     /// <summary>
-    /// Updates the State of the board to reflect the move. 
+    /// Updates the <see cref="State"/> to reflect the move. 
     /// Updates the Row and Col properties of the moving piece.
     /// </summary>
     /// <param name="from">The square the piece is moving from</param>
