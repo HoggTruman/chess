@@ -95,7 +95,7 @@ public class KingPiece : Piece
     {
         if (rook.Color == Color && rook.CanCastle())
         {
-            int kingDirection = Math.Sign(rook.Row - Row);
+            int kingDirection = Math.Sign(rook.Col - Col);
 
             (int row, int col) kingTo = (Row, Col + 2 * kingDirection);
             (int row, int col) rookTo = (Row, kingTo.col - kingDirection);

@@ -56,6 +56,10 @@ public class RookPiece : Piece
         if (HasMoved() || king.HasMoved())
             return false;
 
+        // Ensure the rook and king are on the same row
+        if (Row != king.Row)
+            return false;
+
         // Ensure there are no pieces between the two
         List<(int row, int col)> betweenSquares = [];
 

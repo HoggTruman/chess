@@ -1,5 +1,6 @@
 using FluentAssertions;
 using GameLogic;
+using GameLogic.Constants;
 using GameLogic.Enums;
 using GameLogic.Interfaces;
 using GameLogic.Pieces;
@@ -8,6 +9,183 @@ namespace GameLogicTests.Pieces;
 
 public class KingPieceTests
 {
+    #region GetTargetedSquares Tests
+
+    [Fact]
+    public void GetTargetedSquares_ReturnsTargetedSquares()
+    {
+        // Arrange
+        Board board = new();
+
+        var king = board.AddNewPiece<KingPiece>(2, 6, Color.White);
+
+        var blockingPiece = board.AddNewPiece<BishopPiece>(2, 7, Color.White);
+
+        List<(int row, int col)> expected = [
+            (3, 6),
+            (3, 7),
+            (2, 7),
+            (1, 7),
+            (1, 6),
+            (1, 5),
+            (2, 5),
+            (3, 5)
+        ];
+
+        // Act
+        var result = king.GetTargetedSquares();
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+
+    #endregion GetTargetedSquares Tests
+
+
+
+    #region GetReachableSquares Tests
+
+    [Fact]
+    public void GetReachableSquares_ReturnsReachableSquares()
+    {
+        // Arrange
+        Board board = new();
+
+        var king = board.AddNewPiece<KingPiece>(2, 6, Color.White);
+
+        var blockingPiece = board.AddNewPiece<BishopPiece>(2, 7, Color.White);
+        var nonblockingPiece = board.AddNewPiece<BishopPiece>(1, 7, Color.Black);
+
+        List<(int row, int col)> expected = [
+            (3, 6),
+            (3, 7),
+            (1, 7),
+            (1, 6),
+            (1, 5),
+            (2, 5),
+            (3, 5)
+        ];
+
+        // Act
+        var result = king.GetReachableSquares();
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+
+    #endregion
+
+
+    #region GetCastleSquares
+
+    [Fact]
+    public void GetCastleSquares_WhiteKingSide_ReturnsSquares()
+    {
+        // Arrange 
+        Board board = new();
+
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, Color.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, Color.White);
+
+        (int row, int col) expectedKingSquare = (0, 6);
+        (int row, int col) expectedRookSquare = (0, 5);
+
+        // Act
+        var result = king.GetCastleSquares(rook);
+
+        // Assert
+        Assert.NotNull(result);
+        result.Value.kingTo.Should().Be(expectedKingSquare);
+        result.Value.rookTo.Should().Be(expectedRookSquare);
+    }
+
+
+    [Fact]
+    public void GetCastleSquares_WhiteQueenSide_ReturnsSquares()
+    {
+        // Arrange 
+        Board board = new();
+
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, Color.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookQ, Color.White);
+
+        (int row, int col) expectedKingSquare = (0, 2);
+        (int row, int col) expectedRookSquare = (0, 3);
+
+        // Act
+        var result = king.GetCastleSquares(rook);
+
+        // Assert
+        Assert.NotNull(result);
+        result.Value.kingTo.Should().Be(expectedKingSquare);
+        result.Value.rookTo.Should().Be(expectedRookSquare);
+    }
+
+
+    [Fact]
+    public void GetCastleSquares_BlackKingSide_ReturnsSquares()
+    {
+        // Arrange 
+        Board board = new();
+
+        var king = board.AddNewPiece<KingPiece>(StartSquares.BlackKing, Color.Black);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.BlackRookK, Color.Black);
+
+        (int row, int col) expectedKingSquare = (7, 6);
+        (int row, int col) expectedRookSquare = (7, 5);
+
+        // Act
+        var result = king.GetCastleSquares(rook);
+
+        // Assert
+        Assert.NotNull(result);
+        result.Value.kingTo.Should().Be(expectedKingSquare);
+        result.Value.rookTo.Should().Be(expectedRookSquare);
+    }
+
+
+    [Fact]
+    public void GetCastleSquares_BlackQueenSide_ReturnsSquares()
+    {
+        // Arrange 
+        Board board = new();
+
+        var king = board.AddNewPiece<KingPiece>(StartSquares.BlackKing, Color.Black);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.BlackRookQ, Color.Black);
+
+        (int row, int col) expectedKingSquare = (7, 2);
+        (int row, int col) expectedRookSquare = (7, 3);
+
+        // Act
+        var result = king.GetCastleSquares(rook);
+
+        // Assert
+        Assert.NotNull(result);
+        result.Value.kingTo.Should().Be(expectedKingSquare);
+        result.Value.rookTo.Should().Be(expectedRookSquare);
+    }
+
+
+    [Fact]
+    public void GetCastleSquares_WhenCantCastle_ReturnsNull()
+    {
+        // Arrange 
+        Board board = new();
+
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, Color.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.BlackRookK, Color.White);
+
+        // Act
+        var result = king.GetCastleSquares(rook);
+
+        // Assert
+        Assert.Null(result);
+    }
+    
+    #endregion
+
+
+
     #region IsChecked Tests
 
     [Fact]
