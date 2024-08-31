@@ -60,6 +60,15 @@ public class RookPiece : Piece
         if (Row != king.Row)
             return false;
 
+        // Ensure the rook's start square is a rook start square
+        if (StartSquare != StartSquares.WhiteRookK &&
+            StartSquare != StartSquares.WhiteRookQ &&
+            StartSquare != StartSquares.BlackRookK &&
+            StartSquare != StartSquares.BlackRookQ)
+        {
+            return false;
+        }
+
         // Ensure there are no pieces between the two
         List<(int row, int col)> betweenSquares = [];
 

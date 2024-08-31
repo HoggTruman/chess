@@ -135,5 +135,68 @@ public class RookPieceTests
         result.Should().BeFalse();
     }
 
+
+    [Fact]
+    public void CanCastle_WhenCreatedOnEnemyRookSquare_ReturnsFalse()
+    {
+        // This tests that CanCastle returns false when a rook is created 
+        // in a corner on the enemy side. This is to test pawn promoted 
+        // rook pieces  
+
+        // Arrange
+        Board board = new();
+
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, Color.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.BlackRookK, Color.White);
+
+        // Act
+        var result = rook.CanCastle();
+
+        // Assert 
+        result.Should().BeFalse();
+    }
+
+
+    [Fact]
+    public void CanCastle_WhenCreatedOnEnemyKingSquare_ReturnsFalse()
+    {
+        // This tests that CanCastle returns false when a rook is created 
+        // on the enemy king's starting square. This is to test pawn promoted 
+        // rook pieces  
+
+        // Arrange
+        Board board = new();
+
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, Color.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.BlackKing, Color.White);
+
+        // Act
+        var result = rook.CanCastle();
+
+        // Assert 
+        result.Should().BeFalse();
+    }
+
+
+    [Fact]
+    public void CanCastle_WhenRookStartsCorrectRowWrongCol_ReturnsFalse()
+    {
+        // This tests that CanCastle returns false when a rook is created 
+        // on a square on the king's row but not in a corner. This can never
+        // occur during an actual game but is included just to be thorough
+
+        // Arrange
+        Board board = new();
+
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, Color.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteKnightK, Color.White);
+
+        // Act
+        var result = rook.CanCastle();
+
+        // Assert 
+        result.Should().BeFalse();
+    }
+
     #endregion
 }
