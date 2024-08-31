@@ -33,7 +33,9 @@ public class BishopPiece : Piece
 
         // Remove squares with a piece of the same color
         squares = squares
-            .Where(s => _board.State[s.row, s.col]?.Color != Color)
+            .Where(s => 
+                _board.State[s.row, s.col] == null || 
+                _board.State[s.row, s.col]!.Color != Color)
             .ToList();
 
         return squares;
