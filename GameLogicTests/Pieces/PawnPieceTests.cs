@@ -1,5 +1,6 @@
 using FluentAssertions;
 using GameLogic;
+using GameLogic.Constants;
 using GameLogic.Enums;
 using GameLogic.Interfaces;
 using GameLogic.Moves;
@@ -9,6 +10,230 @@ namespace GameLogicTests.Pieces;
 
 public class PawnPieceTests
 {
+    #region GetTargetedSquares Tests
+
+    [Fact]
+    public void GetTargetedSquares_WhitePawn_ReturnsTargetedSquares()
+    {
+        // Arrange
+        Board board = new();
+
+        var pawn = board.AddNewPiece<PawnPiece>(4, 4, Color.White);
+
+        List<(int row, int col)> expected = [
+            (5, 3),
+            (5, 5)
+        ];
+
+        // Act
+        var result = pawn.GetTargetedSquares();
+
+        // Assert 
+        result.Should().BeEquivalentTo(expected);
+    }
+
+
+    [Fact]
+    public void GetTargetedSquares_BlackPawn_ReturnsTargetedSquares()
+    {
+        // Arrange
+        Board board = new();
+
+        var pawn = board.AddNewPiece<PawnPiece>(4, 4, Color.Black);
+
+        List<(int row, int col)> expected = [
+            (3, 3),
+            (3, 5)
+        ];
+
+        // Act
+        var result = pawn.GetTargetedSquares();
+
+        // Assert 
+        result.Should().BeEquivalentTo(expected);
+    }
+
+    #endregion
+
+
+
+    #region GetReachableSquares Tests
+
+    [Fact]
+    public void GetReachableSquares_WhitePawnNotMoved_ReturnsOneAndTwoAhead()
+    {
+        // Arrange
+        Board board = new();
+
+        var pawn = board.AddNewPiece<PawnPiece>(1, 4, Color.White);
+
+        List<(int row, int col)> expected = [
+            (2, 4),
+            (3, 4)
+        ];
+
+        // Act
+        var result = pawn.GetReachableSquares();
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+
+
+    [Fact]
+    public void GetReachableSquares_WhitePawnHasMoved_ReturnsOneAheadOnly()
+    {
+        // Arrange
+        Board board = new();
+
+        var pawn = board.AddNewPiece<PawnPiece>(1, 4, Color.White);
+
+        StandardMove move = new(pawn.Square, (2, 4));
+        board.HandleMove(move);
+
+        List<(int row, int col)> expected = [
+            (3, 4)
+        ];
+
+        // Act
+        var result = pawn.GetReachableSquares();
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+
+
+    [Fact]
+    public void GetReachableSquares_WhitePawnCapturableEnemyPieces_ReturnsCapturableSquares()
+    {
+        // Arrange
+        Board board = new();
+
+        var pawn = board.AddNewPiece<PawnPiece>(1, 4, Color.White);
+        var enemyPiece1 = board.AddNewPiece<PawnPiece>(2, 3, Color.Black);
+        var enemyPiece2 = board.AddNewPiece<PawnPiece>(2, 5, Color.Black);
+
+        List<(int row, int col)> expected = [
+            (2, 4),
+            (3, 4),
+            (2, 3),
+            (2, 5)
+        ];
+
+        // Act
+        var result = pawn.GetReachableSquares();
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+
+
+    [Fact]
+    public void GetReachableSquares_WhitePawnWhenBlocked_ReturnsEmpty()
+    {
+        // Arrange
+        Board board = new();
+
+        var pawn = board.AddNewPiece<PawnPiece>(1, 4, Color.White);
+        var blockingPiece = board.AddNewPiece<PawnPiece>(2, 4, Color.Black);
+
+        // Act
+        var result = pawn.GetReachableSquares();
+
+        // Assert
+        result.Should().BeEmpty();
+    }
+
+
+    [Fact]
+    public void GetReachableSquares_BlackPawnNotMoved_ReturnsOneAndTwoAhead()
+    {
+        // Arrange
+        Board board = new();
+
+        var pawn = board.AddNewPiece<PawnPiece>(6, 4, Color.Black);
+
+        List<(int row, int col)> expected = [
+            (5, 4),
+            (4, 4)
+        ];
+
+        // Act
+        var result = pawn.GetReachableSquares();
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+
+
+    [Fact]
+    public void GetReachableSquares_BlackPawnHasMoved_ReturnsOneAheadOnly()
+    {
+        // Arrange
+        Board board = new();
+
+        var pawn = board.AddNewPiece<PawnPiece>(6, 4, Color.Black);
+
+        StandardMove move = new(pawn.Square, (5, 4));
+        board.HandleMove(move);
+
+        List<(int row, int col)> expected = [
+            (4, 4)
+        ];
+
+        // Act
+        var result = pawn.GetReachableSquares();
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+
+
+    [Fact]
+    public void GetReachableSquares_BlackPawnCapturableEnemyPieces_ReturnsCapturableSquares()
+    {
+        // Arrange
+        Board board = new();
+
+        var pawn = board.AddNewPiece<PawnPiece>(6, 4, Color.Black);
+        var enemyPiece1 = board.AddNewPiece<PawnPiece>(5, 3, Color.White);
+        var enemyPiece2 = board.AddNewPiece<PawnPiece>(5, 5, Color.White);
+
+        List<(int row, int col)> expected = [
+            (5, 4),
+            (4, 4),
+            (5, 3),
+            (5, 5)
+        ];
+
+        // Act
+        var result = pawn.GetReachableSquares();
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+
+
+    [Fact]
+    public void GetReachableSquares_BlackPawnWhenBlocked_ReturnsEmpty()
+    {
+        // Arrange
+        Board board = new();
+
+        var pawn = board.AddNewPiece<PawnPiece>(6, 4, Color.Black);
+        var blockingPiece = board.AddNewPiece<PawnPiece>(5, 4, Color.White);
+
+        // Act
+        var result = pawn.GetReachableSquares();
+
+        // Assert
+        result.Should().BeEmpty();
+    }
+
+    #endregion
+
+
+
     #region GetEnPassantSquare Tests 
 
     [Fact]
@@ -74,7 +299,7 @@ public class PawnPieceTests
 
 
     [Fact]
-    public void GetEnPassantSquare_WithoutMoveHistory_ReturnsNull()
+    public void GetEnPassantSquare_WithEmptyMoveHistory_ReturnsNull()
     {   
         // In this test, the positioning is correct for white to perform en passant but there are no previous moves
         // The result should be null
