@@ -9,6 +9,82 @@ namespace GameLogicTests.Pieces;
 
 public class RookPieceTests
 {
+    #region GetTargetedSquares Tests
+
+    [Fact]
+    public void GetTargetedSquares_ReturnsTargetedSquares()
+    {
+        // Arrange
+        Board board = new();
+
+        var rook = board.AddNewPiece<RookPiece>(4, 4, Color.White);
+
+        var blockingPiece = board.AddNewPiece<RookPiece>(4, 5, Color.White);
+
+        List<(int row, int col)> expected = [
+            (4, 0),
+            (4, 1),
+            (4, 2),
+            (4, 3),
+            (4, 5),
+            (3, 4),
+            (2, 4),
+            (1, 4),
+            (0, 4),
+            (5, 4),
+            (6, 4),
+            (7, 4)            
+        ];
+
+        // Act
+        var result = rook.GetTargetedSquares();
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+
+    #endregion
+
+
+
+    #region GetReachableSquares Tests
+
+    [Fact]
+    public void GetReachableSquares_ReturnsReachableSquares()
+    {
+        // Arrange
+        Board board = new();
+
+        var rook = board.AddNewPiece<RookPiece>(4, 4, Color.White);
+
+        var blockingPiece = board.AddNewPiece<RookPiece>(4, 5, Color.White);
+        var nonblockingPiece = board.AddNewPiece<RookPiece>(7, 4, Color.Black);
+
+        List<(int row, int col)> expected = [
+            (4, 0),
+            (4, 1),
+            (4, 2),
+            (4, 3),
+            (3, 4),
+            (2, 4),
+            (1, 4),
+            (0, 4),
+            (5, 4),
+            (6, 4),
+            (7, 4)            
+        ];
+
+        // Act
+        var result = rook.GetReachableSquares();
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+
+    #endregion
+
+
+
     #region CanCastle Tests 
 
     [Fact]
