@@ -7,12 +7,12 @@ public interface IPiece
     #region Properties
 
     /// <summary>
-    /// The row index of a piece from 0 to 7
+    /// The row index of the piece from 0 to 7
     /// </summary>
     int Row { get; set; }
 
     /// <summary>
-    /// The column index of a piece from 0 to 7
+    /// The column index of the piece from 0 to 7
     /// </summary>
     int Col { get; set; }
 
@@ -27,17 +27,17 @@ public interface IPiece
     (int row, int col) StartSquare { get; }
 
     /// <summary>
-    /// The color of a piece (White or Black)
+    /// The color of the piece (White or Black)
     /// </summary>
     Color Color { get; }
 
     /// <summary>
-    /// The type of a piece (e.g. Pawn, King, ...)
+    /// The type of the piece (e.g. Pawn, King, ...)
     /// </summary>
     PieceType PieceType { get; }
 
     /// <summary>
-    /// The point-value of a piece. e.g. 5 for a rook 
+    /// The point-value of the piece. e.g. 5 for a rook 
     /// </summary>
     int Value { get; }
 
@@ -64,7 +64,7 @@ public interface IPiece
 
 
     /// <summary>
-    /// Returns a list of moves which are valid for a player to make.
+    /// Returns a list of moves which are valid for the piece to make.
     /// </summary>
     /// <returns></returns>
     List<IMove> GetValidMoves();
