@@ -468,4 +468,38 @@ public class BoardTests
     }
 
     #endregion
+
+
+
+    #region Castle Tests
+
+    [Fact]
+    public void Castle_UpdatesBoardAndPieces()
+    {
+        // Arrange 
+        Board board = new();
+
+        (int row, int col) kingFrom = (0, 4);
+        (int row, int col) kingTo = (0, 6);
+        (int row, int col) rookFrom = (0, 7);
+        (int row, int col) rookTo = (0, 5);
+
+        var king = board.AddNewPiece<KingPiece>(kingFrom, Color.White);
+        var rook = board.AddNewPiece<RookPiece>(rookFrom, Color.White);
+
+        CastleMove move = new(kingFrom, kingTo, rookFrom, rookTo);
+
+        // Act
+        board.Castle(move);
+
+        // Assert
+        king.Square.Should().Be(kingTo);
+        rook.Square.Should().Be(rookTo);
+        board.State[kingFrom.row, kingFrom.col].Should().BeNull();
+        board.State[kingTo.row, kingTo.col].Should().Be(king);
+        board.State[rookFrom.row, rookFrom.col].Should().BeNull();
+        board.State[rookTo.row, rookTo.col].Should().Be(rook);
+    }
+
+    #endregion
 }

@@ -265,11 +265,6 @@ public class Board
         MovePiece(move.From, move.To);
     }
 
-    #endregion
-
-
-
-    #region Private Methods
 
     /// <summary>
     /// Updates the Board and involved pieces to reflect the PromotionMove.
@@ -326,7 +321,7 @@ public class Board
     /// The move is assumed to be valid.
     /// </summary>
     /// <param name="move">A CastleMove instance</param>
-    private void Castle(CastleMove move)
+    public void Castle(CastleMove move)
     {
         // Move king
         MovePiece(move.KingFrom, move.KingTo);
@@ -335,6 +330,11 @@ public class Board
         MovePiece(move.RookFrom, move.RookTo); 
     }
 
+    #endregion
+
+
+
+    #region Private Methods
 
     /// <summary>
     /// Updates the <see cref="State"/> to reflect the move. 
