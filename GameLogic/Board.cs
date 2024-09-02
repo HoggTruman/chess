@@ -225,14 +225,10 @@ public class Board
         return result;
     }
 
-    #endregion
-
-
-
-    #region Private Methods
 
     /// <summary>
     /// Updates the Board and involved pieces to reflect the StandardMove.
+    /// The move is assumed to be valid.
     /// </summary>
     /// <param name="move">A StandardMove instance</param>
     public void StandardMove(StandardMove move)
@@ -252,9 +248,10 @@ public class Board
 
     /// <summary>
     /// Updates the Board and involved pieces to reflect the EnPassantMove.
+    /// The move is assumed to be valid.
     /// </summary>
     /// <param name="move">An EnPassantMove instance</param>
-    private void EnPassant(EnPassantMove move)
+    public void EnPassant(EnPassantMove move)
     {
         // Remove captured pawn from the board
         var capturedPawn = State[move.Captured.row, move.Captured.col];
@@ -268,9 +265,15 @@ public class Board
         MovePiece(move.From, move.To);
     }
 
+    #endregion
+
+
+
+    #region Private Methods
 
     /// <summary>
     /// Updates the Board and involved pieces to reflect the PromotionMove.
+    /// The move is assumed to be valid.
     /// </summary>
     /// <param name="move">A PromotionMove instance</param>
     /// <exception cref="ArgumentException"></exception>
@@ -320,6 +323,7 @@ public class Board
 
     /// <summary>
     /// Updates the Board and the involved king and rook to reflect the CastleMove.
+    /// The move is assumed to be valid.
     /// </summary>
     /// <param name="move">A CastleMove instance</param>
     private void Castle(CastleMove move)

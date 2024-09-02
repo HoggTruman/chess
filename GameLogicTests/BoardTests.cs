@@ -437,4 +437,35 @@ public class BoardTests
     }
 
     #endregion
+
+
+
+    #region EnPassant Tests
+
+    [Fact]
+    public void EnPassant_UpdatesBoardAndPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        (int row, int col) from = (4, 4);
+        (int row, int col) to = (5, 3);
+        (int row, int col) captured = (4, 3);
+
+        var movingPawn = board.AddNewPiece<PawnPiece>(from, Color.White);
+        var capturedPawn = board.AddNewPiece<PawnPiece>(captured, Color.Black);
+
+        EnPassantMove move = new(from, to, captured);
+
+        // Act
+        board.EnPassant(move);
+
+        // Assert
+        movingPawn.Square.Should().Be(to);
+        board.State[from.row, from.col].Should().BeNull();
+        board.State[to.row, to.col].Should().Be(movingPawn);
+        board.State[captured.row, captured.col].Should().BeNull();
+    }
+
+    #endregion
 }
