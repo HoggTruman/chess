@@ -61,7 +61,7 @@ public class Board
     #region Public Methods
 
     /// <summary>
-    /// Adds a new piece to the Board of specified PieceType at (row, col).
+    /// Adds a new piece to the Board of type <typeparamref name="T"/> at (row, col).
     /// New pieces should always be created in this way.
     /// </summary>
     /// <typeparam name="T">A child of the Piece abstract class</typeparam>
@@ -72,6 +72,14 @@ public class Board
     /// <exception cref="ArgumentException"></exception>
     public T AddNewPiece<T>(int row, int col, Color color=Color.White) where T : Piece
     {
+        // Ensure row and col are in-bounds
+        if (row < MinIndex || row > MaxIndex ||
+            col < MinIndex || col > MaxIndex)
+        {
+            throw new ArgumentException("Row / column index out of range. " +
+                $"Must be between {MinIndex} and {MaxIndex} (inclusive)");
+        }
+
         // Ensure the square is empty before creating a piece there
         if (State[row, col] != null)
         {
@@ -104,7 +112,7 @@ public class Board
 
 
     /// <summary>
-    /// Adds a new piece to the Board of specified PieceType at the provided square.
+    /// Adds a new piece to the Board of type <typeparamref name="T"/> at the provided square.
     /// New pieces should always be created in this way.
     /// </summary>
     /// <typeparam name="T">A child of the Piece abstract class</typeparam>

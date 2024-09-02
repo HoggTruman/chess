@@ -32,6 +32,99 @@ public class BoardTests
 
 
 
+    #region AddNewPieceTests
+
+    [Fact]
+    public void AddNewPiece_ValidInput_ReturnsInitializedPiece()
+    {
+        // Arrange
+        Board board = new();
+        int row = 4;
+        int col = 5;
+        Color color = Color.White;
+
+        // Act
+        var resultPiece = board.AddNewPiece<QueenPiece>(row, col, color);
+
+        // Assert
+        resultPiece.Row.Should().Be(row);
+        resultPiece.Col.Should().Be(col);
+        resultPiece.Color.Should().Be(color);
+        board.State[row, col].Should().NotBeNull();
+        board.State[row, col].Should().Be(resultPiece);
+    }
+
+
+    [Fact]
+    public void AddNewPiece_ValidSquareOverload_ReturnsInitializedPiece()
+    {
+        // Arrange
+        Board board = new();
+        (int row, int col) square = (4, 5);
+        Color color = Color.White;
+
+        // Act
+        var resultPiece = board.AddNewPiece<QueenPiece>(square, color);
+
+        // Assert
+        resultPiece.Square.Should().Be(square);
+        resultPiece.Color.Should().Be(color);
+        board.State[square.row, square.col].Should().NotBeNull();
+        board.State[square.row, square.col].Should().Be(resultPiece);
+    }
+
+
+    [Fact]
+    public void AddNewPiece_TwoKingPiecesOfSameColor_ThrowsArgumentException()
+    {
+        // Arrange
+        Board board = new();
+        board.AddNewPiece<KingPiece>(0, 0, Color.White);
+
+        // Act + Assert
+        Assert.Throws<ArgumentException>(() => board.AddNewPiece<KingPiece>(1, 1, Color.White));
+    }
+
+
+    [Fact]
+    public void AddNewPiece_ToOccupiedSquare_ThrowsArgumentException()
+    {
+        // Arrange
+        Board board = new();
+        board.AddNewPiece<QueenPiece>(0, 0, Color.White);
+
+        // Act + Assert
+        Assert.Throws<ArgumentException>(() => board.AddNewPiece<QueenPiece>(0, 0, Color.Black));
+    }
+
+
+    [Fact]
+    public void AddNewPiece_RowIndexOutOfBounds_ThrowsArgumentException()
+    {
+        // Arrange
+        Board board = new();
+
+        // Act + Assert
+        Assert.Throws<ArgumentException>(() => board.AddNewPiece<QueenPiece>(-1, 0, Color.Black));
+        Assert.Throws<ArgumentException>(() => board.AddNewPiece<QueenPiece>(8, 0, Color.Black));
+    }
+
+
+    [Fact]
+    public void AddNewPiece_ColIndexOutOfBounds_ThrowsArgumentException()
+    {
+        // Arrange
+        Board board = new();
+
+        // Act + Assert
+        Assert.Throws<ArgumentException>(() => board.AddNewPiece<QueenPiece>(0, -1, Color.Black));
+        Assert.Throws<ArgumentException>(() => board.AddNewPiece<QueenPiece>(0, 8, Color.Black));
+    }
+
+    #endregion
+
+
+
     #region MoveLeavesPlayerInCheck Tests
 
     [Fact]
