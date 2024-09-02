@@ -4,6 +4,7 @@ using GameLogic.Constants;
 using GameLogic.Enums;
 using GameLogic.Helpers;
 using GameLogic.Interfaces;
+using GameLogic.Moves;
 using GameLogic.Pieces;
 using static GameLogic.Helpers.ColorHelpers;
 
@@ -381,6 +382,58 @@ public class BoardTests
 
         board.State.Should().BeEquivalentTo(stateBefore, options =>
             options.WithStrictOrdering());
+    }
+
+    #endregion
+
+
+
+    #region StandardMove Tests
+
+    [Fact]
+    public void StandardMove_WithoutCapture_UpdatesBoardAndPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        (int row, int col) from = (1, 1);
+        (int row, int col) to = (2, 2);
+
+        var movingPiece = board.AddNewPiece<QueenPiece>(from, Color.White);
+
+        StandardMove move = new(from, to);
+
+        // Act
+        board.StandardMove(move);
+
+        // Assert
+        movingPiece.Square.Should().Be(to);
+        board.State[from.row, from.col].Should().BeNull();
+        board.State[to.row, to.col].Should().Be(movingPiece);
+    }
+
+
+    [Fact]
+    public void StandardMove_WithCapture_UpdatesBoardAndPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        (int row, int col) from = (1, 1);
+        (int row, int col) to = (2, 2);
+
+        var movingPiece = board.AddNewPiece<QueenPiece>(from, Color.White);
+        var capturedPiece = board.AddNewPiece<QueenPiece>(to, Color.Black);
+
+        StandardMove move = new(from, to);
+
+        // Act
+        board.StandardMove(move);
+
+        // Assert
+        movingPiece.Square.Should().Be(to);
+        board.State[from.row, from.col].Should().BeNull();
+        board.State[to.row, to.col].Should().Be(movingPiece);
     }
 
     #endregion

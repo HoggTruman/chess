@@ -235,7 +235,7 @@ public class Board
     /// Updates the Board and involved pieces to reflect the StandardMove.
     /// </summary>
     /// <param name="move">A StandardMove instance</param>
-    private void StandardMove(StandardMove move)
+    public void StandardMove(StandardMove move)
     {
         // Remove captured piece from Pieces
         var capturedPiece = State[move.To.row, move.To.col];
