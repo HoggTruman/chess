@@ -471,6 +471,178 @@ public class BoardTests
 
 
 
+    #region PawnPromote Tests
+
+    [Fact]
+    public void PawnPromote_WithoutCapture_UpdatesBoardAndCreatesPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        (int row, int col) from = (6, 4);
+        (int row, int col) to = (7, 4);
+
+        var movingPawn = board.AddNewPiece<PawnPiece>(from, Color.White);
+
+        PromotionMove move = new(from, to, PieceType.Queen);
+
+        // Act
+        board.PawnPromote(move);
+        var promotedPiece = board.State[to.row, to.col];
+
+        // Assert
+        Assert.NotNull(promotedPiece);
+        promotedPiece.Square.Should().Be(to);
+    }
+
+
+    [Fact]
+    public void PawnPromote_WitCapture_UpdatesBoardAndCreatesPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        (int row, int col) from = (6, 4);
+        (int row, int col) to = (7, 5);
+
+        var movingPawn = board.AddNewPiece<PawnPiece>(from, Color.White);
+        var capturedPiece = board.AddNewPiece<QueenPiece>(to, Color.Black);
+
+        PromotionMove move = new(from, to, PieceType.Queen);
+
+        // Act
+        board.PawnPromote(move);
+        var promotedPiece = board.State[to.row, to.col];
+
+        // Assert
+        Assert.NotNull(promotedPiece);
+        board.State[to.row, to.col].Should().NotBe(capturedPiece);
+        promotedPiece.Square.Should().Be(to);
+    }
+
+
+    [Theory]
+    [InlineData(Color.Black)]
+    [InlineData(Color.White)]
+    public void PawnPromote_CreatesPieceOfSameColor(Color color)
+    {
+        // Arrange
+        Board board = new();
+
+        (int row, int col) from = (6, 4);
+        (int row, int col) to = (7, 4);
+
+        var movingPawn = board.AddNewPiece<PawnPiece>(from, color);
+
+        PromotionMove move = new(from, to, PieceType.Queen);
+
+        // Act
+        board.PawnPromote(move);
+        var promotedPiece = board.State[to.row, to.col];
+
+        // Assert
+        Assert.NotNull(promotedPiece);
+        promotedPiece.Color.Should().Be(color);
+    }
+
+
+    [Fact]
+    public void PawnPromote_PromotedToQueen_CreatesQueenPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        (int row, int col) from = (6, 4);
+        (int row, int col) to = (7, 4);
+
+        var movingPawn = board.AddNewPiece<PawnPiece>(from, Color.White);
+
+        PromotionMove move = new(from, to, PieceType.Queen);
+
+        // Act
+        board.PawnPromote(move);
+        var promotedPiece = board.State[to.row, to.col];
+
+        // Assert
+        Assert.NotNull(promotedPiece);
+        promotedPiece.GetType().Should().Be(typeof(QueenPiece));
+    }
+
+
+    [Fact]
+    public void PawnPromote_PromotedToRook_CreatesRookPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        (int row, int col) from = (6, 4);
+        (int row, int col) to = (7, 4);
+
+        var movingPawn = board.AddNewPiece<PawnPiece>(from, Color.White);
+
+        PromotionMove move = new(from, to, PieceType.Rook);
+
+        // Act
+        board.PawnPromote(move);
+        var promotedPiece = board.State[to.row, to.col];
+
+        // Assert
+        Assert.NotNull(promotedPiece);
+        promotedPiece.GetType().Should().Be(typeof(RookPiece));
+    }
+
+
+    [Fact]
+    public void PawnPromote_PromotedToBishop_CreatesBishopPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        (int row, int col) from = (6, 4);
+        (int row, int col) to = (7, 4);
+
+        var movingPawn = board.AddNewPiece<PawnPiece>(from, Color.White);
+
+        PromotionMove move = new(from, to, PieceType.Bishop);
+
+        // Act
+        board.PawnPromote(move);
+        var promotedPiece = board.State[to.row, to.col];
+
+        // Assert
+        Assert.NotNull(promotedPiece);
+        promotedPiece.GetType().Should().Be(typeof(BishopPiece));
+    }
+
+
+    [Fact]
+    public void PawnPromote_PromotedToKnight_CreatesKnightPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        (int row, int col) from = (6, 4);
+        (int row, int col) to = (7, 4);
+
+        var movingPawn = board.AddNewPiece<PawnPiece>(from, Color.White);
+
+        PromotionMove move = new(from, to, PieceType.Knight);
+
+        // Act
+        board.PawnPromote(move);
+        var promotedPiece = board.State[to.row, to.col];
+
+        // Assert
+        Assert.NotNull(promotedPiece);
+        promotedPiece.GetType().Should().Be(typeof(KnightPiece));
+    }
+
+
+
+    #endregion
+
+
+
     #region Castle Tests
 
     [Fact]

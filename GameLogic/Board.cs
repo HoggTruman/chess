@@ -272,7 +272,7 @@ public class Board
     /// </summary>
     /// <param name="move">A PromotionMove instance</param>
     /// <exception cref="ArgumentException"></exception>
-    private void PawnPromote(PromotionMove move)
+    public void PawnPromote(PromotionMove move)
     {
         // Remove pawn
         var pawn = State[move.From.row, move.From.col];
