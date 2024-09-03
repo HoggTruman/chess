@@ -1,3 +1,4 @@
+using GameLogic.Constants;
 using GameLogic.Enums;
 using GameLogic.Helpers;
 using GameLogic.Interfaces;
@@ -59,6 +60,59 @@ public class Board
 
 
     #region Public Methods
+
+    /// <summary>
+    /// Sets up the board with pieces in position for a new game.
+    /// The board must be empty to use this method.
+    /// </summary>
+    /// <exception cref="Exception"></exception>
+    public void Initialize()
+    {
+        // Ensure the board is empty
+        if (Pieces[Color.White].Count != 0 || Pieces[Color.Black].Count != 0)
+        {
+            throw new Exception("Board must be empty to be Initialized.");
+        }
+
+        // Add White pieces
+        AddNewPiece<RookPiece>(StartSquares.WhiteRookQ, Color.White);
+        AddNewPiece<KnightPiece>(StartSquares.WhiteKnightQ, Color.White);
+        AddNewPiece<BishopPiece>(StartSquares.WhiteBishopQ, Color.White);
+        AddNewPiece<QueenPiece>(StartSquares.WhiteQueen, Color.White);
+        AddNewPiece<KingPiece>(StartSquares.WhiteKing, Color.White);
+        AddNewPiece<BishopPiece>(StartSquares.WhiteBishopK, Color.White);
+        AddNewPiece<KnightPiece>(StartSquares.WhiteKnightK, Color.White);
+        AddNewPiece<RookPiece>(StartSquares.WhiteRookK, Color.White);
+
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnA, Color.White);
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnB, Color.White);
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnC, Color.White);
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnD, Color.White);
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnE, Color.White);
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnF, Color.White);
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnG, Color.White);
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnH, Color.White);
+
+        // Add Black pieces
+        AddNewPiece<RookPiece>(StartSquares.BlackRookQ, Color.Black);
+        AddNewPiece<KnightPiece>(StartSquares.BlackKnightQ, Color.Black);
+        AddNewPiece<BishopPiece>(StartSquares.BlackBishopQ, Color.Black);
+        AddNewPiece<QueenPiece>(StartSquares.BlackQueen, Color.Black);
+        AddNewPiece<KingPiece>(StartSquares.BlackKing, Color.Black);
+        AddNewPiece<BishopPiece>(StartSquares.BlackBishopK, Color.Black);
+        AddNewPiece<KnightPiece>(StartSquares.BlackKnightK, Color.Black);
+        AddNewPiece<RookPiece>(StartSquares.BlackRookK, Color.Black);
+
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnA, Color.Black);
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnB, Color.Black);
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnC, Color.Black);
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnD, Color.Black);
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnE, Color.Black);
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnF, Color.Black);
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnG, Color.Black);
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnH, Color.Black);
+    }
+
 
     /// <summary>
     /// Adds a new piece to the Board of type <typeparamref name="T"/> at (row, col).
