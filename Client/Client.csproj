@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\BlackBishop.png" />
+    <None Remove="Assets\BlackKing.png" />
+    <None Remove="Assets\BlackKnight.png" />
+    <None Remove="Assets\BlackPawn.png" />
+    <None Remove="Assets\BlackQueen.png" />
+    <None Remove="Assets\BlackRook.png" />
+    <None Remove="Assets\Board.png" />
+    <None Remove="Assets\WhiteBishop.png" />
+    <None Remove="Assets\WhiteKing.png" />
+    <None Remove="Assets\WhiteKnight.png" />
+    <None Remove="Assets\WhitePawn.png" />
+    <None Remove="Assets\WhiteQueen.png" />
+    <None Remove="Assets\WhiteRook.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GameLogic\GameLogic.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\BlackBishop.png" />
+    <Resource Include="Assets\BlackKing.png" />
+    <Resource Include="Assets\BlackKnight.png" />
+    <Resource Include="Assets\BlackPawn.png" />
+    <Resource Include="Assets\BlackQueen.png" />
+    <Resource Include="Assets\BlackRook.png" />
+    <Resource Include="Assets\Board.png" />
+    <Resource Include="Assets\WhiteBishop.png" />
+    <Resource Include="Assets\WhiteKing.png" />
+    <Resource Include="Assets\WhiteKnight.png" />
+    <Resource Include="Assets\WhitePawn.png" />
+    <Resource Include="Assets\WhiteQueen.png" />
+    <Resource Include="Assets\WhiteRook.png" />
+  </ItemGroup>
+
+</Project>
