@@ -13,7 +13,7 @@ public class RookPiece : Piece
     /// <param name="row">Row index from 0 to 7.</param>
     /// <param name="col">Column index from 0 to 7.</param>
     /// <param name="color">The Color of the piece.</param>
-    public RookPiece(Board board, int row, int col, Color color)
+    public RookPiece(Board board, int row, int col, PieceColor color)
         : base(board, row, col, color, PieceType.Rook, PieceValues.Rook)
     {
 

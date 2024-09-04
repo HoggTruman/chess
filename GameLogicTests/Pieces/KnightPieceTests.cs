@@ -16,17 +16,17 @@ public class KnightPieceTests
     {
         // Arrange
         Board board = new();
-        var knight = board.AddNewPiece<KnightPiece>(4, 4, Color.White);
+        var knight = board.AddNewPiece<KnightPiece>(4, 4, PieceColor.White);
 
 
-        var blockingPiece1 = board.AddNewPiece<KnightPiece>(4, 3, Color.White);
-        var blockingPiece2 = board.AddNewPiece<KnightPiece>(4, 5, Color.White);
-        var blockingPiece3 = board.AddNewPiece<KnightPiece>(3, 4, Color.White);
-        var blockingPiece4 = board.AddNewPiece<KnightPiece>(5, 4, Color.White);
-        var blockingPiece5 = board.AddNewPiece<KnightPiece>(5, 5, Color.White);
-        var blockingPiece6 = board.AddNewPiece<KnightPiece>(3, 3, Color.White);
-        var blockingPiece7 = board.AddNewPiece<KnightPiece>(5, 3, Color.White);
-        var blockingPiece8 = board.AddNewPiece<KnightPiece>(3, 5, Color.White);
+        var blockingPiece1 = board.AddNewPiece<KnightPiece>(4, 3, PieceColor.White);
+        var blockingPiece2 = board.AddNewPiece<KnightPiece>(4, 5, PieceColor.White);
+        var blockingPiece3 = board.AddNewPiece<KnightPiece>(3, 4, PieceColor.White);
+        var blockingPiece4 = board.AddNewPiece<KnightPiece>(5, 4, PieceColor.White);
+        var blockingPiece5 = board.AddNewPiece<KnightPiece>(5, 5, PieceColor.White);
+        var blockingPiece6 = board.AddNewPiece<KnightPiece>(3, 3, PieceColor.White);
+        var blockingPiece7 = board.AddNewPiece<KnightPiece>(5, 3, PieceColor.White);
+        var blockingPiece8 = board.AddNewPiece<KnightPiece>(3, 5, PieceColor.White);
 
         List<(int row, int col)> expected = [
             (5, 6),
@@ -58,19 +58,19 @@ public class KnightPieceTests
         // Arrange
         Board board = new();
 
-        var knight = board.AddNewPiece<KnightPiece>(4, 4, Color.White);
+        var knight = board.AddNewPiece<KnightPiece>(4, 4, PieceColor.White);
 
-        var blockingPiece1 = board.AddNewPiece<KnightPiece>(4, 3, Color.White);
-        var blockingPiece2 = board.AddNewPiece<KnightPiece>(4, 5, Color.White);
-        var blockingPiece3 = board.AddNewPiece<KnightPiece>(3, 4, Color.White);
-        var blockingPiece4 = board.AddNewPiece<KnightPiece>(5, 4, Color.White);
-        var blockingPiece5 = board.AddNewPiece<KnightPiece>(5, 5, Color.White);
-        var blockingPiece6 = board.AddNewPiece<KnightPiece>(3, 3, Color.White);
-        var blockingPiece7 = board.AddNewPiece<KnightPiece>(5, 3, Color.White);
-        var blockingPiece8 = board.AddNewPiece<KnightPiece>(3, 5, Color.White);
+        var blockingPiece1 = board.AddNewPiece<KnightPiece>(4, 3, PieceColor.White);
+        var blockingPiece2 = board.AddNewPiece<KnightPiece>(4, 5, PieceColor.White);
+        var blockingPiece3 = board.AddNewPiece<KnightPiece>(3, 4, PieceColor.White);
+        var blockingPiece4 = board.AddNewPiece<KnightPiece>(5, 4, PieceColor.White);
+        var blockingPiece5 = board.AddNewPiece<KnightPiece>(5, 5, PieceColor.White);
+        var blockingPiece6 = board.AddNewPiece<KnightPiece>(3, 3, PieceColor.White);
+        var blockingPiece7 = board.AddNewPiece<KnightPiece>(5, 3, PieceColor.White);
+        var blockingPiece8 = board.AddNewPiece<KnightPiece>(3, 5, PieceColor.White);
 
-        var sameColorPieceOnTargetedSquare = board.AddNewPiece<KnightPiece>(5, 6, Color.White);
-        var enemyPieceOnTargetedSquare = board.AddNewPiece<KnightPiece>(3, 6, Color.Black);
+        var sameColorPieceOnTargetedSquare = board.AddNewPiece<KnightPiece>(5, 6, PieceColor.White);
+        var enemyPieceOnTargetedSquare = board.AddNewPiece<KnightPiece>(3, 6, PieceColor.Black);
 
         List<(int row, int col)> expected = [
             (5, 2),

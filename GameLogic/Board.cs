@@ -25,9 +25,9 @@ public class Board
 
     public IPiece?[,] State { get; set; }
 
-    public Dictionary<Color, KingPiece?> Kings { get; }
+    public Dictionary<PieceColor, KingPiece?> Kings { get; }
 
-    public Dictionary<Color, List<IPiece>> Pieces { get; }
+    public Dictionary<PieceColor, List<IPiece>> Pieces { get; }
 
     public List<IMove> MoveHistory { get; } = [];
 
@@ -45,13 +45,13 @@ public class Board
         State = new IPiece?[BoardSize, BoardSize];
         Kings = new()
         {
-            [Color.White] = null,
-            [Color.Black] = null
+            [PieceColor.White] = null,
+            [PieceColor.Black] = null
         };
         Pieces = new()
         {
-            [Color.White] = [],
-            [Color.Black] = [],
+            [PieceColor.White] = [],
+            [PieceColor.Black] = [],
         };
     }
 
@@ -69,48 +69,48 @@ public class Board
     public void Initialize()
     {
         // Ensure the board is empty
-        if (Pieces[Color.White].Count != 0 || Pieces[Color.Black].Count != 0)
+        if (Pieces[PieceColor.White].Count != 0 || Pieces[PieceColor.Black].Count != 0)
         {
             throw new Exception("Board must be empty to be Initialized.");
         }
 
         // Add White pieces
-        AddNewPiece<RookPiece>(StartSquares.WhiteRookQ, Color.White);
-        AddNewPiece<KnightPiece>(StartSquares.WhiteKnightQ, Color.White);
-        AddNewPiece<BishopPiece>(StartSquares.WhiteBishopQ, Color.White);
-        AddNewPiece<QueenPiece>(StartSquares.WhiteQueen, Color.White);
-        AddNewPiece<KingPiece>(StartSquares.WhiteKing, Color.White);
-        AddNewPiece<BishopPiece>(StartSquares.WhiteBishopK, Color.White);
-        AddNewPiece<KnightPiece>(StartSquares.WhiteKnightK, Color.White);
-        AddNewPiece<RookPiece>(StartSquares.WhiteRookK, Color.White);
+        AddNewPiece<RookPiece>(StartSquares.WhiteRookQ, PieceColor.White);
+        AddNewPiece<KnightPiece>(StartSquares.WhiteKnightQ, PieceColor.White);
+        AddNewPiece<BishopPiece>(StartSquares.WhiteBishopQ, PieceColor.White);
+        AddNewPiece<QueenPiece>(StartSquares.WhiteQueen, PieceColor.White);
+        AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
+        AddNewPiece<BishopPiece>(StartSquares.WhiteBishopK, PieceColor.White);
+        AddNewPiece<KnightPiece>(StartSquares.WhiteKnightK, PieceColor.White);
+        AddNewPiece<RookPiece>(StartSquares.WhiteRookK, PieceColor.White);
 
-        AddNewPiece<PawnPiece>(StartSquares.WhitePawnA, Color.White);
-        AddNewPiece<PawnPiece>(StartSquares.WhitePawnB, Color.White);
-        AddNewPiece<PawnPiece>(StartSquares.WhitePawnC, Color.White);
-        AddNewPiece<PawnPiece>(StartSquares.WhitePawnD, Color.White);
-        AddNewPiece<PawnPiece>(StartSquares.WhitePawnE, Color.White);
-        AddNewPiece<PawnPiece>(StartSquares.WhitePawnF, Color.White);
-        AddNewPiece<PawnPiece>(StartSquares.WhitePawnG, Color.White);
-        AddNewPiece<PawnPiece>(StartSquares.WhitePawnH, Color.White);
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnA, PieceColor.White);
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnB, PieceColor.White);
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnC, PieceColor.White);
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnD, PieceColor.White);
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnE, PieceColor.White);
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnF, PieceColor.White);
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnG, PieceColor.White);
+        AddNewPiece<PawnPiece>(StartSquares.WhitePawnH, PieceColor.White);
 
         // Add Black pieces
-        AddNewPiece<RookPiece>(StartSquares.BlackRookQ, Color.Black);
-        AddNewPiece<KnightPiece>(StartSquares.BlackKnightQ, Color.Black);
-        AddNewPiece<BishopPiece>(StartSquares.BlackBishopQ, Color.Black);
-        AddNewPiece<QueenPiece>(StartSquares.BlackQueen, Color.Black);
-        AddNewPiece<KingPiece>(StartSquares.BlackKing, Color.Black);
-        AddNewPiece<BishopPiece>(StartSquares.BlackBishopK, Color.Black);
-        AddNewPiece<KnightPiece>(StartSquares.BlackKnightK, Color.Black);
-        AddNewPiece<RookPiece>(StartSquares.BlackRookK, Color.Black);
+        AddNewPiece<RookPiece>(StartSquares.BlackRookQ, PieceColor.Black);
+        AddNewPiece<KnightPiece>(StartSquares.BlackKnightQ, PieceColor.Black);
+        AddNewPiece<BishopPiece>(StartSquares.BlackBishopQ, PieceColor.Black);
+        AddNewPiece<QueenPiece>(StartSquares.BlackQueen, PieceColor.Black);
+        AddNewPiece<KingPiece>(StartSquares.BlackKing, PieceColor.Black);
+        AddNewPiece<BishopPiece>(StartSquares.BlackBishopK, PieceColor.Black);
+        AddNewPiece<KnightPiece>(StartSquares.BlackKnightK, PieceColor.Black);
+        AddNewPiece<RookPiece>(StartSquares.BlackRookK, PieceColor.Black);
 
-        AddNewPiece<PawnPiece>(StartSquares.BlackPawnA, Color.Black);
-        AddNewPiece<PawnPiece>(StartSquares.BlackPawnB, Color.Black);
-        AddNewPiece<PawnPiece>(StartSquares.BlackPawnC, Color.Black);
-        AddNewPiece<PawnPiece>(StartSquares.BlackPawnD, Color.Black);
-        AddNewPiece<PawnPiece>(StartSquares.BlackPawnE, Color.Black);
-        AddNewPiece<PawnPiece>(StartSquares.BlackPawnF, Color.Black);
-        AddNewPiece<PawnPiece>(StartSquares.BlackPawnG, Color.Black);
-        AddNewPiece<PawnPiece>(StartSquares.BlackPawnH, Color.Black);
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnA, PieceColor.Black);
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnB, PieceColor.Black);
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnC, PieceColor.Black);
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnD, PieceColor.Black);
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnE, PieceColor.Black);
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnF, PieceColor.Black);
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnG, PieceColor.Black);
+        AddNewPiece<PawnPiece>(StartSquares.BlackPawnH, PieceColor.Black);
     }
 
 
@@ -124,7 +124,7 @@ public class Board
     /// <param name="color">The Color of the new piece.</param>
     /// <returns>The new piece of type <typeparamref name="T"/></returns>
     /// <exception cref="ArgumentException"></exception>
-    public T AddNewPiece<T>(int row, int col, Color color=Color.White) where T : Piece
+    public T AddNewPiece<T>(int row, int col, PieceColor color=PieceColor.White) where T : Piece
     {
         // Ensure row and col are in-bounds
         if (row < MinIndex || row > MaxIndex ||
@@ -173,7 +173,7 @@ public class Board
     /// <param name="square">The (row, column) square to place the new piece at.</param>
     /// <param name="color">The Color of the new piece.</param>
     /// <returns>The new piece of type <typeparamref name="T"/></returns>
-    public T AddNewPiece<T>((int row, int col) square, Color color = Color.White) where T : Piece
+    public T AddNewPiece<T>((int row, int col) square, PieceColor color = PieceColor.White) where T : Piece
     {
         return AddNewPiece<T>(square.row, square.col, color);
     }

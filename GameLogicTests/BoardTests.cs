@@ -23,10 +23,10 @@ public class BoardTests
 
         // Assert
         testBoard.State.Should().BeEquivalentTo(emptyBoardState);
-        testBoard.Pieces[Color.White].Should().BeEmpty();
-        testBoard.Pieces[Color.Black].Should().BeEmpty();
-        testBoard.Kings[Color.White].Should().BeNull();
-        testBoard.Kings[Color.Black].Should().BeNull();
+        testBoard.Pieces[PieceColor.White].Should().BeEmpty();
+        testBoard.Pieces[PieceColor.Black].Should().BeEmpty();
+        testBoard.Kings[PieceColor.White].Should().BeNull();
+        testBoard.Kings[PieceColor.Black].Should().BeNull();
     }
 
     #endregion
@@ -42,7 +42,7 @@ public class BoardTests
         Board board = new();
         int row = 4;
         int col = 5;
-        Color color = Color.White;
+        PieceColor color = PieceColor.White;
 
         // Act
         var resultPiece = board.AddNewPiece<QueenPiece>(row, col, color);
@@ -62,7 +62,7 @@ public class BoardTests
         // Arrange
         Board board = new();
         (int row, int col) square = (4, 5);
-        Color color = Color.White;
+        PieceColor color = PieceColor.White;
 
         // Act
         var resultPiece = board.AddNewPiece<QueenPiece>(square, color);
@@ -80,10 +80,10 @@ public class BoardTests
     {
         // Arrange
         Board board = new();
-        board.AddNewPiece<KingPiece>(0, 0, Color.White);
+        board.AddNewPiece<KingPiece>(0, 0, PieceColor.White);
 
         // Act + Assert
-        Assert.Throws<ArgumentException>(() => board.AddNewPiece<KingPiece>(1, 1, Color.White));
+        Assert.Throws<ArgumentException>(() => board.AddNewPiece<KingPiece>(1, 1, PieceColor.White));
     }
 
 
@@ -92,10 +92,10 @@ public class BoardTests
     {
         // Arrange
         Board board = new();
-        board.AddNewPiece<QueenPiece>(0, 0, Color.White);
+        board.AddNewPiece<QueenPiece>(0, 0, PieceColor.White);
 
         // Act + Assert
-        Assert.Throws<ArgumentException>(() => board.AddNewPiece<QueenPiece>(0, 0, Color.Black));
+        Assert.Throws<ArgumentException>(() => board.AddNewPiece<QueenPiece>(0, 0, PieceColor.Black));
     }
 
 
@@ -106,8 +106,8 @@ public class BoardTests
         Board board = new();
 
         // Act + Assert
-        Assert.Throws<ArgumentException>(() => board.AddNewPiece<QueenPiece>(-1, 0, Color.Black));
-        Assert.Throws<ArgumentException>(() => board.AddNewPiece<QueenPiece>(8, 0, Color.Black));
+        Assert.Throws<ArgumentException>(() => board.AddNewPiece<QueenPiece>(-1, 0, PieceColor.Black));
+        Assert.Throws<ArgumentException>(() => board.AddNewPiece<QueenPiece>(8, 0, PieceColor.Black));
     }
 
 
@@ -118,8 +118,8 @@ public class BoardTests
         Board board = new();
 
         // Act + Assert
-        Assert.Throws<ArgumentException>(() => board.AddNewPiece<QueenPiece>(0, -1, Color.Black));
-        Assert.Throws<ArgumentException>(() => board.AddNewPiece<QueenPiece>(0, 8, Color.Black));
+        Assert.Throws<ArgumentException>(() => board.AddNewPiece<QueenPiece>(0, -1, PieceColor.Black));
+        Assert.Throws<ArgumentException>(() => board.AddNewPiece<QueenPiece>(0, 8, PieceColor.Black));
     }
 
     #endregion
@@ -140,9 +140,9 @@ public class BoardTests
 
 
     [Theory]
-    [InlineData(Color.White)]
-    [InlineData(Color.Black)]
-    public void MoveLeavesPlayerInCheck_WithNoKing_ReturnsFalse(Color playerColor)
+    [InlineData(PieceColor.White)]
+    [InlineData(PieceColor.Black)]
+    public void MoveLeavesPlayerInCheck_WithNoKing_ReturnsFalse(PieceColor playerColor)
     {
         // Arrange
         Board board = new();
@@ -158,9 +158,9 @@ public class BoardTests
 
 
     [Theory]
-    [InlineData(Color.White)]
-    [InlineData(Color.Black)]
-    public void MoveLeavesPlayerInCheck_WithNoEnemyPieces_ReturnsFalse(Color playerColor)
+    [InlineData(PieceColor.White)]
+    [InlineData(PieceColor.Black)]
+    public void MoveLeavesPlayerInCheck_WithNoEnemyPieces_ReturnsFalse(PieceColor playerColor)
     {
         // Arrange
         Board board = new();
@@ -177,9 +177,9 @@ public class BoardTests
 
 
     [Theory]
-    [InlineData(Color.White)]
-    [InlineData(Color.Black)]
-    public void MoveLeavesPlayerInCheck_WhenNotLeftInCheck_ReturnsFalse(Color playerColor)
+    [InlineData(PieceColor.White)]
+    [InlineData(PieceColor.Black)]
+    public void MoveLeavesPlayerInCheck_WhenNotLeftInCheck_ReturnsFalse(PieceColor playerColor)
     {
         // Arrange
         Board board = new();
@@ -198,9 +198,9 @@ public class BoardTests
 
 
     [Theory]
-    [InlineData(Color.White)]
-    [InlineData(Color.Black)]
-    public void MoveLeavesPlayerInCheck_WhenCheckBlocked_ReturnsFalse(Color playerColor)
+    [InlineData(PieceColor.White)]
+    [InlineData(PieceColor.Black)]
+    public void MoveLeavesPlayerInCheck_WhenCheckBlocked_ReturnsFalse(PieceColor playerColor)
     {
         // Arrange
         Board board = new();
@@ -219,9 +219,9 @@ public class BoardTests
 
 
     [Theory]
-    [InlineData(Color.White)]
-    [InlineData(Color.Black)]
-    public void MoveLeavesPlayerInCheck_WhenLeftInCheck_ReturnsTrue(Color playerColor)
+    [InlineData(PieceColor.White)]
+    [InlineData(PieceColor.Black)]
+    public void MoveLeavesPlayerInCheck_WhenLeftInCheck_ReturnsTrue(PieceColor playerColor)
     {
         // Arrange
         Board board = new();
@@ -239,9 +239,9 @@ public class BoardTests
 
 
     [Theory]
-    [InlineData(Color.White)]
-    [InlineData(Color.Black)]
-    public void MoveLeavesPlayerInCheck_EnPassantLeavingInCheck_ReturnsTrue(Color playerColor)
+    [InlineData(PieceColor.White)]
+    [InlineData(PieceColor.Black)]
+    public void MoveLeavesPlayerInCheck_EnPassantLeavingInCheck_ReturnsTrue(PieceColor playerColor)
     {
         // Arrange
         Board board = new();
@@ -261,9 +261,9 @@ public class BoardTests
 
 
     [Theory]
-    [InlineData(Color.White)]
-    [InlineData(Color.Black)]
-    public void MoveLeavesPlayerInCheck_EnPassantNotLeavingInCheck_ReturnsFalse(Color playerColor)
+    [InlineData(PieceColor.White)]
+    [InlineData(PieceColor.Black)]
+    public void MoveLeavesPlayerInCheck_EnPassantNotLeavingInCheck_ReturnsFalse(PieceColor playerColor)
     {
         // Arrange
         Board board = new();
@@ -282,9 +282,9 @@ public class BoardTests
 
 
     [Theory]
-    [InlineData(Color.White)]
-    [InlineData(Color.Black)]
-    public void MoveLeavesPlayerInCheck_BoardIsTheSameBeforeAndAfter(Color playerColor)
+    [InlineData(PieceColor.White)]
+    [InlineData(PieceColor.Black)]
+    public void MoveLeavesPlayerInCheck_BoardIsTheSameBeforeAndAfter(PieceColor playerColor)
     {
         // In this test the player's queen will move to the square of the enemy's queen.
         // After calling the method, the board's State and Kings properties should be unchanged.
@@ -305,11 +305,11 @@ public class BoardTests
         var enemyKingBeforeSquare = enemyKing.Square;
         var enemyQueenBeforeSquare = enemyQueen.Square;
 
-        var whitePiecesBefore = board.Pieces[Color.White].ToList();
-        var blackPiecesBefore = board.Pieces[Color.Black].ToList();
+        var whitePiecesBefore = board.Pieces[PieceColor.White].ToList();
+        var blackPiecesBefore = board.Pieces[PieceColor.Black].ToList();
 
-        var whiteKingBefore = board.Kings[Color.White];
-        var blackKingBefore = board.Kings[Color.Black];
+        var whiteKingBefore = board.Kings[PieceColor.White];
+        var blackKingBefore = board.Kings[PieceColor.Black];
 
         var stateBefore = BoardHelpers.CopyState(board.State);
 
@@ -322,11 +322,11 @@ public class BoardTests
         enemyKing.Square.Should().Be(enemyKingBeforeSquare);
         enemyQueen.Square.Should().Be(enemyQueenBeforeSquare);
 
-        board.Pieces[Color.White].Should().BeEquivalentTo(whitePiecesBefore);
-        board.Pieces[Color.Black].Should().BeEquivalentTo(blackPiecesBefore);
+        board.Pieces[PieceColor.White].Should().BeEquivalentTo(whitePiecesBefore);
+        board.Pieces[PieceColor.Black].Should().BeEquivalentTo(blackPiecesBefore);
 
-        board.Kings[Color.White].Should().Be(whiteKingBefore);
-        board.Kings[Color.Black].Should().Be(blackKingBefore);
+        board.Kings[PieceColor.White].Should().Be(whiteKingBefore);
+        board.Kings[PieceColor.Black].Should().Be(blackKingBefore);
 
         board.State.Should().BeEquivalentTo(stateBefore, options =>
             options.WithStrictOrdering());
@@ -334,9 +334,9 @@ public class BoardTests
 
 
     [Theory]
-    [InlineData(Color.White)]
-    [InlineData(Color.Black)]
-    public void MoveLeavesPlayerInCheck_BoardIsTheSameBeforeAndAfterEnPassant(Color playerColor)
+    [InlineData(PieceColor.White)]
+    [InlineData(PieceColor.Black)]
+    public void MoveLeavesPlayerInCheck_BoardIsTheSameBeforeAndAfterEnPassant(PieceColor playerColor)
     {
         // In this test the player's pawn will perform en passant
         // After calling the method, the board's State and Kings properties should be unchanged.
@@ -357,11 +357,11 @@ public class BoardTests
         var enemyKingBeforeSquare = enemyKing.Square;
         var enemyPawnBeforeSquare = enemyPawn.Square;
 
-        var whitePiecesBefore = board.Pieces[Color.White].ToList();
-        var blackPiecesBefore = board.Pieces[Color.Black].ToList();
+        var whitePiecesBefore = board.Pieces[PieceColor.White].ToList();
+        var blackPiecesBefore = board.Pieces[PieceColor.Black].ToList();
 
-        var whiteKingBefore = board.Kings[Color.White];
-        var blackKingBefore = board.Kings[Color.Black];
+        var whiteKingBefore = board.Kings[PieceColor.White];
+        var blackKingBefore = board.Kings[PieceColor.Black];
 
         var stateBefore = BoardHelpers.CopyState(board.State);
 
@@ -374,11 +374,11 @@ public class BoardTests
         enemyKing.Square.Should().Be(enemyKingBeforeSquare);
         enemyPawn.Square.Should().Be(enemyPawnBeforeSquare);
 
-        board.Pieces[Color.White].Should().BeEquivalentTo(whitePiecesBefore);
-        board.Pieces[Color.Black].Should().BeEquivalentTo(blackPiecesBefore);
+        board.Pieces[PieceColor.White].Should().BeEquivalentTo(whitePiecesBefore);
+        board.Pieces[PieceColor.Black].Should().BeEquivalentTo(blackPiecesBefore);
 
-        board.Kings[Color.White].Should().Be(whiteKingBefore);
-        board.Kings[Color.Black].Should().Be(blackKingBefore);
+        board.Kings[PieceColor.White].Should().Be(whiteKingBefore);
+        board.Kings[PieceColor.Black].Should().Be(blackKingBefore);
 
         board.State.Should().BeEquivalentTo(stateBefore, options =>
             options.WithStrictOrdering());
@@ -399,7 +399,7 @@ public class BoardTests
         (int row, int col) from = (1, 1);
         (int row, int col) to = (2, 2);
 
-        var movingPiece = board.AddNewPiece<QueenPiece>(from, Color.White);
+        var movingPiece = board.AddNewPiece<QueenPiece>(from, PieceColor.White);
 
         StandardMove move = new(from, to);
 
@@ -422,8 +422,8 @@ public class BoardTests
         (int row, int col) from = (1, 1);
         (int row, int col) to = (2, 2);
 
-        var movingPiece = board.AddNewPiece<QueenPiece>(from, Color.White);
-        var capturedPiece = board.AddNewPiece<QueenPiece>(to, Color.Black);
+        var movingPiece = board.AddNewPiece<QueenPiece>(from, PieceColor.White);
+        var capturedPiece = board.AddNewPiece<QueenPiece>(to, PieceColor.Black);
 
         StandardMove move = new(from, to);
 
@@ -452,8 +452,8 @@ public class BoardTests
         (int row, int col) to = (5, 3);
         (int row, int col) captured = (4, 3);
 
-        var movingPawn = board.AddNewPiece<PawnPiece>(from, Color.White);
-        var capturedPawn = board.AddNewPiece<PawnPiece>(captured, Color.Black);
+        var movingPawn = board.AddNewPiece<PawnPiece>(from, PieceColor.White);
+        var capturedPawn = board.AddNewPiece<PawnPiece>(captured, PieceColor.Black);
 
         EnPassantMove move = new(from, to, captured);
 
@@ -482,7 +482,7 @@ public class BoardTests
         (int row, int col) from = (6, 4);
         (int row, int col) to = (7, 4);
 
-        var movingPawn = board.AddNewPiece<PawnPiece>(from, Color.White);
+        var movingPawn = board.AddNewPiece<PawnPiece>(from, PieceColor.White);
 
         PromotionMove move = new(from, to, PieceType.Queen);
 
@@ -505,8 +505,8 @@ public class BoardTests
         (int row, int col) from = (6, 4);
         (int row, int col) to = (7, 5);
 
-        var movingPawn = board.AddNewPiece<PawnPiece>(from, Color.White);
-        var capturedPiece = board.AddNewPiece<QueenPiece>(to, Color.Black);
+        var movingPawn = board.AddNewPiece<PawnPiece>(from, PieceColor.White);
+        var capturedPiece = board.AddNewPiece<QueenPiece>(to, PieceColor.Black);
 
         PromotionMove move = new(from, to, PieceType.Queen);
 
@@ -522,9 +522,9 @@ public class BoardTests
 
 
     [Theory]
-    [InlineData(Color.Black)]
-    [InlineData(Color.White)]
-    public void PawnPromote_CreatesPieceOfSameColor(Color color)
+    [InlineData(PieceColor.Black)]
+    [InlineData(PieceColor.White)]
+    public void PawnPromote_CreatesPieceOfSameColor(PieceColor color)
     {
         // Arrange
         Board board = new();
@@ -555,7 +555,7 @@ public class BoardTests
         (int row, int col) from = (6, 4);
         (int row, int col) to = (7, 4);
 
-        var movingPawn = board.AddNewPiece<PawnPiece>(from, Color.White);
+        var movingPawn = board.AddNewPiece<PawnPiece>(from, PieceColor.White);
 
         PromotionMove move = new(from, to, PieceType.Queen);
 
@@ -578,7 +578,7 @@ public class BoardTests
         (int row, int col) from = (6, 4);
         (int row, int col) to = (7, 4);
 
-        var movingPawn = board.AddNewPiece<PawnPiece>(from, Color.White);
+        var movingPawn = board.AddNewPiece<PawnPiece>(from, PieceColor.White);
 
         PromotionMove move = new(from, to, PieceType.Rook);
 
@@ -601,7 +601,7 @@ public class BoardTests
         (int row, int col) from = (6, 4);
         (int row, int col) to = (7, 4);
 
-        var movingPawn = board.AddNewPiece<PawnPiece>(from, Color.White);
+        var movingPawn = board.AddNewPiece<PawnPiece>(from, PieceColor.White);
 
         PromotionMove move = new(from, to, PieceType.Bishop);
 
@@ -624,7 +624,7 @@ public class BoardTests
         (int row, int col) from = (6, 4);
         (int row, int col) to = (7, 4);
 
-        var movingPawn = board.AddNewPiece<PawnPiece>(from, Color.White);
+        var movingPawn = board.AddNewPiece<PawnPiece>(from, PieceColor.White);
 
         PromotionMove move = new(from, to, PieceType.Knight);
 
@@ -656,8 +656,8 @@ public class BoardTests
         (int row, int col) rookFrom = (0, 7);
         (int row, int col) rookTo = (0, 5);
 
-        var king = board.AddNewPiece<KingPiece>(kingFrom, Color.White);
-        var rook = board.AddNewPiece<RookPiece>(rookFrom, Color.White);
+        var king = board.AddNewPiece<KingPiece>(kingFrom, PieceColor.White);
+        var rook = board.AddNewPiece<RookPiece>(rookFrom, PieceColor.White);
 
         CastleMove move = new(kingFrom, kingTo, rookFrom, rookTo);
 

@@ -29,7 +29,7 @@ public interface IPiece
     /// <summary>
     /// The color of the piece (White or Black)
     /// </summary>
-    Color Color { get; }
+    PieceColor Color { get; }
 
     /// <summary>
     /// The type of the piece (e.g. Pawn, King, ...)

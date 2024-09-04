@@ -28,10 +28,10 @@ public class PawnPiece : Piece
     /// <param name="row">Row index from 0 to 7.</param>
     /// <param name="col">Column index from 0 to 7.</param>
     /// <param name="color">The Color of the piece.</param>
-    public PawnPiece(Board board, int row, int col, Color color)
+    public PawnPiece(Board board, int row, int col, PieceColor color)
         : base(board, row, col, color, PieceType.Pawn, PieceValues.Pawn)
     {
-        _fwd = color == Color.White? 1: -1;
+        _fwd = color == PieceColor.White? 1: -1;
     }
 
     #endregion

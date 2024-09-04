@@ -20,7 +20,7 @@ public class PieceTests
         // Arrange
         Board board = new();
 
-        var piece = board.AddNewPiece<QueenPiece>(4, 4, Color.White);
+        var piece = board.AddNewPiece<QueenPiece>(4, 4, PieceColor.White);
 
         // Act
         var result = piece.HasMoved();
@@ -36,7 +36,7 @@ public class PieceTests
         // Arrange
         Board board = new();
 
-        var piece = board.AddNewPiece<QueenPiece>(4, 4, Color.White);
+        var piece = board.AddNewPiece<QueenPiece>(4, 4, PieceColor.White);
 
         StandardMove move = new(piece.Square, (5, 5));
         board.HandleMove(move);
@@ -55,8 +55,8 @@ public class PieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, Color.White);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, Color.White);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, PieceColor.White);
 
         CastleMove move = new(king.Square, (0, 6), rook.Square, (0, 5));
         board.HandleMove(move);
@@ -77,8 +77,8 @@ public class PieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(4, 4, Color.White);
-        var enemyPawn = board.AddNewPiece<PawnPiece>(6, 3, Color.Black);
+        var pawn = board.AddNewPiece<PawnPiece>(4, 4, PieceColor.White);
+        var enemyPawn = board.AddNewPiece<PawnPiece>(6, 3, PieceColor.Black);
 
         StandardMove enemyMove = new(enemyPawn.Square, (4, 3));
         EnPassantMove enPassantMove = new(pawn.Square, (5, 3), (4, 3));
@@ -100,7 +100,7 @@ public class PieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(6, 4, Color.White);
+        var pawn = board.AddNewPiece<PawnPiece>(6, 4, PieceColor.White);
         (int row, int col) to = (7, 4);
 
         PromotionMove promotionMove = new(pawn.Square, to, PieceType.Queen);

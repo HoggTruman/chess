@@ -41,12 +41,12 @@ public static class Images
     /// <param name="pieceType">The type of piece</param>
     /// <param name="color">The color of the piece</param>
     /// <returns>The ImageSource correspond to the requested piece</returns>
-    public static ImageSource GetImageSource(PieceType pieceType, GameLogic.Enums.Color color)
+    public static ImageSource GetImageSource(PieceType pieceType, PieceColor color)
     {
         return color switch
         {
-            GameLogic.Enums.Color.White => whiteSources[pieceType],
-            GameLogic.Enums.Color.Black => blackSources[pieceType],
+            PieceColor.White => whiteSources[pieceType],
+            PieceColor.Black => blackSources[pieceType],
             _ => null!
         };
     }

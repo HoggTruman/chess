@@ -42,7 +42,7 @@ public abstract class Piece : IPiece
 
     public (int row, int col) StartSquare { get; }
 
-    public Color Color { get; }
+    public PieceColor Color { get; }
 
     public PieceType PieceType { get; }
 
@@ -63,7 +63,7 @@ public abstract class Piece : IPiece
     /// <param name="color">The Color of the piece.</param>
     /// <param name="pieceType">The type of a piece. (e.g. Pawn, King, ...)</param>
     /// <param name="value">The point-value of a piece. e.g. 5 for a rook</param>
-    protected Piece(Board board, int row, int col, Color color, PieceType pieceType, int value)
+    protected Piece(Board board, int row, int col, PieceColor color, PieceType pieceType, int value)
     {
         _board = board;
         _row = row;

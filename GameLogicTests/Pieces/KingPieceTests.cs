@@ -17,9 +17,9 @@ public class KingPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(2, 6, Color.White);
+        var king = board.AddNewPiece<KingPiece>(2, 6, PieceColor.White);
 
-        var blockingPiece = board.AddNewPiece<BishopPiece>(2, 7, Color.White);
+        var blockingPiece = board.AddNewPiece<BishopPiece>(2, 7, PieceColor.White);
 
         List<(int row, int col)> expected = [
             (3, 6),
@@ -51,10 +51,10 @@ public class KingPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(2, 6, Color.White);
+        var king = board.AddNewPiece<KingPiece>(2, 6, PieceColor.White);
 
-        var blockingPiece = board.AddNewPiece<BishopPiece>(2, 7, Color.White);
-        var nonblockingPiece = board.AddNewPiece<BishopPiece>(1, 7, Color.Black);
+        var blockingPiece = board.AddNewPiece<BishopPiece>(2, 7, PieceColor.White);
+        var nonblockingPiece = board.AddNewPiece<BishopPiece>(1, 7, PieceColor.Black);
 
         List<(int row, int col)> expected = [
             (3, 6),
@@ -84,8 +84,8 @@ public class KingPieceTests
         // Arrange 
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, Color.White);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, Color.White);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, PieceColor.White);
 
         (int row, int col) expectedKingSquare = (0, 6);
         (int row, int col) expectedRookSquare = (0, 5);
@@ -106,8 +106,8 @@ public class KingPieceTests
         // Arrange 
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, Color.White);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookQ, Color.White);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookQ, PieceColor.White);
 
         (int row, int col) expectedKingSquare = (0, 2);
         (int row, int col) expectedRookSquare = (0, 3);
@@ -128,8 +128,8 @@ public class KingPieceTests
         // Arrange 
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.BlackKing, Color.Black);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.BlackRookK, Color.Black);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.BlackKing, PieceColor.Black);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.BlackRookK, PieceColor.Black);
 
         (int row, int col) expectedKingSquare = (7, 6);
         (int row, int col) expectedRookSquare = (7, 5);
@@ -150,8 +150,8 @@ public class KingPieceTests
         // Arrange 
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.BlackKing, Color.Black);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.BlackRookQ, Color.Black);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.BlackKing, PieceColor.Black);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.BlackRookQ, PieceColor.Black);
 
         (int row, int col) expectedKingSquare = (7, 2);
         (int row, int col) expectedRookSquare = (7, 3);
@@ -172,8 +172,8 @@ public class KingPieceTests
         // Arrange 
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, Color.White);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.BlackRookK, Color.White);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.BlackRookK, PieceColor.White);
 
         // Act
         var result = king.GetCastleSquares(rook);
@@ -194,8 +194,8 @@ public class KingPieceTests
         // Arrange
         Board board = new();
 
-        var whiteQueen = board.AddNewPiece<QueenPiece>(0, 0, Color.White);
-        var blackKing = board.AddNewPiece<KingPiece>(7, 0, Color.Black);
+        var whiteQueen = board.AddNewPiece<QueenPiece>(0, 0, PieceColor.White);
+        var blackKing = board.AddNewPiece<KingPiece>(7, 0, PieceColor.Black);
 
         // Act
         var result = blackKing.IsChecked();
@@ -210,8 +210,8 @@ public class KingPieceTests
     {
         Board board = new();
 
-        var blackQueen = board.AddNewPiece<QueenPiece>(0, 0, Color.Black);
-        var whiteKing = board.AddNewPiece<KingPiece>(7, 0, Color.White);
+        var blackQueen = board.AddNewPiece<QueenPiece>(0, 0, PieceColor.Black);
+        var whiteKing = board.AddNewPiece<KingPiece>(7, 0, PieceColor.White);
 
         // Act
         var result = whiteKing.IsChecked();
@@ -227,10 +227,10 @@ public class KingPieceTests
         // Arrange 
         Board board = new();
 
-        var whiteKing = board.AddNewPiece<KingPiece>(0, 0, Color.White);
-        var whiteQueen = board.AddNewPiece<QueenPiece>(1, 0, Color.White);
-        var blackKing = board.AddNewPiece<KingPiece>(0, 7, Color.Black);
-        var blackQueen = board.AddNewPiece<QueenPiece>(1, 7, Color.Black);       
+        var whiteKing = board.AddNewPiece<KingPiece>(0, 0, PieceColor.White);
+        var whiteQueen = board.AddNewPiece<QueenPiece>(1, 0, PieceColor.White);
+        var blackKing = board.AddNewPiece<KingPiece>(0, 7, PieceColor.Black);
+        var blackQueen = board.AddNewPiece<QueenPiece>(1, 7, PieceColor.Black);       
 
         // Act
         var whiteChecked = whiteKing.IsChecked();

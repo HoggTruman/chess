@@ -1,6 +1,6 @@
 namespace GameLogic.Enums;
 
-public enum Color
+public enum PieceColor
 {
     White,
     Black

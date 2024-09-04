@@ -15,9 +15,9 @@ public class BishopPieceTests
     {
         // Arrange
         Board board = new();
-        var bishop = board.AddNewPiece<BishopPiece>(4, 4, Color.White);
+        var bishop = board.AddNewPiece<BishopPiece>(4, 4, PieceColor.White);
 
-        var blockingPiece = board.AddNewPiece<BishopPiece>(5, 5, Color.White);
+        var blockingPiece = board.AddNewPiece<BishopPiece>(5, 5, PieceColor.White);
 
         List<(int row, int col)> expected = [
             (0, 0),
@@ -51,10 +51,10 @@ public class BishopPieceTests
     {
         // Arrange
         Board board = new();
-        var bishop = board.AddNewPiece<BishopPiece>(4, 4, Color.White);
+        var bishop = board.AddNewPiece<BishopPiece>(4, 4, PieceColor.White);
 
-        var blockingPiece = board.AddNewPiece<BishopPiece>(5, 5, Color.White);
-        var nonblockingPiece = board.AddNewPiece<BishopPiece>(0, 0, Color.Black);
+        var blockingPiece = board.AddNewPiece<BishopPiece>(5, 5, PieceColor.White);
+        var nonblockingPiece = board.AddNewPiece<BishopPiece>(0, 0, PieceColor.Black);
 
         List<(int row, int col)> expected = [
             (0, 0),

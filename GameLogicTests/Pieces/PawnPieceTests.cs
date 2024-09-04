@@ -18,7 +18,7 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(4, 4, Color.White);
+        var pawn = board.AddNewPiece<PawnPiece>(4, 4, PieceColor.White);
 
         List<(int row, int col)> expected = [
             (5, 3),
@@ -39,7 +39,7 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(4, 4, Color.Black);
+        var pawn = board.AddNewPiece<PawnPiece>(4, 4, PieceColor.Black);
 
         List<(int row, int col)> expected = [
             (3, 3),
@@ -65,7 +65,7 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(1, 4, Color.White);
+        var pawn = board.AddNewPiece<PawnPiece>(1, 4, PieceColor.White);
 
         List<(int row, int col)> expected = [
             (2, 4),
@@ -86,7 +86,7 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(1, 4, Color.White);
+        var pawn = board.AddNewPiece<PawnPiece>(1, 4, PieceColor.White);
 
         StandardMove move = new(pawn.Square, (2, 4));
         board.HandleMove(move);
@@ -109,9 +109,9 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(1, 4, Color.White);
-        var enemyPiece1 = board.AddNewPiece<PawnPiece>(2, 3, Color.Black);
-        var enemyPiece2 = board.AddNewPiece<PawnPiece>(2, 5, Color.Black);
+        var pawn = board.AddNewPiece<PawnPiece>(1, 4, PieceColor.White);
+        var enemyPiece1 = board.AddNewPiece<PawnPiece>(2, 3, PieceColor.Black);
+        var enemyPiece2 = board.AddNewPiece<PawnPiece>(2, 5, PieceColor.Black);
 
         List<(int row, int col)> expected = [
             (2, 4),
@@ -134,8 +134,8 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(1, 4, Color.White);
-        var blockingPiece = board.AddNewPiece<PawnPiece>(2, 4, Color.Black);
+        var pawn = board.AddNewPiece<PawnPiece>(1, 4, PieceColor.White);
+        var blockingPiece = board.AddNewPiece<PawnPiece>(2, 4, PieceColor.Black);
 
         // Act
         var result = pawn.GetReachableSquares();
@@ -151,7 +151,7 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(6, 4, Color.Black);
+        var pawn = board.AddNewPiece<PawnPiece>(6, 4, PieceColor.Black);
 
         List<(int row, int col)> expected = [
             (5, 4),
@@ -172,7 +172,7 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(6, 4, Color.Black);
+        var pawn = board.AddNewPiece<PawnPiece>(6, 4, PieceColor.Black);
 
         StandardMove move = new(pawn.Square, (5, 4));
         board.HandleMove(move);
@@ -195,9 +195,9 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(6, 4, Color.Black);
-        var enemyPiece1 = board.AddNewPiece<PawnPiece>(5, 3, Color.White);
-        var enemyPiece2 = board.AddNewPiece<PawnPiece>(5, 5, Color.White);
+        var pawn = board.AddNewPiece<PawnPiece>(6, 4, PieceColor.Black);
+        var enemyPiece1 = board.AddNewPiece<PawnPiece>(5, 3, PieceColor.White);
+        var enemyPiece2 = board.AddNewPiece<PawnPiece>(5, 5, PieceColor.White);
 
         List<(int row, int col)> expected = [
             (5, 4),
@@ -220,8 +220,8 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(6, 4, Color.Black);
-        var blockingPiece = board.AddNewPiece<PawnPiece>(5, 4, Color.White);
+        var pawn = board.AddNewPiece<PawnPiece>(6, 4, PieceColor.Black);
+        var blockingPiece = board.AddNewPiece<PawnPiece>(5, 4, PieceColor.White);
 
         // Act
         var result = pawn.GetReachableSquares();
@@ -246,8 +246,8 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var whitePawn = board.AddNewPiece<PawnPiece>(4, 3, Color.White);
-        var blackPawn = board.AddNewPiece<PawnPiece>(6, 4, Color.Black);
+        var whitePawn = board.AddNewPiece<PawnPiece>(4, 3, PieceColor.White);
+        var blackPawn = board.AddNewPiece<PawnPiece>(6, 4, PieceColor.Black);
 
         (int row, int col) blackTo = (4, 4);
         StandardMove blackMove = new(blackPawn.Square, blackTo);
@@ -277,8 +277,8 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var whitePawn = board.AddNewPiece<PawnPiece>(1, 3, Color.White);
-        var blackPawn = board.AddNewPiece<PawnPiece>(3, 4, Color.Black);
+        var whitePawn = board.AddNewPiece<PawnPiece>(1, 3, PieceColor.White);
+        var blackPawn = board.AddNewPiece<PawnPiece>(3, 4, PieceColor.Black);
 
         (int row, int col) whiteTo = (3, 3);
         StandardMove whiteMove = new(whitePawn.Square, whiteTo);
@@ -307,8 +307,8 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var whitePawn = board.AddNewPiece<PawnPiece>(4, 3, Color.White);
-        var blackPawn = board.AddNewPiece<PawnPiece>(4, 4, Color.Black);
+        var whitePawn = board.AddNewPiece<PawnPiece>(4, 3, PieceColor.White);
+        var blackPawn = board.AddNewPiece<PawnPiece>(4, 4, PieceColor.Black);
 
 
         // Act
@@ -328,8 +328,8 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var whitePawn = board.AddNewPiece<PawnPiece>(4, 3, Color.White);
-        var blackPawn = board.AddNewPiece<PawnPiece>(5, 4, Color.Black);
+        var whitePawn = board.AddNewPiece<PawnPiece>(4, 3, PieceColor.White);
+        var blackPawn = board.AddNewPiece<PawnPiece>(5, 4, PieceColor.Black);
 
         (int row, int col) blackTo = (4, 4);
         StandardMove blackMove = new(blackPawn.Square, blackTo);
@@ -352,8 +352,8 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var whitePawn = board.AddNewPiece<PawnPiece>(2, 3, Color.White);
-        var blackPawn = board.AddNewPiece<PawnPiece>(3, 4, Color.Black);
+        var whitePawn = board.AddNewPiece<PawnPiece>(2, 3, PieceColor.White);
+        var blackPawn = board.AddNewPiece<PawnPiece>(3, 4, PieceColor.Black);
 
         (int row, int col) whiteTo = (3, 3);
         StandardMove whiteMove = new(whitePawn.Square, whiteTo);
