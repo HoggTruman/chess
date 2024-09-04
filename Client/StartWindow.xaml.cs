@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GameLogic;
+using GameLogic.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +24,7 @@ namespace Client
         public StartWindow()
         {
             InitializeComponent();
-            GameWindow gameWindow = new();
+            GameWindow gameWindow = new(new GameManager(PieceColor.White)); // color should be selected by host and obtained from server for opponent
             //Visibility = Visibility.Hidden;
             gameWindow.Show();
         }

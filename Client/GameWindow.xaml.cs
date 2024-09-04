@@ -22,7 +22,7 @@ public partial class GameWindow : Window
 
     private readonly Image[,] pieceImages = new Image[Board.BoardSize, Board.BoardSize];
 
-    private readonly Board _board = new();
+    private readonly GameManager _gameManager;
 
     #endregion
 
@@ -30,11 +30,11 @@ public partial class GameWindow : Window
 
     #region Constructors
 
-    public GameWindow()
+    public GameWindow(GameManager gameManager)
     {
         InitializeComponent();
-        InitializeBoard();
-        _board.Initialize(); // pass in from GameManager later??
+        _gameManager = gameManager;
+        InitializePieceImages();
         DrawPieces();
     }
 
@@ -44,7 +44,7 @@ public partial class GameWindow : Window
 
     #region Private Methods
 
-    private void InitializeBoard()
+    private void InitializePieceImages()
     {
         for (int rowIndex = 0; rowIndex < Board.BoardSize; rowIndex++)
         {
@@ -64,7 +64,7 @@ public partial class GameWindow : Window
         {
             for (int colIndex = 0; colIndex < Board.BoardSize; colIndex++)
             {
-                IPiece? piece = _board.State[rowIndex, colIndex];
+                IPiece? piece = _gameManager.Board.State[rowIndex, colIndex];
                 pieceImages[rowIndex, colIndex].Source = Images.GetImageSource(piece);
             }
         }
