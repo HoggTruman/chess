@@ -113,7 +113,7 @@ public class KingPiece : Piece
     /// <returns>true if under check, otherwise false</returns>
     public bool IsChecked()
     {
-        var enemyPieces = _board.Pieces[ColorHelpers.OppositeColor(Color)];
+        var enemyPieces = _board.Pieces[ColorHelpers.Opposite(Color)];
 
         return enemyPieces.Any(piece => piece.GetTargetedSquares().Contains(Square));
     }

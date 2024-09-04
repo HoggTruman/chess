@@ -187,7 +187,7 @@ public class BoardTests
         var playerKing = board.AddNewPiece<KingPiece>(0, 0, playerColor);
         var playerQueen = board.AddNewPiece<QueenPiece>(5, 5, playerColor);
 
-        var enemyRook = board.AddNewPiece<RookPiece>(7, 7, OppositeColor(playerColor));
+        var enemyRook = board.AddNewPiece<RookPiece>(7, 7, Opposite(playerColor));
 
         // Act
         var result = board.MoveLeavesPlayerInCheck(enemyRook.Square, (1, enemyRook.Col));
@@ -208,7 +208,7 @@ public class BoardTests
         var playerKing = board.AddNewPiece<KingPiece>(0, 0, playerColor);
         var playerQueen = board.AddNewPiece<QueenPiece>(0, 5, playerColor);
 
-        var enemyRook = board.AddNewPiece<RookPiece>(7, 7, OppositeColor(playerColor));
+        var enemyRook = board.AddNewPiece<RookPiece>(7, 7, Opposite(playerColor));
 
         // Act
         var result = board.MoveLeavesPlayerInCheck(enemyRook.Square, (playerKing.Row, enemyRook.Col));
@@ -228,7 +228,7 @@ public class BoardTests
 
         var playerKing = board.AddNewPiece<KingPiece>(0, 0, playerColor);
 
-        var enemyRook = board.AddNewPiece<RookPiece>(1, 7, OppositeColor(playerColor));
+        var enemyRook = board.AddNewPiece<RookPiece>(1, 7, Opposite(playerColor));
 
         // Act
         var result = board.MoveLeavesPlayerInCheck(playerKing.Square, (enemyRook.Row, playerKing.Col));
@@ -249,8 +249,8 @@ public class BoardTests
         var playerKing = board.AddNewPiece<KingPiece>(4, 0, playerColor);
         var playerPawn = board.AddNewPiece<PawnPiece>(4, 3, playerColor);
 
-        var enemyPawn = board.AddNewPiece<PawnPiece>(4, 2, OppositeColor(playerColor));
-        var enemyRook = board.AddNewPiece<RookPiece>(4, 7, OppositeColor(playerColor));
+        var enemyPawn = board.AddNewPiece<PawnPiece>(4, 2, Opposite(playerColor));
+        var enemyRook = board.AddNewPiece<RookPiece>(4, 7, Opposite(playerColor));
 
         // Act
         var result = board.MoveLeavesPlayerInCheck(playerPawn.Square, (5, 2), enemyPawn.Square);
@@ -271,7 +271,7 @@ public class BoardTests
         var playerKing = board.AddNewPiece<KingPiece>(4, 0, playerColor);
         var playerPawn = board.AddNewPiece<PawnPiece>(4, 3, playerColor);
 
-        var enemyPawn = board.AddNewPiece<PawnPiece>(4, 2, OppositeColor(playerColor));
+        var enemyPawn = board.AddNewPiece<PawnPiece>(4, 2, Opposite(playerColor));
 
         // Act
         var result = board.MoveLeavesPlayerInCheck(playerPawn.Square, (5, 2), enemyPawn.Square);
@@ -297,8 +297,8 @@ public class BoardTests
         var playerKing = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, playerColor);
         var playerQueen = board.AddNewPiece<QueenPiece>(4, 4, playerColor);
         
-        var enemyKing = board.AddNewPiece<KingPiece>(StartSquares.BlackKing, OppositeColor(playerColor));
-        var enemyQueen = board.AddNewPiece<QueenPiece>(3, 4, OppositeColor(playerColor));
+        var enemyKing = board.AddNewPiece<KingPiece>(StartSquares.BlackKing, Opposite(playerColor));
+        var enemyQueen = board.AddNewPiece<QueenPiece>(3, 4, Opposite(playerColor));
 
         var playerKingBeforeSquare = playerKing.Square;
         var playerQueenBeforeSquare = playerQueen.Square;
@@ -349,8 +349,8 @@ public class BoardTests
         var playerKing = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, playerColor);
         var playerPawn = board.AddNewPiece<PawnPiece>(4, 4, playerColor);
         
-        var enemyKing = board.AddNewPiece<KingPiece>(StartSquares.BlackKing, OppositeColor(playerColor));
-        var enemyPawn = board.AddNewPiece<PawnPiece>(4, 3, OppositeColor(playerColor));
+        var enemyKing = board.AddNewPiece<KingPiece>(StartSquares.BlackKing, Opposite(playerColor));
+        var enemyPawn = board.AddNewPiece<PawnPiece>(4, 3, Opposite(playerColor));
 
         var playerKingBeforeSquare = playerKing.Square;
         var playerPawnBeforeSquare = playerPawn.Square;

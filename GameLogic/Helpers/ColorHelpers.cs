@@ -9,7 +9,7 @@ public static class ColorHelpers
     /// </summary>
     /// <param name="color"></param>
     /// <returns>A Color Enum value</returns>
-    public static PieceColor OppositeColor(PieceColor color)
+    public static PieceColor Opposite(PieceColor color)
     {
         if (color == PieceColor.White)
             return PieceColor.Black;

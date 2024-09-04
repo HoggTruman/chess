@@ -83,13 +83,13 @@ public class PawnPiece : Piece
 
         // Add standard capturing moves (not En Passant)
         if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col - 1)) && 
-            _board.State[Row + _fwd, Col - 1]?.Color == ColorHelpers.OppositeColor(Color))
+            _board.State[Row + _fwd, Col - 1]?.Color == ColorHelpers.Opposite(Color))
         {
             squares.Add((Row + _fwd, Col - 1));
         }
             
         if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col + 1)) && 
-            _board.State[Row + _fwd, Col + 1]?.Color == ColorHelpers.OppositeColor(Color))
+            _board.State[Row + _fwd, Col + 1]?.Color == ColorHelpers.Opposite(Color))
         {
             squares.Add((Row + _fwd, Col + 1));
         }
