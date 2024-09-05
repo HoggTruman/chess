@@ -32,26 +32,28 @@ public class KingPiece : Piece
     public override List<(int row, int col)> GetTargetedSquares()
     {
         // Get all squares in range (including those out of bounds)
-        List<(int row, int col)> targetedSquares = GetAllTargetedSquares();
+        var targetedSquares = GetAllTargetedSquares();
 
         // Filter to keep only in bounds squares
-        targetedSquares = targetedSquares.Where(BoardHelpers.SquareIsInBounds).ToList();
+        targetedSquares = targetedSquares.Where(BoardHelpers.SquareIsInBounds);
 
-        return targetedSquares;
+        return targetedSquares.ToList();
     }
 
 
     public override List<(int row, int col)> GetReachableSquares()
     {
         // Get all squares in range (including those out of bounds)
-        List<(int row, int col)> squares = GetAllTargetedSquares();
+        var squares = GetAllTargetedSquares();
+
+        // Filter to keep only in bounds squares
+        squares = squares.Where(BoardHelpers.SquareIsInBounds);
 
         // Remove squares with a piece of the same color
         squares = squares
-            .Where(s => _board.State[s.row, s.col]?.Color != Color)
-            .ToList();
-
-        return squares;
+            .Where(s => _board.State[s.row, s.col]?.Color != Color);
+            
+        return squares.ToList();;
     }
 
 
@@ -129,7 +131,7 @@ public class KingPiece : Piece
     /// Does not include castling squares.
     /// </summary>
     /// <returns></returns>
-    private List<(int row, int col)> GetAllTargetedSquares()
+    private IEnumerable<(int row, int col)> GetAllTargetedSquares()
     {
         return [
             new(Row - 1, Col),
