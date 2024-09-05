@@ -11,9 +11,25 @@ public class CastleMove : IMove
     #region Properties
 
     public MoveType MoveType { get; } = MoveType.Castle;
-    public (int row, int col) KingFrom { get; }
-    public (int row, int col) KingTo { get; }
+
+    /// <summary>
+    /// The square the king moves from.
+    /// </summary>
+    public (int row, int col) From { get; }
+
+    /// <summary>
+    /// The square the king moves to.
+    /// </summary>
+    public (int row, int col) To { get; }
+
+    /// <summary>
+    /// The square the rook moves from.
+    /// </summary>
     public (int row, int col) RookFrom { get; }
+
+    /// <summary>
+    /// The square the rook moves to.
+    /// </summary>
     public (int row, int col) RookTo { get; }
 
     #endregion
@@ -23,14 +39,14 @@ public class CastleMove : IMove
     #region Constructor
 
     public CastleMove(
-        (int row, int col) kingFrom,
-        (int row, int col) kingTo,
+        (int row, int col) from,
+        (int row, int col) to,
         (int row, int col) rookFrom,
         (int row, int col) rookTo
     ) 
     {
-        KingFrom = kingFrom;
-        KingTo = kingTo;
+        From = from;
+        To = to;
         RookFrom = rookFrom;
         RookTo = rookTo;
     }
@@ -43,7 +59,7 @@ public class CastleMove : IMove
 
     public bool MovesSquare((int row, int col) square)
     {
-        return square == KingFrom || square == RookFrom;
+        return square == From || square == RookFrom;
     }
 
     #endregion

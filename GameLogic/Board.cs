@@ -378,7 +378,7 @@ public class Board
     public void Castle(CastleMove move)
     {
         // Move king
-        MovePiece(move.KingFrom, move.KingTo);
+        MovePiece(move.From, move.To);
 
         // Move Rook
         MovePiece(move.RookFrom, move.RookTo); 
