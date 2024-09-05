@@ -30,28 +30,29 @@ public class KnightPiece : Piece
     public override List<(int row, int col)> GetTargetedSquares()
     {
         // Get all squares in range (including those out of bounds)
-        List<(int row, int col)> targetedSquares = GetAllTargetedSquares();
+        var targetedSquares = GetAllTargetedSquares();
 
         // Filter to keep only in bounds squares
-        targetedSquares = targetedSquares.Where(BoardHelpers.SquareIsInBounds).ToList();
+        targetedSquares = targetedSquares.Where(BoardHelpers.SquareIsInBounds);
 
-        return targetedSquares;
+        return targetedSquares.ToList();
     }
 
 
     public override List<(int row, int col)> GetReachableSquares()
     {
         // Get all squares in range (including those out of bounds)
-        List<(int row, int col)> squares = GetAllTargetedSquares();
+        var squares = GetAllTargetedSquares();
+
+        // Filter to keep only in bounds squares
+        squares = squares.Where(BoardHelpers.SquareIsInBounds);
 
         // Remove squares with a piece of the same color
-        squares = squares
-            .Where(s => 
-                _board.State[s.row, s.col] == null ||
-                _board.State[s.row, s.col]?.Color != Color)
-            .ToList();
+        squares = squares.Where(s => 
+            _board.State[s.row, s.col] == null ||
+            _board.State[s.row, s.col]?.Color != Color);
 
-        return squares;
+        return squares.ToList();
     }
 
     #endregion
@@ -60,7 +61,7 @@ public class KnightPiece : Piece
 
     #region Private Methods
 
-    private List<(int row, int col)> GetAllTargetedSquares()
+    private IEnumerable<(int row, int col)> GetAllTargetedSquares()
     {
         return [
             new(Row - 2, Col - 1),
