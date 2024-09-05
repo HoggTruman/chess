@@ -67,11 +67,15 @@ public class KingPiece : Piece
         var validMoves = base.GetValidMoves();
 
         // Add valid castling moves
-        var rooks = (List<RookPiece>)_board.Pieces[Color]
-            .Where(x => x is RookPiece);
-
-        foreach (var rook in rooks)
+        foreach (var piece in _board.Pieces[Color])
         {
+            if (piece is RookPiece == false)
+            {
+                continue;
+            }
+
+            RookPiece rook = (RookPiece)piece;
+
             var castleSquares = GetCastleSquares(rook);
 
             if (castleSquares != null)
