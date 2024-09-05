@@ -178,7 +178,7 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing.row + 1, StartSquares.WhiteKing.col);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing.row - 1, StartSquares.WhiteKing.col);
         var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK);
 
         StandardMove kingMove = new(king.Square, StartSquares.WhiteKing);
@@ -199,7 +199,7 @@ public class RookPieceTests
         Board board = new();
 
         var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK.row + 1, StartSquares.WhiteRookK.col);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK.row - 1, StartSquares.WhiteRookK.col);
 
         StandardMove rookMove = new(rook.Square, StartSquares.WhiteRookK);
         board.HandleMove(rookMove);

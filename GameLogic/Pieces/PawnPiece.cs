@@ -31,7 +31,7 @@ public class PawnPiece : Piece
     public PawnPiece(Board board, int row, int col, PieceColor color)
         : base(board, row, col, color, PieceType.Pawn, PieceValues.Pawn)
     {
-        _fwd = color == PieceColor.White? 1: -1;
+        _fwd = color == PieceColor.White? -1: 1;
     }
 
     #endregion

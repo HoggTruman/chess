@@ -87,8 +87,8 @@ public class KingPieceTests
         var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
         var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, PieceColor.White);
 
-        (int row, int col) expectedKingSquare = (0, 6);
-        (int row, int col) expectedRookSquare = (0, 5);
+        (int row, int col) expectedKingSquare = (7, 6);
+        (int row, int col) expectedRookSquare = (7, 5);
 
         // Act
         var result = king.GetCastleSquares(rook);
@@ -109,8 +109,8 @@ public class KingPieceTests
         var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
         var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookQ, PieceColor.White);
 
-        (int row, int col) expectedKingSquare = (0, 2);
-        (int row, int col) expectedRookSquare = (0, 3);
+        (int row, int col) expectedKingSquare = (7, 2);
+        (int row, int col) expectedRookSquare = (7, 3);
 
         // Act
         var result = king.GetCastleSquares(rook);
@@ -131,8 +131,8 @@ public class KingPieceTests
         var king = board.AddNewPiece<KingPiece>(StartSquares.BlackKing, PieceColor.Black);
         var rook = board.AddNewPiece<RookPiece>(StartSquares.BlackRookK, PieceColor.Black);
 
-        (int row, int col) expectedKingSquare = (7, 6);
-        (int row, int col) expectedRookSquare = (7, 5);
+        (int row, int col) expectedKingSquare = (0, 6);
+        (int row, int col) expectedRookSquare = (0, 5);
 
         // Act
         var result = king.GetCastleSquares(rook);
@@ -153,8 +153,8 @@ public class KingPieceTests
         var king = board.AddNewPiece<KingPiece>(StartSquares.BlackKing, PieceColor.Black);
         var rook = board.AddNewPiece<RookPiece>(StartSquares.BlackRookQ, PieceColor.Black);
 
-        (int row, int col) expectedKingSquare = (7, 2);
-        (int row, int col) expectedRookSquare = (7, 3);
+        (int row, int col) expectedKingSquare = (0, 2);
+        (int row, int col) expectedRookSquare = (0, 3);
 
         // Act
         var result = king.GetCastleSquares(rook);
