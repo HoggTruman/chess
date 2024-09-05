@@ -9,7 +9,6 @@ public class GameManager
     #region Fields
 
     //private readonly Board _board = new();
-    private readonly PieceColor _playerColor; // underscore???!?!?!?
 
     #endregion
 
@@ -18,6 +17,8 @@ public class GameManager
     #region Properties
 
     public Board Board { get; } = new();
+
+    public PieceColor PlayerColor { get; }
 
     public PieceColor ActivePlayerColor { get; set; } = PieceColor.White;
 
@@ -29,7 +30,7 @@ public class GameManager
 
     public GameManager(PieceColor playerColor)
     {        
-        _playerColor = playerColor;
+        PlayerColor = playerColor;
         Board.Initialize();
     }
 
