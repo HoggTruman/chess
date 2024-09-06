@@ -1,4 +1,5 @@
 using GameLogic.Enums;
+using GameLogic.Helpers;
 using GameLogic.Interfaces;
 using GameLogic.Moves;
 
@@ -6,21 +7,15 @@ namespace GameLogic;
 
 public class GameManager
 {
-    #region Fields
-
-    //private readonly Board _board = new();
-
-    #endregion
-
-
-
     #region Properties
 
     public Board Board { get; } = new();
 
     public PieceColor PlayerColor { get; }
 
-    public PieceColor ActivePlayerColor { get; set; } = PieceColor.White;
+    public PieceColor ActivePlayerColor { get; set; } //= PieceColor.White;
+
+    public List<IMove>?[,] ActivePlayerMoves { get; private set; }
 
     #endregion
 
@@ -30,8 +25,10 @@ public class GameManager
 
     public GameManager(PieceColor playerColor)
     {        
-        PlayerColor = playerColor;
         Board.Initialize();
+        PlayerColor = playerColor;
+        ActivePlayerColor = playerColor; // ActivePlayerColor set to the player's color to make testing things easier for now
+        ActivePlayerMoves = GetPlayerMoves(playerColor);
     }
 
     #endregion
@@ -42,7 +39,7 @@ public class GameManager
 
     public List<IMove>?[,] GetPlayerMoves(PieceColor color)
     {
-        List<IMove>?[,] boardMoves = new List<IMove>?[Board.BoardSize, Board.BoardSize];
+        var boardMoves = new List<IMove>?[Board.BoardSize, Board.BoardSize];
 
         foreach (var piece in Board.Pieces[color])
         {
@@ -73,6 +70,13 @@ public class GameManager
         }
 
         Board.MoveHistory.Add(move);
+    }
+
+
+    public void SwitchActivePlayer()
+    {
+        ActivePlayerColor = ColorHelpers.Opposite(ActivePlayerColor);
+        ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
     }
 
     #endregion

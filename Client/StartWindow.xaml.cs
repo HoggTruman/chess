@@ -24,7 +24,7 @@ namespace Client
         public StartWindow()
         {
             InitializeComponent();
-            GameWindow gameWindow = new(new GameManager(PieceColor.Black)); // color should be selected by host and obtained from server for opponent
+            GameWindow gameWindow = new(new GameManager(PieceColor.White)); // color should be selected by host and obtained from server for opponent
             //Visibility = Visibility.Hidden;
             gameWindow.Show();
             Close();
