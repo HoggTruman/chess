@@ -134,6 +134,7 @@ public partial class GameWindow : Window
                 _gameManager.SwitchActivePlayer();
                 _gameManager.HandleMove(move);
                 DrawPieces();
+                _gameManager.UpdateActivePlayerMoves();
                 // SEND MOVE TO SERVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
 

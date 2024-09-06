@@ -76,6 +76,10 @@ public class GameManager
     public void SwitchActivePlayer()
     {
         ActivePlayerColor = ColorHelpers.Opposite(ActivePlayerColor);
+    }
+
+    public void UpdateActivePlayerMoves()
+    {
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
     }
 
