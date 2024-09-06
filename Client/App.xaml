@@ -5,6 +5,7 @@
              StartupUri="StartWindow.xaml">
     <Application.Resources>
         <SolidColorBrush x:Key="BackgroundColor">#cfb28a</SolidColorBrush>
+        <SolidColorBrush x:Key="OpaqueBackgroundColor">#cccfb28a</SolidColorBrush>
         <SolidColorBrush x:Key="BorderColor">#453a2b</SolidColorBrush>
         <SolidColorBrush x:Key="TextColor">#2e2311</SolidColorBrush>
         <SolidColorBrush x:Key="ButtonColor">#9c8360</SolidColorBrush>
