@@ -205,15 +205,15 @@ public class Board
 
     /// <summary>
     /// Determines if a player will leave themself in check by moving the piece at "from" to "to".
-    /// For En Passant, pass in the captured pawn's square as the "captured" parameter.
+    /// For En Passant, pass in the captured pawn's square as the "epCaptured" parameter.
     /// Castling does its own verification and is not passed through this method.
     /// </summary>
-    /// <param name="from"></param>
-    /// <param name="to"></param>
-    /// <param name="captured"></param>
+    /// <param name="from">The square the piece is moving from.</param>
+    /// <param name="to">The square the piece is moving to.</param>
+    /// <param name="epCaptured">If an En Passant move, the square of the captured pawn. Otherwise null</param>
     /// <returns>true if the player would be in check after the move. Otherwise, false</returns>
     /// <exception cref="ArgumentException"></exception>
-    public bool MoveLeavesPlayerInCheck((int row, int col) from, (int row, int col) to, (int row, int col)? captured = null)
+    public bool MoveLeavesPlayerInCheck((int row, int col) from, (int row, int col) to, (int row, int col)? epCaptured = null)
     {
         // Ensure there the moving piece is not null
         IPiece? movingPiece = State[from.row, from.col];
@@ -233,19 +233,17 @@ public class Board
         // Get target piece
         IPiece? capturedPiece = State[to.row, to.col];
 
-        if (captured != null)
+        if (epCaptured != null)
         {
-            // Set capturedPiece for En Passant
-            capturedPiece = State[captured.Value.row, captured.Value.col];
+            // Overwrite capturedPiece for En Passant
+            capturedPiece = State[epCaptured.Value.row, epCaptured.Value.col];
 
             // Set the "captured" square to null for En Passant
-            State[captured.Value.row, captured.Value.col] = null;
+            State[epCaptured.Value.row, epCaptured.Value.col] = null;
         }
 
         // Make the move
-        State[from.row, from.col] = null;
-        State[to.row, to.col] = movingPiece;
-        movingPiece.Square = to;
+        MovePiece(from, to);
 
         if (capturedPiece != null)
         {
@@ -256,22 +254,19 @@ public class Board
         bool result = playerKing.IsChecked();
 
         // Roll back pieces
-        State[from.row, from.col] = movingPiece;
-        movingPiece.Square = from;
+        MovePiece(to, from);
         
-        if (captured != null)
-        {
-            // En Passant revert
-            State[to.row, to.col] = null;
-            State[captured.Value.row, captured.Value.col] = capturedPiece;
-        }
-        else
-        {
-            State[to.row, to.col] = capturedPiece;
-        }
-
         if (capturedPiece != null)
         {
+            if (epCaptured != null)
+            {
+                State[epCaptured.Value.row, epCaptured.Value.col] = capturedPiece;
+            }
+            else
+            {
+                State[to.row, to.col] = capturedPiece;
+            }
+
             Pieces[capturedPiece.Color].Add(capturedPiece);
         }
 
