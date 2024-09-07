@@ -98,18 +98,11 @@ public class GameManager
 
     /// <summary>
     /// Swtiches the PieceColor of the ActivePlayerColor.
+    /// Updates ActivePlayerMoves ready for the next player.
     /// </summary>
-    public void SwitchActivePlayer()
+    public void SwitchTurn()
     {
         ActivePlayerColor = ColorHelpers.Opposite(ActivePlayerColor);
-    }
-
-
-    /// <summary>
-    /// Updates ActivePlayerMoves based on ActivePlayerColor.
-    /// </summary>
-    public void UpdateActivePlayerMoves()
-    {
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
     }
 

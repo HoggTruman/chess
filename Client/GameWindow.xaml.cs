@@ -170,8 +170,7 @@ public partial class GameWindow : Window
                 gameManager.HandleMove(move);
                 DrawPieces();
             
-                gameManager.SwitchActivePlayer();
-                gameManager.UpdateActivePlayerMoves();
+                gameManager.SwitchTurn();
 
                 if (gameManager.GameIsOver())
                 {
