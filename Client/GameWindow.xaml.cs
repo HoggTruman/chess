@@ -23,17 +23,22 @@ public partial class GameWindow : Window
 {
     #region Fields
 
+    private readonly GameManager _gameManager;
+
     private readonly Image[,] pieceImages = new Image[Board.BoardSize, Board.BoardSize];
     private readonly Rectangle[,] highlights = new Rectangle[Board.BoardSize, Board.BoardSize];
 
-    private readonly GameManager _gameManager;
+    private readonly SolidColorBrush highlightBrush = new(Color.FromArgb(150, 125, 255, 125));
+
     
     /// <summary>
     /// The move's To square as key, and the move as the value.
     /// </summary>
     private Dictionary<(int row, int col), IMove> highlightedMoves = [];
 
-    private readonly SolidColorBrush highlightBrush = new(Color.FromArgb(150, 125, 255, 125));
+    private bool FrozenBoard = false;
+
+    
 
     #endregion
 
@@ -94,10 +99,13 @@ public partial class GameWindow : Window
         }
     }
 
-    #endregion
 
     private void BoardGrid_MouseDown(object sender, MouseButtonEventArgs e)
     {
+        if (FrozenBoard)
+        {
+            return;
+        }
         //if (_gameManager.ActivePlayerColor != _gameManager.PlayerColor)
         //{
         //    return;
@@ -131,16 +139,30 @@ public partial class GameWindow : Window
             if (highlightedMoves.TryGetValue(square, out IMove? move))
             {
                 // PROMOTION HANDLING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                _gameManager.SwitchActivePlayer();
                 _gameManager.HandleMove(move);
                 DrawPieces();
+            
+                _gameManager.SwitchActivePlayer();
                 _gameManager.UpdateActivePlayerMoves();
+
+                if (_gameManager.GameIsOver())
+                {
+                    HandleGameOver();
+                }
                 // SEND MOVE TO SERVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
 
             ClearHighlights();
             highlightedMoves = [];
         }
+    }
+
+
+    private void HandleGameOver()
+    {
+        FrozenBoard = true;
+        GameOverMenu gameOverMenu = new(_gameManager);
+        MenuContainer.Content = gameOverMenu;
     }
 
 
@@ -171,6 +193,7 @@ public partial class GameWindow : Window
         }
     }
 
+
     private (int row, int col) PointToSquare(Point point)
     {
         double squareSize = BoardGrid.ActualWidth / Board.BoardSize;
@@ -185,5 +208,5 @@ public partial class GameWindow : Window
         return (Board.MaxIndex - s.row, Board.MaxIndex - s.col);
     }
 
-
+    #endregion
 }
