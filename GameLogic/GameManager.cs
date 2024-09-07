@@ -35,9 +35,9 @@ public class GameManager
 
     #region Constructors
 
-    public GameManager(PieceColor playerColor)
+    public GameManager(Board board, PieceColor playerColor)
     {        
-        Board.Initialize();
+        Board = board;
         PlayerColor = playerColor;
         ActivePlayerColor = playerColor; // ActivePlayerColor set to the player's color to make testing things easier for now
         ActivePlayerMoves = GetPlayerMoves(playerColor);
