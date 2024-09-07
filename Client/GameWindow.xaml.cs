@@ -23,22 +23,36 @@ public partial class GameWindow : Window
 {
     #region Fields
 
-    private readonly GameManager _gameManager;
+    /// <summary>
+    /// The GameManager for the current game.
+    /// </summary>
+    private readonly GameManager gameManager;
 
+    /// <summary>
+    /// A 2D array with piece Images in positions corresponding to the Board.
+    /// </summary>
     private readonly Image[,] pieceImages = new Image[Board.BoardSize, Board.BoardSize];
+
+    /// <summary>
+    /// A 2D array of Rectangles.
+    /// The Fill of a Rectangle is modified to represent an available move.
+    /// </summary>
     private readonly Rectangle[,] highlights = new Rectangle[Board.BoardSize, Board.BoardSize];
 
+    /// <summary>
+    /// A SolidColorBrush used to set the Fill for highlighted squares.
+    /// </summary>
     private readonly SolidColorBrush highlightBrush = new(Color.FromArgb(150, 125, 255, 125));
 
-    
     /// <summary>
-    /// The move's To square as key, and the move as the value.
+    /// A Dictionary with To square as key, and the corresponding IMove as the value.
     /// </summary>
     private Dictionary<(int row, int col), IMove> highlightedMoves = [];
 
+    /// <summary>
+    /// A bool to dictate whether the player's clicks should interact with the board at all.
+    /// </summary>
     private bool FrozenBoard = false;
-
-    
 
     #endregion
 
@@ -49,8 +63,8 @@ public partial class GameWindow : Window
     public GameWindow(GameManager gameManager)
     {
         InitializeComponent();
-        _gameManager = gameManager;
-        InitializePieceImages();
+        this.gameManager = gameManager;
+        InitializeGrids();
         DrawPieces();
     }
 
@@ -60,7 +74,11 @@ public partial class GameWindow : Window
 
     #region Private Methods
 
-    private void InitializePieceImages()
+    /// <summary>
+    /// Initializes pieceImages and highlights arrays.
+    /// Adds the contents as children to the corresponding GameWindow grids.
+    /// </summary>
+    private void InitializeGrids()
     {
         for (int rowIndex = 0; rowIndex < Board.BoardSize; rowIndex++)
         {
@@ -78,28 +96,38 @@ public partial class GameWindow : Window
     }
 
 
+    /// <summary>
+    /// Updates pieceImages to match the Board from the perspective of the player
+    /// (The player's pieces are at the bottom of the board)
+    /// </summary>
     private void DrawPieces()
     {
         for (int r = 0; r < Board.BoardSize; r++)
         {
             for (int c = 0; c < Board.BoardSize; c++)
             {
-                IPiece? piece = _gameManager.Board.State[r, c];
+                IPiece? piece = gameManager.Board.State[r, c];
 
-                if (_gameManager.PlayerColor == PieceColor.White)
+                if (gameManager.PlayerColor == PieceColor.White)
                 {
                     pieceImages[r, c].Source = Images.GetImageSource(piece);
                 }
-                else if (_gameManager.PlayerColor == PieceColor.Black)
+                else if (gameManager.PlayerColor == PieceColor.Black)
                 {
                     // rotate board if player is black
-                    pieceImages[Board.MaxIndex - r, Board.MaxIndex - c].Source = Images.GetImageSource(piece);
+                    var (row, col) = RotateSquare180((r, c));
+                    pieceImages[row, col].Source = Images.GetImageSource(piece);
                 }
             }
         }
     }
 
 
+    /// <summary>
+    /// Handles MouseDown on the BoardGrid
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void BoardGrid_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (FrozenBoard)
@@ -114,7 +142,7 @@ public partial class GameWindow : Window
         Point point = e.GetPosition(BoardGrid);
         (int row, int col) square = PointToSquare(point);
 
-        if (_gameManager.PlayerColor == PieceColor.Black)
+        if (gameManager.PlayerColor == PieceColor.Black)
         {
             // Adjust for Black player board rotation
             square = RotateSquare180(square);
@@ -122,7 +150,7 @@ public partial class GameWindow : Window
 
         if (highlightedMoves.Count == 0)
         {
-            var moveOptions = _gameManager.ActivePlayerMoves[square.row, square.col];
+            var moveOptions = gameManager.ActivePlayerMoves[square.row, square.col];
 
             if (moveOptions != null && moveOptions.Count > 0)
             {    
@@ -139,13 +167,13 @@ public partial class GameWindow : Window
             if (highlightedMoves.TryGetValue(square, out IMove? move))
             {
                 // PROMOTION HANDLING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                _gameManager.HandleMove(move);
+                gameManager.HandleMove(move);
                 DrawPieces();
             
-                _gameManager.SwitchActivePlayer();
-                _gameManager.UpdateActivePlayerMoves();
+                gameManager.SwitchActivePlayer();
+                gameManager.UpdateActivePlayerMoves();
 
-                if (_gameManager.GameIsOver())
+                if (gameManager.GameIsOver())
                 {
                     HandleGameOver();
                 }
@@ -158,21 +186,28 @@ public partial class GameWindow : Window
     }
 
 
+    /// <summary>
+    /// Updates the GameWindow when the game is over.
+    /// </summary>
     private void HandleGameOver()
     {
         FrozenBoard = true;
-        GameOverMenu gameOverMenu = new(_gameManager);
+        GameOverMenu gameOverMenu = new(gameManager);
         MenuContainer.Content = gameOverMenu;
     }
 
 
+    /// <summary>
+    /// Highlights the provided squares.
+    /// </summary>
+    /// <param name="squares"></param>
     private void HightlightSquares(IEnumerable<(int row, int col)> squares)
     {
         foreach (var square in squares)
         {
             var (row, col) = square;
 
-            if (_gameManager.PlayerColor == PieceColor.Black)
+            if (gameManager.PlayerColor == PieceColor.Black)
             {
                 (row, col) = RotateSquare180((row, col));
             }
@@ -182,6 +217,9 @@ public partial class GameWindow : Window
     }
 
 
+    /// <summary>
+    /// Clears all highlights on the Board.
+    /// </summary>
     private void ClearHighlights()
     {
         for (int r = 0; r < Board.BoardSize; r++)
@@ -194,6 +232,11 @@ public partial class GameWindow : Window
     }
 
 
+    /// <summary>
+    /// Converts a Point clicked to a corresponding square on the Board.
+    /// </summary>
+    /// <param name="point"></param>
+    /// <returns></returns>
     private (int row, int col) PointToSquare(Point point)
     {
         double squareSize = BoardGrid.ActualWidth / Board.BoardSize;
@@ -203,6 +246,11 @@ public partial class GameWindow : Window
     }
 
 
+    /// <summary>
+    /// Returns the square rotated 180 degrees.
+    /// </summary>
+    /// <param name="s"></param>
+    /// <returns>(row, col) of the rotated square.</returns>
     private (int row, int col) RotateSquare180((int row, int col) s)
     {
         return (Board.MaxIndex - s.row, Board.MaxIndex - s.col);
