@@ -9,12 +9,24 @@ public class GameManager
 {
     #region Properties
 
+    /// <summary>
+    /// The Board of the active game.
+    /// </summary>
     public Board Board { get; } = new();
 
+    /// <summary>
+    /// The PieceColor of the player.
+    /// </summary>
     public PieceColor PlayerColor { get; }
 
+    /// <summary>
+    /// The PieceColor of the player whose turn it is.
+    /// </summary>
     public PieceColor ActivePlayerColor { get; set; } //= PieceColor.White;
 
+    /// <summary>
+    /// A cached 2D array of the available moves to the player whose turn it is.
+    /// </summary>
     public List<IMove>?[,] ActivePlayerMoves { get; private set; }
 
     #endregion
@@ -37,6 +49,13 @@ public class GameManager
 
     #region Public Methods
 
+    /// <summary>
+    /// Returns a 2D array containing a List of available moves if the corresponding
+    /// board square contains one of the player's pieces, or null if it doesn't. 
+    /// at the corresponding square on the board. 
+    /// </summary>
+    /// <param name="color">The color of the player</param>
+    /// <returns>A 2D Array of nullable Lists of Moves</returns>
     public List<IMove>?[,] GetPlayerMoves(PieceColor color)
     {
         var boardMoves = new List<IMove>?[Board.BoardSize, Board.BoardSize];
@@ -50,6 +69,10 @@ public class GameManager
     }
 
 
+    /// <summary>
+    /// Updates the board based on the provided move.
+    /// </summary>
+    /// <param name="move">A move to carry out</param>
     public void HandleMove(IMove move)
     {
         if (move.MoveType == MoveType.Standard)
@@ -73,18 +96,28 @@ public class GameManager
     }
 
 
+    /// <summary>
+    /// Swtiches the PieceColor of the ActivePlayerColor.
+    /// </summary>
     public void SwitchActivePlayer()
     {
         ActivePlayerColor = ColorHelpers.Opposite(ActivePlayerColor);
     }
 
 
+    /// <summary>
+    /// Updates ActivePlayerMoves based on ActivePlayerColor.
+    /// </summary>
     public void UpdateActivePlayerMoves()
     {
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
     }
 
 
+    /// <summary>
+    /// Determines whether the game is finished.
+    /// </summary>
+    /// <returns>true if the game is over. Otherwise, false</returns>
     public bool GameIsOver()
     {
         // Only the two kings are left returns true
@@ -113,6 +146,11 @@ public class GameManager
     }
 
 
+    /// <summary>
+    /// Determines the winner of the game (or if it is a draw) and the reason for the game ending.
+    /// </summary>
+    /// <returns>A tuple of the PieceColor of the winner (or null for a draw) and a GameOverReason</returns>
+    /// <exception cref="Exception">The game is not over</exception>
     public (PieceColor?, GameOverReason) GetGameResult()
     {
         if (GameIsOver() == false)
