@@ -29,6 +29,8 @@ public class GameManager
     /// </summary>
     public List<IMove>?[,] ActivePlayerMoves { get; private set; }
 
+    public bool PlayerUnderCheck { get; private set; }
+
     #endregion
 
 
@@ -41,6 +43,7 @@ public class GameManager
         PlayerColor = playerColor;
         ActivePlayerColor = playerColor; // ActivePlayerColor set to the player's color to make testing things easier for now
         ActivePlayerMoves = GetPlayerMoves(playerColor);
+        PlayerUnderCheck = board.Kings[ActivePlayerColor].IsChecked();
     }
 
     #endregion
@@ -104,6 +107,7 @@ public class GameManager
     {
         ActivePlayerColor = ColorHelpers.Opposite(ActivePlayerColor);
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
+        PlayerUnderCheck = Board.Kings[ActivePlayerColor].IsChecked();
     }
 
 
@@ -151,18 +155,11 @@ public class GameManager
             throw new Exception("The Game is not over so a winner can not be determined.");
         }
 
-        var whiteKing = Board.Kings[PieceColor.White] ?? throw new Exception("Board does not contain a white king");
-        var blackKing = Board.Kings[PieceColor.Black] ?? throw new Exception("Board does not contain a black king");
-
-        if (whiteKing.IsChecked())
+        if (PlayerUnderCheck)
         {
-            // Black wins
-            return (PieceColor.Black, GameOverReason.Checkmate);
-        }
-        else if (blackKing.IsChecked())
-        {   
-            // White wins
-            return (PieceColor.White, GameOverReason.Checkmate);
+            // Checkmate
+            var winner = ColorHelpers.Opposite(ActivePlayerColor);
+            return (winner, GameOverReason.Checkmate);
         }
         else
         {

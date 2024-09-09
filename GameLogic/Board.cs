@@ -25,7 +25,7 @@ public class Board
 
     public IPiece?[,] State { get; set; }
 
-    public Dictionary<PieceColor, KingPiece?> Kings { get; }
+    public Dictionary<PieceColor, KingPiece> Kings { get; }
 
     public Dictionary<PieceColor, List<IPiece>> Pieces { get; }
 
@@ -224,8 +224,7 @@ public class Board
         }
             
         // Return false when no king.
-        KingPiece? playerKing = Kings[movingPiece.Color];
-        if (playerKing == null)
+        if (Kings[movingPiece.Color] == null)
         {
             return false;
         }
@@ -251,7 +250,7 @@ public class Board
         }
 
         // Record the result
-        bool result = playerKing.IsChecked();
+        bool result = Kings[movingPiece.Color].IsChecked();
 
         // Roll back pieces
         MovePiece(to, from);

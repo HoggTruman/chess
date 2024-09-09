@@ -40,9 +40,24 @@ public partial class GameWindow : Window
     private readonly Rectangle[,] highlights = new Rectangle[Board.BoardSize, Board.BoardSize];
 
     /// <summary>
+    /// The square of the currently selected Piece of the player.
+    /// </summary>
+    private (int row, int col)? selectedSquare; 
+
+    /// <summary>
     /// A SolidColorBrush used to set the Fill for highlighted squares.
     /// </summary>
     private readonly SolidColorBrush highlightBrush = new(Color.FromArgb(150, 125, 255, 125));
+
+    /// <summary>
+    /// A SolidColorBrush used to set the Fill for the king's square when under check.
+    /// </summary>
+    private readonly SolidColorBrush selectBrush = new(Color.FromArgb(200, 255, 255, 125));
+
+    /// <summary>
+    /// A SolidColorBrush used to set the Fill for the king's square when under check.
+    /// </summary>
+    private readonly SolidColorBrush checkBrush = new(Color.FromArgb(175, 255, 20, 20));
 
     /// <summary>
     /// A Dictionary with To square as key, and the corresponding IMove as the value.
@@ -148,25 +163,28 @@ public partial class GameWindow : Window
             square = RotateSquare180(square);
         }
 
-        if (highlightedMoves.Count == 0)
+        if (selectedSquare == null)
         {
             var moveOptions = gameManager.ActivePlayerMoves[square.row, square.col];
+            
+            if (moveOptions != null)
+            {   
+                selectedSquare = square;
+                HighlightSquare(square, selectBrush);
 
-            if (moveOptions != null && moveOptions.Count > 0)
-            {    
                 foreach (var move in moveOptions)
                 {
                     highlightedMoves[move.To] = move;
+                    HighlightSquare(move.To, highlightBrush);
                 }
-
-                HightlightSquares(highlightedMoves.Keys);
             }
         }
         else
         {
-            if (highlightedMoves.TryGetValue(square, out IMove? move))
+            if (highlightedMoves.ContainsKey(square))
             {
                 // PROMOTION HANDLING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                var move = highlightedMoves[square];
                 gameManager.HandleMove(move);
                 DrawPieces();
             
@@ -179,8 +197,15 @@ public partial class GameWindow : Window
                 // SEND MOVE TO SERVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
 
+            selectedSquare = null;
             ClearHighlights();
             highlightedMoves = [];
+            if (gameManager.PlayerUnderCheck)
+            {
+                HighlightSquare(gameManager.Board.Kings[gameManager.ActivePlayerColor].Square,  // needs helper or something!!!!!!!!!!!!
+                    checkBrush);
+            }
+            
         }
     }
 
@@ -191,28 +216,9 @@ public partial class GameWindow : Window
     private void HandleGameOver()
     {
         FrozenBoard = true;
+        ClearHighlights();
         GameOverMenu gameOverMenu = new(gameManager);
         MenuContainer.Content = gameOverMenu;
-    }
-
-
-    /// <summary>
-    /// Highlights the provided squares.
-    /// </summary>
-    /// <param name="squares"></param>
-    private void HightlightSquares(IEnumerable<(int row, int col)> squares)
-    {
-        foreach (var square in squares)
-        {
-            var (row, col) = square;
-
-            if (gameManager.PlayerColor == PieceColor.Black)
-            {
-                (row, col) = RotateSquare180((row, col));
-            }
-
-            highlights[row, col].Fill = highlightBrush;
-        }
     }
 
 
@@ -232,7 +238,26 @@ public partial class GameWindow : Window
 
 
     /// <summary>
+    /// Highlights the Grid square corresponding to the underlying Board square with the provided brush.
+    /// </summary>
+    /// <param name="square"></param>
+    /// <param name="brush"></param>
+    private void HighlightSquare((int row, int col) square, SolidColorBrush brush)
+    {
+        var (row, col) = square;
+
+        if (gameManager.PlayerColor == PieceColor.Black)
+        {
+            (row, col) = RotateSquare180(square);
+        }
+
+        highlights[row, col].Fill = brush;
+    }
+
+
+    /// <summary>
     /// Converts a Point clicked to a corresponding square on the Board.
+    /// (Does not account for Black player board rotation)
     /// </summary>
     /// <param name="point"></param>
     /// <returns></returns>
