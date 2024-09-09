@@ -29,6 +29,9 @@ public class GameManager
     /// </summary>
     public List<IMove>?[,] ActivePlayerMoves { get; private set; }
 
+    /// <summary>
+    /// True if the active player is under check.
+    /// </summary>
     public bool PlayerUnderCheck { get; private set; }
 
     #endregion

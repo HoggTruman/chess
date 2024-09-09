@@ -39,10 +39,22 @@ public partial class GameWindow : Window
     /// </summary>
     private readonly Rectangle[,] highlights = new Rectangle[Board.BoardSize, Board.BoardSize];
 
+
     /// <summary>
     /// The square of the currently selected Piece of the player.
     /// </summary>
     private (int row, int col)? selectedSquare; 
+
+    /// <summary>
+    /// A Dictionary with To square as key, and the corresponding IMove as the value.
+    /// </summary>
+    private Dictionary<(int row, int col), IMove> highlightedMoves = [];
+
+    /// <summary>
+    /// A bool to dictate whether the player's clicks should interact with the board at all.
+    /// </summary>
+    private bool FrozenBoard = false;
+
 
     /// <summary>
     /// A SolidColorBrush used to set the Fill for highlighted squares.
@@ -58,16 +70,6 @@ public partial class GameWindow : Window
     /// A SolidColorBrush used to set the Fill for the king's square when under check.
     /// </summary>
     private readonly SolidColorBrush checkBrush = new(Color.FromArgb(175, 255, 20, 20));
-
-    /// <summary>
-    /// A Dictionary with To square as key, and the corresponding IMove as the value.
-    /// </summary>
-    private Dictionary<(int row, int col), IMove> highlightedMoves = [];
-
-    /// <summary>
-    /// A bool to dictate whether the player's clicks should interact with the board at all.
-    /// </summary>
-    private bool FrozenBoard = false;
 
     #endregion
 
@@ -149,10 +151,6 @@ public partial class GameWindow : Window
         {
             return;
         }
-        //if (_gameManager.ActivePlayerColor != _gameManager.PlayerColor)
-        //{
-        //    return;
-        //}
 
         Point point = e.GetPosition(BoardGrid);
         (int row, int col) square = PointToSquare(point);
@@ -179,33 +177,58 @@ public partial class GameWindow : Window
                 }
             }
         }
+        else if (highlightedMoves.ContainsKey(square))
+        {
+            // A highlighted move square is clicked
+             var move = highlightedMoves[square];
+            // PROMOTION HANDLING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // SEND MOVE TO SERVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            HandleMove(move);
+        }
         else
         {
-            if (highlightedMoves.ContainsKey(square))
-            {
-                // PROMOTION HANDLING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                var move = highlightedMoves[square];
-                gameManager.HandleMove(move);
-                DrawPieces();
-            
-                gameManager.SwitchTurn();
-
-                if (gameManager.GameIsOver())
-                {
-                    HandleGameOver();
-                }
-                // SEND MOVE TO SERVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            }
-
+            // A square is clicked that is not a highlighted move while a piece is selected
             selectedSquare = null;
-            ClearHighlights();
             highlightedMoves = [];
+            ClearHighlights();
             if (gameManager.PlayerUnderCheck)
             {
-                HighlightSquare(gameManager.Board.Kings[gameManager.ActivePlayerColor].Square,  // needs helper or something!!!!!!!!!!!!
-                    checkBrush);
+                var king = gameManager.Board.Kings[gameManager.ActivePlayerColor];
+                HighlightSquare(king.Square, checkBrush);
             }
-            
+        }      
+    }
+
+
+    /// <summary>
+    /// Updates the game for the provided move.
+    /// </summary>
+    /// <param name="move">The IMove to apply.</param>
+    private void HandleMove(IMove move)
+    {
+        // Update pieces
+        gameManager.HandleMove(move);
+        DrawPieces();
+
+        // Remove current highlights and selection
+        selectedSquare = null;
+        highlightedMoves = [];
+        ClearHighlights();
+        
+        gameManager.SwitchTurn();
+
+        // Highlight the next player's king square if under check
+        if (gameManager.PlayerUnderCheck)
+        {
+            var king = gameManager.Board.Kings[gameManager.ActivePlayerColor];
+            HighlightSquare(king.Square, checkBrush);
+        }
+
+        //FrozenBoard = gameManager.ActivePlayerColor != gameManager.PlayerColor;
+
+        if (gameManager.GameIsOver())
+        {
+            HandleGameOver();
         }
     }
 
