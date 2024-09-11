@@ -1,6 +1,8 @@
 ﻿using GameLogic;
 using GameLogic.Enums;
 using GameLogic.Interfaces;
+using GameLogic.Moves;
+
 //using System.Drawing;
 using System.Text;
 using System.Windows;
@@ -53,7 +55,7 @@ public partial class GameWindow : Window
     /// <summary>
     /// A bool to dictate whether the player's clicks should interact with the board at all.
     /// </summary>
-    private bool FrozenBoard = false;
+    private bool frozenBoard = false;
 
 
     /// <summary>
@@ -147,7 +149,7 @@ public partial class GameWindow : Window
     /// <param name="e"></param>
     private void BoardGrid_MouseDown(object sender, MouseButtonEventArgs e)
     {
-        if (FrozenBoard)
+        if (frozenBoard)
         {
             return;
         }
@@ -177,13 +179,27 @@ public partial class GameWindow : Window
                 }
             }
         }
-        else if (highlightedMoves.ContainsKey(square))
+        else if (highlightedMoves.TryGetValue(square, out IMove? move))
         {
-            // A highlighted move square is clicked
-             var move = highlightedMoves[square];
-            // PROMOTION HANDLING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            // SEND MOVE TO SERVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            HandleMove(move);
+            if (move.MoveType == MoveType.Promotion)
+            {
+                frozenBoard = true;
+                PromotionMenu promotionMenu = new(gameManager.ActivePlayerColor);
+                MenuContainer.Content = promotionMenu;
+                promotionMenu.PieceClicked += pieceType =>
+                {
+                    frozenBoard = false;
+                    move = new PromotionMove(move.From, move.To, pieceType);
+                    MenuContainer.Content = null;
+                    HandleMove(move);
+                    // SEND MOVE TO SERVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                };
+            }
+            else
+            {
+                HandleMove(move);
+                // SEND MOVE TO SERVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            }
         }
         else
         {
@@ -238,7 +254,7 @@ public partial class GameWindow : Window
     /// </summary>
     private void HandleGameOver()
     {
-        FrozenBoard = true;
+        frozenBoard = true;
         ClearHighlights();
         GameOverMenu gameOverMenu = new(gameManager);
         MenuContainer.Content = gameOverMenu;
