@@ -24,8 +24,6 @@ namespace Client
         public StartWindow()
         {
             InitializeComponent();
-
-            StartGame(PieceColor.White); // color should be selected by host and obtained from server for opponent
             //Visibility = Visibility.Hidden;
 
         }
@@ -40,6 +38,11 @@ namespace Client
             GameWindow gameWindow = new(gameManager);
             gameWindow.Show();
             Close();
+        }
+
+        private void Start_Click(object sender, RoutedEventArgs e)
+        {
+            StartGame(PieceColor.White); // color should be selected by host and obtained from server for opponent
         }
     }
 }

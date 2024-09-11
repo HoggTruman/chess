@@ -6,7 +6,15 @@
         xmlns:local="clr-namespace:Client"
         mc:Ignorable="d"
         Title="StartWindow" Height="400" Width="600">
-    <Grid>
-        <TextBlock >START WINDOW</TextBlock>
-    </Grid>
+    <Border 
+            Style="{StaticResource BorderStyle}"
+            Background="{StaticResource OpaqueBackgroundColor}">
+        <Grid>
+            <Button Content="Start"
+                    Width="80"
+                    Height="30"
+                    Style="{StaticResource ButtonStyle}"
+                    Click="Start_Click"/>
+        </Grid>
+    </Border>
 </Window>
