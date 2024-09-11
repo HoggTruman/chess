@@ -112,8 +112,6 @@ public class GameManager
         {
             Board.Castle((CastleMove)move);
         }
-
-        Board.MoveHistory.Add(move);
     }
 
 

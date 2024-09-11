@@ -144,14 +144,14 @@ public class Board
         T piece = (T)(Activator.CreateInstance(typeof(T), this, row, col, color) ?? throw new Exception());
 
         // Handle king case
-        if (typeof(T) == typeof(KingPiece))
+        if (piece is KingPiece)
         {
             if (Kings[color] != null)
             {   
                 throw new ArgumentException($"{color} King already exists on the board");
             }
 
-            Kings[color] = piece as KingPiece;
+            Kings[color] = (piece as KingPiece)!;
         }
         
         // Update the board state with the piece
@@ -176,30 +176,6 @@ public class Board
     public T AddNewPiece<T>((int row, int col) square, PieceColor color = PieceColor.White) where T : Piece
     {
         return AddNewPiece<T>(square.row, square.col, color);
-    }
-
-
-    // REFACTOR OUT LATER?
-    public void HandleMove(IMove move)
-    {
-        MoveHistory.Add(move);
-
-        if (move.MoveType == MoveType.Standard)
-        {
-            StandardMove((StandardMove)move);
-        }
-        else if (move.MoveType == MoveType.EnPassant)
-        {
-            EnPassant((EnPassantMove)move);
-        }
-        else if (move.MoveType == MoveType.Promotion)
-        {
-            PawnPromote((PromotionMove)move);
-        }
-        else if (move.MoveType == MoveType.Castle)
-        {
-            Castle((CastleMove)move);
-        }
     }
 
 
@@ -291,6 +267,9 @@ public class Board
 
         // Move the piece 
         MovePiece(move.From, move.To);
+
+        // Add Move to MoveHistory
+        MoveHistory.Add(move);
     }
 
 
@@ -311,6 +290,9 @@ public class Board
 
         // Move the pawn
         MovePiece(move.From, move.To);
+
+        // Add Move to MoveHistory
+        MoveHistory.Add(move);
     }
 
 
@@ -361,6 +343,9 @@ public class Board
             throw new ArgumentException(@$"{move.PromotedTo} is not a valid promotion option." + 
                 " A pawn can only be promoted to a queen, rook, knight or bishop.");
         }
+
+        // Add Move to MoveHistory
+        MoveHistory.Add(move);
     }
 
 
@@ -376,6 +361,9 @@ public class Board
 
         // Move Rook
         MovePiece(move.RookFrom, move.RookTo); 
+
+        // Add Move to MoveHistory
+        MoveHistory.Add(move);
     }
 
     #endregion

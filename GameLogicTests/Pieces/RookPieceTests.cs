@@ -182,7 +182,7 @@ public class RookPieceTests
         var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK);
 
         StandardMove kingMove = new(king.Square, StartSquares.WhiteKing);
-        board.HandleMove(kingMove);
+        board.StandardMove(kingMove);
 
         // Act
         var result = rook.CanCastle();
@@ -202,7 +202,7 @@ public class RookPieceTests
         var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK.row - 1, StartSquares.WhiteRookK.col);
 
         StandardMove rookMove = new(rook.Square, StartSquares.WhiteRookK);
-        board.HandleMove(rookMove);
+        board.StandardMove(rookMove);
 
         // Act
         var result = rook.CanCastle();

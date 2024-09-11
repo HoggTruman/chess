@@ -42,7 +42,7 @@ public class PawnPieceTests
         var pawn = board.AddNewPiece<PawnPiece>(6, 4, PieceColor.White);
 
         StandardMove move = new(pawn.Square, (5, 4));
-        board.HandleMove(move);
+        board.StandardMove(move);
 
         List<(int row, int col)> expected = [
             (4, 4)
@@ -175,7 +175,7 @@ public class PawnPieceTests
         var pawn = board.AddNewPiece<PawnPiece>(1, 4, PieceColor.Black);
 
         StandardMove move = new(pawn.Square, (2, 4));
-        board.HandleMove(move);
+        board.StandardMove(move);
 
         List<(int row, int col)> expected = [
             (3, 4)
@@ -260,7 +260,7 @@ public class PawnPieceTests
 
 
         // Act
-        board.HandleMove(blackMove);
+        board.StandardMove(blackMove);
         var result = whitePawn.GetEnPassantSquares();
 
         // Assert 
@@ -291,7 +291,7 @@ public class PawnPieceTests
 
 
         // Act
-        board.HandleMove(whiteMove);
+        board.StandardMove(whiteMove);
         var result = blackPawn.GetEnPassantSquares();
 
         // Assert 
@@ -338,7 +338,7 @@ public class PawnPieceTests
         StandardMove blackMove = new(blackPawn.Square, blackTo);
 
         // Act
-        board.HandleMove(blackMove);
+        board.StandardMove(blackMove);
         var result = whitePawn.GetEnPassantSquares();
 
         // Assert 
@@ -362,7 +362,7 @@ public class PawnPieceTests
         StandardMove whiteMove = new(whitePawn.Square, whiteTo);
 
         // Act
-        board.HandleMove(whiteMove);
+        board.StandardMove(whiteMove);
         var result = blackPawn.GetEnPassantSquares();
 
         // Assert 
