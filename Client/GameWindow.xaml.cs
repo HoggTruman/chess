@@ -135,7 +135,7 @@ public partial class GameWindow : Window
                 else if (gameManager.PlayerColor == PieceColor.Black)
                 {
                     // rotate board if player is black
-                    var (row, col) = RotateSquare180((r, c));
+                    var (row, col) = BoardHelpers.RotateSquare180((r, c));
                     pieceImages[row, col].Source = Images.GetImageSource(piece);
                 }
             }
@@ -161,7 +161,7 @@ public partial class GameWindow : Window
         if (gameManager.PlayerColor == PieceColor.Black)
         {
             // Adjust for Black player board rotation
-            square = RotateSquare180(square);
+            square = BoardHelpers.RotateSquare180(square);
         }
 
         if (selectedSquare == null)
@@ -306,7 +306,7 @@ public partial class GameWindow : Window
 
         if (gameManager.PlayerColor == PieceColor.Black)
         {
-            (row, col) = RotateSquare180(square);
+            (row, col) = BoardHelpers.RotateSquare180(square);
         }
 
         highlights[row, col].Fill = brush;
@@ -325,17 +325,6 @@ public partial class GameWindow : Window
         int row = (int)(point.Y / squareSize);
         int col = (int)(point.X / squareSize);
         return (row, col);
-    }
-
-
-    /// <summary>
-    /// Returns the square rotated 180 degrees.
-    /// </summary>
-    /// <param name="s"></param>
-    /// <returns>(row, col) of the rotated square.</returns>
-    private (int row, int col) RotateSquare180((int row, int col) s)
-    {
-        return (Board.MaxIndex - s.row, Board.MaxIndex - s.col);
     }
 
     #endregion

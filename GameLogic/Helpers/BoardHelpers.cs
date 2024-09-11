@@ -40,4 +40,15 @@ public static class BoardHelpers
             square.col <= Board.MaxIndex
         );
     }
+
+
+    /// <summary>
+    /// Returns the square rotated 180 degrees.
+    /// </summary>
+    /// <param name="s"></param>
+    /// <returns>(row, col) of the rotated square.</returns>
+    public static (int row, int col) RotateSquare180((int row, int col) s)
+    {
+        return (Board.MaxIndex - s.row, Board.MaxIndex - s.col);
+    }
 }
