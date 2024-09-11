@@ -1,30 +1,30 @@
 ﻿using GameLogic;
 using GameLogic.Enums;
-using GameLogic.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Client;
 
-    
+
 /// <summary>
 /// Interaction logic for GameOverMenu.xaml
 /// </summary>
 public partial class GameOverMenu : UserControl
 {
     private readonly GameManager gameManager;
+
+    /// <summary>
+    /// Event fired when GameOverMenu "Exit" button is clicked. 
+    /// </summary>
+    public event Action? ExitClicked;
+
+    /// <summary>
+    /// Event fired when GameOverMenu "Play Again" button is clicked. 
+    /// </summary>
+    public event Action? PlayAgainClicked;
+
+
+
 
     public GameOverMenu(GameManager gameManager)
     {
@@ -35,6 +35,8 @@ public partial class GameOverMenu : UserControl
         WinnerText.Text = GetWinnerText(winner);
         ReasonText.Text = GetReasonText(reason);
     }
+
+
 
 
     public string GetWinnerText(PieceColor? winner)
@@ -68,12 +70,12 @@ public partial class GameOverMenu : UserControl
 
     private void Exit_Click(object sender, RoutedEventArgs e)
     {
-
+        ExitClicked?.Invoke();
     }
 
     private void PlayAgain_Click(object sender, RoutedEventArgs e)
     {
-
+        PlayAgainClicked?.Invoke();
     }
 }
 

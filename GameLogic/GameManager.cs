@@ -12,17 +12,17 @@ public class GameManager
     /// <summary>
     /// The Board of the active game.
     /// </summary>
-    public Board Board { get; } = new();
+    public Board Board { get; private set; } = new();
 
     /// <summary>
     /// The PieceColor of the player.
     /// </summary>
-    public PieceColor PlayerColor { get; }
+    public PieceColor PlayerColor { get; private set; }
 
     /// <summary>
     /// The PieceColor of the player whose turn it is.
     /// </summary>
-    public PieceColor ActivePlayerColor { get; set; } //= PieceColor.White;
+    public PieceColor ActivePlayerColor { get; set; } = PieceColor.White;
 
     /// <summary>
     /// A cached 2D array of the available moves to the player whose turn it is.
@@ -42,9 +42,9 @@ public class GameManager
 
     public GameManager(Board board, PieceColor playerColor)
     {        
+        // Avoids using StartNewGame so that a manually set up Board can be used in testing
         Board = board;
         PlayerColor = playerColor;
-        ActivePlayerColor = playerColor; // ActivePlayerColor set to the player's color to make testing things easier for now
         ActivePlayerMoves = GetPlayerMoves(playerColor);
         PlayerUnderCheck = board.Kings[ActivePlayerColor].IsChecked();
     }
@@ -54,6 +54,21 @@ public class GameManager
 
 
     #region Public Methods
+
+    /// <summary>
+    /// Sets up a new game.
+    /// </summary>
+    /// <param name="playerColor">The PieceColor of the player in the new game.</param>
+    public void StartNewGame(PieceColor playerColor)
+    {
+        Board = new();
+        Board.Initialize();
+        PlayerColor = playerColor;
+        ActivePlayerColor = PieceColor.White;
+        ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
+        PlayerUnderCheck = Board.Kings[ActivePlayerColor].IsChecked();
+    }
+
 
     /// <summary>
     /// Returns a 2D array containing a List of available moves if the corresponding

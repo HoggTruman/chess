@@ -1,5 +1,6 @@
 ﻿using GameLogic;
 using GameLogic.Enums;
+using GameLogic.Helpers;
 using GameLogic.Interfaces;
 using GameLogic.Moves;
 
@@ -258,7 +259,25 @@ public partial class GameWindow : Window
         ClearHighlights();
         GameOverMenu gameOverMenu = new(gameManager);
         MenuContainer.Content = gameOverMenu;
+
+        gameOverMenu.ExitClicked += () =>
+        {            
+            StartWindow startWindow = new();
+            startWindow.Show();
+            Close();
+        };
+
+        gameOverMenu.PlayAgainClicked += () =>
+        {
+            var nextGameColor = ColorHelpers.Opposite(gameManager.PlayerColor);
+            gameManager.StartNewGame(nextGameColor);
+            DrawPieces();
+            frozenBoard = false;
+            MenuContainer.Content = null;
+        };
     }
+
+
 
 
     /// <summary>
