@@ -15,42 +15,13 @@ public partial class StartWindow : Window
     {
         InitializeComponent();
         //Visibility = Visibility.Hidden;
-
+        LoadStartScreen();
     }
 
 
-    private void StartGame(PieceColor playerColor)
+    private void LoadStartScreen()
     {
-        Board board = new();
-        board.Initialize();
-        GameManager gameManager = new(board, playerColor); 
-
-        GameWindow gameWindow = new(gameManager);
-        gameWindow.Show();
-        Close();
-    }
-
-
-    private void HostGame_Click(object sender, RoutedEventArgs e)
-    {
-        // Host chooses color
-    }
-
-
-    private void JoinGame_Click(object sender, RoutedEventArgs e)
-    {
-        // Color obtained from server based on host's choice
-    }
-
-
-    private void SearchForGame_Click(object sender, RoutedEventArgs e)
-    {
-        StartGame(PieceColor.White); // color should be randomly decided by server
-    }
-
-
-    private void Exit_Click(object sender, RoutedEventArgs e)
-    {
-        Close();
+        StartScreen startScreen = new(this);
+        Content = startScreen;
     }
 }
