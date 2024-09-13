@@ -11,22 +11,22 @@ public static class Images
 
     private static readonly Dictionary<PieceType, ImageSource> whiteSources = new()
     {
-        [PieceType.Bishop] = LoadImage("Assets/WhiteBishop.png"),
-        [PieceType.King] = LoadImage("Assets/WhiteKing.png"),
-        [PieceType.Knight] = LoadImage("Assets/WhiteKnight.png"),
-        [PieceType.Pawn] = LoadImage("Assets/WhitePawn.png"),
-        [PieceType.Queen] = LoadImage("Assets/WhiteQueen.png"),
-        [PieceType.Rook] = LoadImage("Assets/WhiteRook.png"),
+        [PieceType.Bishop] = LoadImage("../../Assets/WhiteBishop.png"),
+        [PieceType.King] = LoadImage("../../Assets/WhiteKing.png"),
+        [PieceType.Knight] = LoadImage("../../Assets/WhiteKnight.png"),
+        [PieceType.Pawn] = LoadImage("../../Assets/WhitePawn.png"),
+        [PieceType.Queen] = LoadImage("../../Assets/WhiteQueen.png"),
+        [PieceType.Rook] = LoadImage("../../Assets/WhiteRook.png"),
     };
 
     private static readonly Dictionary<PieceType, ImageSource> blackSources = new()
     {
-        [PieceType.Bishop] = LoadImage("Assets/BlackBishop.png"),
-        [PieceType.King] = LoadImage("Assets/BlackKing.png"),
-        [PieceType.Knight] = LoadImage("Assets/BlackKnight.png"),
-        [PieceType.Pawn] = LoadImage("Assets/BlackPawn.png"),
-        [PieceType.Queen] = LoadImage("Assets/BlackQueen.png"),
-        [PieceType.Rook] = LoadImage("Assets/BlackRook.png"),
+        [PieceType.Bishop] = LoadImage("../../Assets/BlackBishop.png"),
+        [PieceType.King] = LoadImage("../../Assets/BlackKing.png"),
+        [PieceType.Knight] = LoadImage("../../Assets/BlackKnight.png"),
+        [PieceType.Pawn] = LoadImage("../../Assets/BlackPawn.png"),
+        [PieceType.Queen] = LoadImage("../../Assets/BlackQueen.png"),
+        [PieceType.Rook] = LoadImage("../../Assets/BlackRook.png"),
     };
 
     #endregion

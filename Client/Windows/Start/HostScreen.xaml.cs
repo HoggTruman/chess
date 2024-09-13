@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Client;
+namespace Client.Windows.Start;
 
 /// <summary>
 /// Interaction logic for HostScreen.xaml

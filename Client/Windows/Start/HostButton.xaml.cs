@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Client;
+namespace Client.Windows.Start;
 
 /// <summary>
 /// Interaction logic for HostButton.xaml

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Client.PromotionMenu"
+﻿<UserControl x:Class="Client.Windows.Game.PromotionMenu"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -29,19 +29,19 @@
                          Columns="4"
                          Cursor="Hand">
                 <Image x:Name="QueenImage"
-                       Source="Assets/WhiteQueen.png"
+                       Source="../../Assets/WhiteQueen.png"
                        MouseDown="QueenImage_MouseDown"/>
                 
                 <Image x:Name="RookImage"
-                       Source="Assets/WhiteRook.png"
+                       Source="../../Assets/WhiteRook.png"
                        MouseDown="RookImage_MouseDown"/>
                 
                 <Image x:Name="KnightImage"
-                       Source="Assets/WhiteKnight.png"
+                       Source="../../Assets/WhiteKnight.png"
                        MouseDown="KnightImage_MouseDown"/>
                 
                 <Image x:Name="BishopImage"
-                       Source="Assets/WhiteBishop.png"
+                       Source="../../Assets/WhiteBishop.png"
                        MouseDown="BishopImage_MouseDown"/>
             </UniformGrid>
 

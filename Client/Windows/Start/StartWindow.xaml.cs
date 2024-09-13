@@ -3,7 +3,7 @@ using GameLogic.Enums;
 using System.Windows;
 
 
-namespace Client;
+namespace Client.Windows.Start;
 
 
 /// <summary>

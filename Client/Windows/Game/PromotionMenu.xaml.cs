@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Client;
+namespace Client.Windows.Game;
 
 /// <summary>
 /// Interaction logic for PromotionMenu.xaml

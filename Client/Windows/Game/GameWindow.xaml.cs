@@ -1,4 +1,5 @@
-﻿using GameLogic;
+﻿using Client.Windows.Start;
+using GameLogic;
 using GameLogic.Enums;
 using GameLogic.Helpers;
 using GameLogic.Interfaces;
@@ -17,7 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
 
-namespace Client;
+namespace Client.Windows.Game;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
