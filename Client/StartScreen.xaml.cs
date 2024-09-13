@@ -39,6 +39,8 @@ public partial class StartScreen : UserControl
     private void HostGame_Click(object sender, RoutedEventArgs e)
     {
         // Host chooses color
+        HostScreen hostScreen = new(window);
+        window.Content = hostScreen;
     }
 
 
