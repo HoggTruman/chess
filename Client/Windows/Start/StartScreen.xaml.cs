@@ -48,6 +48,8 @@ public partial class StartScreen : UserControl
     private void JoinGame_Click(object sender, RoutedEventArgs e)
     {
         // Color obtained from server based on host's choice
+        JoinScreen joinScreen = new(window);
+        window.Content = joinScreen;
     }
 
 

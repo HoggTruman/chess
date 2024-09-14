@@ -6,10 +6,9 @@
              xmlns:local="clr-namespace:Client"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="600">
-    <Border 
-    Style="{StaticResource BorderStyle}"
-    Background="{StaticResource OpaqueBackgroundColor}"
-    CornerRadius="0">
+    <Border Style="{StaticResource BorderStyle}"
+            Background="{StaticResource OpaqueBackgroundColor}"
+            CornerRadius="0">   
         <Grid RenderOptions.BitmapScalingMode="HighQuality">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.4*"/>
