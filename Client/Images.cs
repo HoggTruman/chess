@@ -11,22 +11,22 @@ public static class Images
 
     private static readonly Dictionary<PieceType, ImageSource> whiteSources = new()
     {
-        [PieceType.Bishop] = LoadImage("../../Assets/WhiteBishop.png"),
-        [PieceType.King] = LoadImage("../../Assets/WhiteKing.png"),
-        [PieceType.Knight] = LoadImage("../../Assets/WhiteKnight.png"),
-        [PieceType.Pawn] = LoadImage("../../Assets/WhitePawn.png"),
-        [PieceType.Queen] = LoadImage("../../Assets/WhiteQueen.png"),
-        [PieceType.Rook] = LoadImage("../../Assets/WhiteRook.png"),
+        [PieceType.Bishop] = LoadImage(@"pack://application:,,,/Client;component/Assets/WhiteBishop.png"),
+        [PieceType.King] = LoadImage(@"pack://application:,,,/Client;component/Assets/WhiteKing.png"),
+        [PieceType.Knight] = LoadImage(@"pack://application:,,,/Client;component/Assets/WhiteKnight.png"),
+        [PieceType.Pawn] = LoadImage(@"pack://application:,,,/Client;component/Assets/WhitePawn.png"),
+        [PieceType.Queen] = LoadImage(@"pack://application:,,,/Client;component/Assets/WhiteQueen.png"),
+        [PieceType.Rook] = LoadImage(@"pack://application:,,,/Client;component/Assets/WhiteRook.png"),
     };
 
     private static readonly Dictionary<PieceType, ImageSource> blackSources = new()
     {
-        [PieceType.Bishop] = LoadImage("../../Assets/BlackBishop.png"),
-        [PieceType.King] = LoadImage("../../Assets/BlackKing.png"),
-        [PieceType.Knight] = LoadImage("../../Assets/BlackKnight.png"),
-        [PieceType.Pawn] = LoadImage("../../Assets/BlackPawn.png"),
-        [PieceType.Queen] = LoadImage("../../Assets/BlackQueen.png"),
-        [PieceType.Rook] = LoadImage("../../Assets/BlackRook.png"),
+        [PieceType.Bishop] = LoadImage(@"pack://application:,,,/Client;component/Assets/BlackBishop.png"),
+        [PieceType.King] = LoadImage(@"pack://application:,,,/Client;component/Assets/BlackKing.png"),
+        [PieceType.Knight] = LoadImage(@"pack://application:,,,/Client;component/Assets/BlackKnight.png"),
+        [PieceType.Pawn] = LoadImage(@"pack://application:,,,/Client;component/Assets/BlackPawn.png"),
+        [PieceType.Queen] = LoadImage(@"pack://application:,,,/Client;component/Assets/BlackQueen.png"),
+        [PieceType.Rook] = LoadImage(@"pack://application:,,,/Client;component/Assets/BlackRook.png"),
     };
 
     #endregion
@@ -73,9 +73,9 @@ public static class Images
 
     #region Private Methods
 
-    private static ImageSource LoadImage(string filepath)
+    private static BitmapImage LoadImage(string filepath)
     {
-        return new BitmapImage(new Uri(filepath, UriKind.Relative));
+        return new BitmapImage(new Uri(filepath, UriKind.Absolute));
     }
 
     #endregion
