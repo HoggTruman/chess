@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Client.Windows.Start;
+namespace GameApplication.Windows.Start;
 
 /// <summary>
 /// Interaction logic for JoinScreen.xaml

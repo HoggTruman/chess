@@ -1,10 +1,10 @@
-﻿using Client.Windows.Game;
+﻿using GameApplication.Windows.Game;
 using GameLogic;
 using GameLogic.Enums;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Client.Windows.Start;
+namespace GameApplication.Windows.Start;
 
 /// <summary>
 /// Interaction logic for UserControl1.xaml

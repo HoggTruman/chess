@@ -1,22 +1,22 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Client.Windows.Start;
+namespace GameApplication.Windows.Start;
 
 /// <summary>
-/// Interaction logic for HostResponse.xaml
+/// Interaction logic for HostButton.xaml
 /// </summary>
-public partial class HostingSection : UserControl
+public partial class HostButton : UserControl
 {
     private readonly Action onClick;
 
-    public HostingSection(Action onClick)
+    public HostButton(Action onClick)
     {
         InitializeComponent();
         this.onClick = onClick;
     }
 
-    private void Cancel_Click(object sender, RoutedEventArgs e)
+    private void HostGame_Click(object sender, RoutedEventArgs e)
     {
         onClick.Invoke();
     }

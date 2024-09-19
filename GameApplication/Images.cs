@@ -3,7 +3,7 @@ using GameLogic.Interfaces;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Client;
+namespace GameApplication;
 
 public static class Images
 {
@@ -11,22 +11,22 @@ public static class Images
 
     private static readonly Dictionary<PieceType, ImageSource> whiteSources = new()
     {
-        [PieceType.Bishop] = LoadImage(@"pack://application:,,,/Client;component/Assets/WhiteBishop.png"),
-        [PieceType.King] = LoadImage(@"pack://application:,,,/Client;component/Assets/WhiteKing.png"),
-        [PieceType.Knight] = LoadImage(@"pack://application:,,,/Client;component/Assets/WhiteKnight.png"),
-        [PieceType.Pawn] = LoadImage(@"pack://application:,,,/Client;component/Assets/WhitePawn.png"),
-        [PieceType.Queen] = LoadImage(@"pack://application:,,,/Client;component/Assets/WhiteQueen.png"),
-        [PieceType.Rook] = LoadImage(@"pack://application:,,,/Client;component/Assets/WhiteRook.png"),
+        [PieceType.Bishop] = LoadImage(@"pack://application:,,,/GameApplication;component/Assets/WhiteBishop.png"),
+        [PieceType.King] = LoadImage(@"pack://application:,,,/GameApplication;component/Assets/WhiteKing.png"),
+        [PieceType.Knight] = LoadImage(@"pack://application:,,,/GameApplication;component/Assets/WhiteKnight.png"),
+        [PieceType.Pawn] = LoadImage(@"pack://application:,,,/GameApplication;component/Assets/WhitePawn.png"),
+        [PieceType.Queen] = LoadImage(@"pack://application:,,,/GameApplication;component/Assets/WhiteQueen.png"),
+        [PieceType.Rook] = LoadImage(@"pack://application:,,,/GameApplication;component/Assets/WhiteRook.png"),
     };
 
     private static readonly Dictionary<PieceType, ImageSource> blackSources = new()
     {
-        [PieceType.Bishop] = LoadImage(@"pack://application:,,,/Client;component/Assets/BlackBishop.png"),
-        [PieceType.King] = LoadImage(@"pack://application:,,,/Client;component/Assets/BlackKing.png"),
-        [PieceType.Knight] = LoadImage(@"pack://application:,,,/Client;component/Assets/BlackKnight.png"),
-        [PieceType.Pawn] = LoadImage(@"pack://application:,,,/Client;component/Assets/BlackPawn.png"),
-        [PieceType.Queen] = LoadImage(@"pack://application:,,,/Client;component/Assets/BlackQueen.png"),
-        [PieceType.Rook] = LoadImage(@"pack://application:,,,/Client;component/Assets/BlackRook.png"),
+        [PieceType.Bishop] = LoadImage(@"pack://application:,,,/GameApplication;component/Assets/BlackBishop.png"),
+        [PieceType.King] = LoadImage(@"pack://application:,,,/GameApplication;component/Assets/BlackKing.png"),
+        [PieceType.Knight] = LoadImage(@"pack://application:,,,/GameApplication;component/Assets/BlackKnight.png"),
+        [PieceType.Pawn] = LoadImage(@"pack://application:,,,/GameApplication;component/Assets/BlackPawn.png"),
+        [PieceType.Queen] = LoadImage(@"pack://application:,,,/GameApplication;component/Assets/BlackQueen.png"),
+        [PieceType.Rook] = LoadImage(@"pack://application:,,,/GameApplication;component/Assets/BlackRook.png"),
     };
 
     #endregion

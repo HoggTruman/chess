@@ -1,7 +1,7 @@
-﻿<Application x:Class="Client.App"
+﻿<Application x:Class="GameApplication.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Client"
+             xmlns:local="clr-namespace:GameApplication"
              StartupUri="Windows/Start/StartWindow.xaml">
     <Application.Resources>
         <SolidColorBrush x:Key="BackgroundColor">#cfb28a</SolidColorBrush>

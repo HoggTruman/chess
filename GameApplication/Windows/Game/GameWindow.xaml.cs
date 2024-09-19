@@ -1,24 +1,16 @@
-﻿using Client.Windows.Start;
+﻿using GameApplication.Windows.Start;
 using GameLogic;
 using GameLogic.Enums;
 using GameLogic.Helpers;
 using GameLogic.Interfaces;
 using GameLogic.Moves;
-
-//using System.Drawing;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Xml.Linq;
 
-namespace Client.Windows.Game;
+namespace GameApplication.Windows.Game;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml
