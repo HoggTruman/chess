@@ -79,6 +79,11 @@ public class GameManager
     /// <returns>A 2D Array of nullable Lists of Moves</returns>
     public List<IMove>?[,] GetPlayerMoves(PieceColor color)
     {
+        if (color == PieceColor.None)
+        {
+            throw new ArgumentException($"Can not get moves for player with color {color}");
+        }
+
         var boardMoves = new List<IMove>?[Board.BoardSize, Board.BoardSize];
 
         foreach (var piece in Board.Pieces[color])
@@ -164,7 +169,7 @@ public class GameManager
     /// </summary>
     /// <returns>A tuple of the PieceColor of the winner (or null for a draw) and a GameOverReason</returns>
     /// <exception cref="Exception">The game is not over</exception>
-    public (PieceColor?, GameOverReason) GetGameResult()
+    public (PieceColor, GameOverReason) GetGameResult()
     {
         if (GameIsOver() == false)
         {
@@ -183,11 +188,11 @@ public class GameManager
             if (Board.Pieces[PieceColor.White].Count == 1 &&
                 Board.Pieces[PieceColor.Black].Count == 1)
             {
-                return (null, GameOverReason.InsufficientMaterial);
+                return (PieceColor.None, GameOverReason.InsufficientMaterial);
             }
 
             // Stalemate
-            return (null, GameOverReason.Stalemate);
+            return (PieceColor.None, GameOverReason.Stalemate);
         }
     }    
 

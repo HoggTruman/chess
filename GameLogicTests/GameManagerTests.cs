@@ -2,9 +2,6 @@
 using GameLogic;
 using GameLogic.Constants;
 using GameLogic.Enums;
-using GameLogic.Helpers;
-using GameLogic.Interfaces;
-using GameLogic.Moves;
 using GameLogic.Pieces;
 
 namespace GameLogicTests;
@@ -172,7 +169,7 @@ public class GameManagerTests
         var (winner, reason) = gameManager.GetGameResult();
 
         // Assert
-        winner.Should().Be(null);
+        winner.Should().Be(PieceColor.None);
         reason.Should().Be(GameOverReason.Stalemate);
     }
 
@@ -196,7 +193,7 @@ public class GameManagerTests
         var (winner, reason) = gameManager.GetGameResult();
 
         // Assert
-        winner.Should().Be(null);
+        winner.Should().Be(PieceColor.None);
         reason.Should().Be(GameOverReason.Stalemate);
     }
 
@@ -215,7 +212,7 @@ public class GameManagerTests
         var (winner, reason) = gameManager.GetGameResult();
 
         // Assert
-        winner.Should().Be(null);
+        winner.Should().Be(PieceColor.None);
         reason.Should().Be(GameOverReason.InsufficientMaterial);
     }
 
@@ -235,7 +232,7 @@ public class GameManagerTests
         var (winner, reason) = gameManager.GetGameResult();
 
         // Assert
-        winner.Should().Be(null);
+        winner.Should().Be(PieceColor.None);
         reason.Should().Be(GameOverReason.InsufficientMaterial);
     }
 

@@ -1,5 +1,6 @@
 ﻿using GameLogic;
 using GameLogic.Enums;
+using GameLogic.Helpers;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -11,7 +12,7 @@ namespace GameApplication.Windows.Game;
 /// </summary>
 public partial class GameOverMenu : UserControl
 {
-    private readonly GameManager gameManager;
+    private readonly GameManager _gameManager;
 
     /// <summary>
     /// Event fired when GameOverMenu "Exit" button is clicked. 
@@ -29,7 +30,7 @@ public partial class GameOverMenu : UserControl
     public GameOverMenu(GameManager gameManager)
     {
         InitializeComponent();
-        this.gameManager = gameManager;
+        _gameManager = gameManager;
 
         var (winner, reason) = gameManager.GetGameResult();
         WinnerText.Text = GetWinnerText(winner);
@@ -39,20 +40,29 @@ public partial class GameOverMenu : UserControl
 
 
 
-    public string GetWinnerText(PieceColor? winner)
+    public string GetWinnerText(PieceColor winner)
     {
-        if (winner == null)
+        if (_gameManager.PlayerColor == PieceColor.None)
         {
-            return "It's a Draw!";
+            return winner switch
+            {
+                PieceColor.White => "White Wins!",
+                PieceColor.Black => "Black Wins!",
+                _ => "It's A Draw!"
+            };
         }
-        else if (winner == gameManager.PlayerColor)
+        else if (_gameManager.PlayerColor == winner)
         {
             return "You Win!";
         }
-        else
+        else if (_gameManager.PlayerColor == ColorHelpers.Opposite(winner))
         {
             return "You Lose!";
         }
+        else 
+        {
+            return "It's A Draw!";
+        }        
     }
 
 

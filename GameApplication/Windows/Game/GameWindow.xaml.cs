@@ -110,7 +110,8 @@ public partial class GameWindow : Window
 
 
     /// <summary>
-    /// Updates pieceImages to match the Board from the perspective of the player
+    /// Updates pieceImages to match the Board from the perspective of the player.
+    /// Takes White's perspective for local games.
     /// (The player's pieces are at the bottom of the board)
     /// </summary>
     private void DrawPieces()
@@ -121,15 +122,15 @@ public partial class GameWindow : Window
             {
                 IPiece? piece = gameManager.Board.State[r, c];
 
-                if (gameManager.PlayerColor == PieceColor.White)
-                {
-                    pieceImages[r, c].Source = Images.GetImageSource(piece);
-                }
-                else if (gameManager.PlayerColor == PieceColor.Black)
+                if (gameManager.PlayerColor == PieceColor.Black)
                 {
                     // rotate board if player is black
                     var (row, col) = BoardHelpers.RotateSquare180((r, c));
                     pieceImages[row, col].Source = Images.GetImageSource(piece);
+                }
+                else 
+                {
+                    pieceImages[r, c].Source = Images.GetImageSource(piece);
                 }
             }
         }
