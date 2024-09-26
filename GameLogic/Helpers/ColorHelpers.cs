@@ -5,15 +5,17 @@ namespace GameLogic.Helpers;
 public static class ColorHelpers
 {
     /// <summary>
-    /// Returns Black if White and White if Black
+    /// Returns the opposite PieceColor
     /// </summary>
     /// <param name="color"></param>
-    /// <returns>A Color Enum value</returns>
+    /// <returns>A PieceColor</returns>
     public static PieceColor Opposite(PieceColor color)
     {
-        if (color == PieceColor.White)
-            return PieceColor.Black;
-        else
-            return PieceColor.White;
+        return color switch
+        {
+            PieceColor.White => PieceColor.Black,
+            PieceColor.Black => PieceColor.White,
+            _ => PieceColor.None
+        };
     }
 }
