@@ -75,7 +75,6 @@ public class GameServer
         {
             client.TcpClient.Dispose();
         }
-        
     }
 
 
@@ -85,7 +84,7 @@ public class GameServer
 
         while (client.TcpClient.Connected && _token.IsCancellationRequested == false)
         {
-            string message = await ReadClientMessage(client.Stream);
+            List<byte> message = await ReadClientMessage(client.Stream);
             await HandleClientMessage(message);
         }
     }
@@ -93,24 +92,26 @@ public class GameServer
 
     private async Task SendConnectedMessage(Client client)
     {
-        int msgCode = (int)ServerMessage.Connected;
-        string msg = $"{msgCode}{client.Id}";
-        byte[] outMsg = Encoding.UTF8.GetBytes(msg);
+        byte msgCode = (byte)ServerMessage.Connected;
+        byte[] outMsg = [msgCode];
 
         await client.Stream.WriteAsync(outMsg, _token);
     }
 
 
-    private async Task<string> ReadClientMessage(NetworkStream stream)
+    private async Task<List<byte>> ReadClientMessage(NetworkStream stream)
     {
         byte[] buffer = new byte[256];
         
-        string message = "";
+        List<byte> message = [];
         int bytesRead;
 
         while ((bytesRead = await stream.ReadAsync(buffer, _token)) > 0)
         {
-            message += Encoding.UTF8.GetString(buffer, 0, bytesRead);
+            for (int i = 0; i < bytesRead; i++)
+            {
+                message.Add(buffer[i]);
+            }
 
             if (stream.DataAvailable == false)
             {
@@ -122,10 +123,30 @@ public class GameServer
     }
 
 
-    private async Task HandleClientMessage(string message)
+    private async Task HandleClientMessage(List<byte> message)
     {
-        Console.WriteLine(message);
+        ClientMessage msgCode = (ClientMessage)MessageHelpers.ReadCode(message);
+
+        switch (msgCode)
+        {
+            case ClientMessage.HostRoom:
+                // Host Room
+                break;
+            case ClientMessage.JoinRoom:
+                // Join Room
+                break;
+            default:
+                // Disconnect Player
+                break;
+        }
     }
     
+
+    public void HostRoom()
+    {
+
+    }
+
+
 }
 

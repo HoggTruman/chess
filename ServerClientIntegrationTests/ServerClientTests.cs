@@ -1,4 +1,6 @@
 using Client;
+using NetworkShared;
+using NetworkShared.Enums;
 using Server;
 
 namespace ServerClientIntegrationTests;
@@ -39,9 +41,11 @@ public sealed class ServerClientTests : IDisposable
     {
         GameClient gameClient = new();
         await gameClient.ConnectToServer();
-        string result = await gameClient.ReadServerMessage();
+        List<byte> message = await gameClient.ReadServerMessage();
+        ServerMessage msgCode = (ServerMessage)MessageHelpers.ReadCode(message);
 
-        Assert.NotEmpty(result);
+        Assert.NotEmpty(message);
+        Assert.Equal(ServerMessage.Connected, msgCode);
     }
 
 }

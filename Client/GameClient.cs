@@ -37,21 +37,24 @@ public class GameClient
     {
         while (_tcpClient.Connected)
         {
-            string message = await ReadServerMessage();
+            List<byte> message = await ReadServerMessage();
 
             HandleServerMessage(message);
         }
     }
 
 
-    public async Task<string> ReadServerMessage()
+    public async Task<List<byte>> ReadServerMessage()
     {
-        string message = "";
+        List<byte> message = [];
         int bytesRead;
 
         while ((bytesRead = await _stream.ReadAsync(_buffer, 0, _buffer.Length)) > 0)
         {
-            message += Encoding.UTF8.GetString(_buffer, 0, bytesRead);
+            for (int i = 0; i < bytesRead; i++)
+            {
+                message.Add(_buffer[i]);
+            }
 
             if (_stream.DataAvailable == false)
             {
@@ -63,16 +66,14 @@ public class GameClient
     }
 
 
-    private async void HandleServerMessage(string message)
+    private async void HandleServerMessage(List<byte> message)
     {
-        Console.WriteLine(message);
-        ServerMessage msgType = (ServerMessage)Char.GetNumericValue(message[0]);
+        ServerMessage msgCode = (ServerMessage)MessageHelpers.ReadCode(message);
 
-        switch (msgType)
+        switch (msgCode)
         {
             case ServerMessage.Connected:
                 // remove code, get other data, etc ...
-                ClientId = Int32.Parse(message.Substring(1));
                 break;
         }
     }
