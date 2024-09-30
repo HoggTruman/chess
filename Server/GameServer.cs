@@ -1,9 +1,10 @@
-﻿using NetworkShared;
+﻿using GameLogic.Enums;
+using NetworkShared;
 using NetworkShared.Enums;
+using NetworkShared.Messages.Server;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
 namespace Server;
 
@@ -11,6 +12,7 @@ public class GameServer
 {
     public bool IsListening { get; private set; }
     public Dictionary<int, Client> Clients = [];
+    public Dictionary<int, Room> Rooms = [];
 
     private readonly TcpListener _tcpListener;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
@@ -84,8 +86,8 @@ public class GameServer
 
         while (client.TcpClient.Connected && _token.IsCancellationRequested == false)
         {
-            List<byte> message = await ReadClientMessage(client.Stream);
-            await HandleClientMessage(message);
+            byte[] message = await ReadClientMessage(client.Stream);
+            await HandleClientMessage(client, message);
         }
     }
 
@@ -99,7 +101,7 @@ public class GameServer
     }
 
 
-    private async Task<List<byte>> ReadClientMessage(NetworkStream stream)
+    private async Task<byte[]> ReadClientMessage(NetworkStream stream)
     {
         byte[] buffer = new byte[256];
         
@@ -119,18 +121,21 @@ public class GameServer
             }
         }
 
-        return message;
+        return message.ToArray();
     }
 
 
-    private async Task HandleClientMessage(List<byte> message)
+    private async Task HandleClientMessage(Client client, byte[] inMsg)
     {
-        ClientMessage msgCode = (ClientMessage)MessageHelpers.ReadCode(message);
+        ClientMessage msgCode = (ClientMessage)MessageHelpers.ReadCode(inMsg);
 
         switch (msgCode)
         {
             case ClientMessage.HostRoom:
-                // Host Room
+                PieceColor hostColor = HostRoomMessage.Decode(inMsg);
+                HostRoom(client, hostColor);
+                byte[] outMsg = RoomHostedMessage.Encode(client.RoomId);
+                await client.Stream.WriteAsync(outMsg, _token);
                 break;
             case ClientMessage.JoinRoom:
                 // Join Room
@@ -142,9 +147,14 @@ public class GameServer
     }
     
 
-    public void HostRoom()
+    public void HostRoom(Client client, PieceColor clientColor)
     {
+        Room room = new();
+        room.Players[clientColor] = client;
 
+        Rooms[room.Id] = room;
+        
+        client.RoomId = room.Id;
     }
 
 

@@ -7,7 +7,7 @@ public class MessageHelpers
     /// </summary>
     /// <param name="message">A List of bytes representing the message.</param>
     /// <returns></returns>
-    public static byte ReadCode(List<byte> message)
+    public static byte ReadCode(byte[] message)
     {
         return message[0];
     }

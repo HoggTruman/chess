@@ -3,6 +3,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using NetworkShared;
+using GameLogic.Enums;
+using NetworkShared.Messages.Server;
 
 namespace Client;
 
@@ -37,14 +39,14 @@ public class GameClient
     {
         while (_tcpClient.Connected)
         {
-            List<byte> message = await ReadServerMessage();
+            byte[] message = await ReadServerMessage();
 
             HandleServerMessage(message);
         }
     }
 
 
-    public async Task<List<byte>> ReadServerMessage()
+    public async Task<byte[]> ReadServerMessage()
     {
         List<byte> message = [];
         int bytesRead;
@@ -62,11 +64,11 @@ public class GameClient
             }
         }
 
-        return message;
+        return message.ToArray();
     }
 
 
-    private async void HandleServerMessage(List<byte> message)
+    private async void HandleServerMessage(byte[] message)
     {
         ServerMessage msgCode = (ServerMessage)MessageHelpers.ReadCode(message);
 
@@ -75,8 +77,17 @@ public class GameClient
             case ServerMessage.Connected:
                 // remove code, get other data, etc ...
                 break;
+            case ServerMessage.RoomHosted:
+                // trigger an event?
+                break;
         }
     }
 
+
+    public async void HostRoom(PieceColor hostColor)
+    {
+        byte[] message = HostRoomMessage.Encode(hostColor);
+        await _stream.WriteAsync(message);
+    }
 }
 
