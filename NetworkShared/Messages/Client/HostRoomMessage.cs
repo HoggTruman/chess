@@ -7,7 +7,7 @@ public class HostRoomMessage
 {
     // Encoded Message Structure:
     // Byte 0: Message code
-    // Bytes 1-4: roomId
+    // Byte 1: PieceColor of the host
 
 
     public static ClientMessage Code { get; } = ClientMessage.HostRoom;
