@@ -16,24 +16,25 @@ public class Room
     { 
         get
         {
-            return Players[PieceColor.White] != null && Players[PieceColor.Black] != null;
+            return Players.Count == 2;
         }
     }
 
-    public Dictionary<PieceColor, Client?> Players { get; }
+    public List<Client> Players { get; } = [];
+
+    public PieceColor HostColor { get; private set; }
 
     
 
-    public Room()
+    public Room(PieceColor hostColor)
     {
         Id = GenerateRoomId();
         _gameManager = new(new Board(), PieceColor.None);
-        Players = new Dictionary<PieceColor, Client?>
-        {
-            [PieceColor.White] = null,
-            [PieceColor.Black] = null
-        };
+        
+
+        HostColor = hostColor;
     }
+
 
 
     private int GenerateRoomId()

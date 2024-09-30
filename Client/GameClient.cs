@@ -89,5 +89,12 @@ public class GameClient
         byte[] message = HostRoomMessage.Encode(hostColor);
         await _stream.WriteAsync(message);
     }
+
+
+    public async void JoinRoom(int roomId)
+    {
+        byte[] message = JoinRoomMessage.Encode(roomId);
+        await _stream.WriteAsync(message);
+    }
 }
 

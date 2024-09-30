@@ -11,9 +11,8 @@ public class Client
     public TcpClient TcpClient { get; }
     public NetworkStream Stream { get; }
 
-    public int OpponentId { get; set; }
     public int RoomId { get; set; }
-
+    public bool IsHost { get; set; }
 
     public Client(TcpClient tcpClient)
     {

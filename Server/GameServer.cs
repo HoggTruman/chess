@@ -138,7 +138,17 @@ public class GameServer
                 await client.Stream.WriteAsync(outMsg, _token);
                 break;
             case ClientMessage.JoinRoom:
-                // Join Room
+                int roomId = JoinRoomMessage.Decode(inMsg);
+                bool joined = JoinRoom(client, roomId);
+                if (joined)
+                {
+                    // set up the room's board etc
+                    // send message to both players to start the game
+                }
+                else
+                {
+                    // Disconnect / inform client failed to join
+                }
                 break;
             default:
                 // Disconnect Player
@@ -147,14 +157,40 @@ public class GameServer
     }
     
 
-    public void HostRoom(Client client, PieceColor clientColor)
+    /// <summary>
+    /// Creates a Room with the Client as the specified PieceColor.
+    /// </summary>
+    /// <param name="client">The Client object of the hosting player.</param>
+    /// <param name="hostColor">The PieceColor of the hosting player.</param>
+    public void HostRoom(Client client, PieceColor hostColor)
     {
-        Room room = new();
-        room.Players[clientColor] = client;
-
+        Room room = new(hostColor);
         Rooms[room.Id] = room;
         
         client.RoomId = room.Id;
+        client.IsHost = true;
+    }
+
+
+    /// <summary>
+    /// Attempts to add the Client to the Room with roomId.
+    /// </summary>
+    /// <param name="client">The Client object for the joining player.</param>
+    /// <param name="roomId">The Id of the room to join.</param>
+    /// <returns>true if succesfully joined. Otherwise, false.</returns>
+    public bool JoinRoom(Client client, int roomId)
+    {
+        if (Rooms.TryGetValue(roomId, out Room room) == false ||
+            room.IsFull)
+        {
+            return false;
+        }
+
+        room.Players.Add(client);
+        client.RoomId = room.Id;
+        client.IsHost = false;
+
+        return true;        
     }
 
 
