@@ -186,8 +186,7 @@ public class GameServer
     /// <param name="hostColor">The PieceColor of the hosting player.</param>
     public void HostRoom(Client client, PieceColor hostColor)
     {
-        Room room = new(hostColor);
-        room.Players.Add(client);
+        Room room = new(client, hostColor);
 
         Rooms[room.Id] = room;
         
@@ -209,15 +208,13 @@ public class GameServer
             return ServerMessage.RoomNotFound;
         }
 
-        if (room.IsJoinable == false)
+        if (room.TryJoin(client))
         {
-            return ServerMessage.RoomFull;
+            client.RoomId = room.Id;
+            return ServerMessage.StartGame; 
         }
-
-        room.Players.Add(client);
-        client.RoomId = room.Id;
-
-        return ServerMessage.StartGame;        
+        
+        return ServerMessage.RoomFull;
     }
 
 

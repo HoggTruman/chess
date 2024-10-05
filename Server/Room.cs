@@ -1,5 +1,6 @@
 ﻿using GameLogic;
 using GameLogic.Enums;
+using System.Collections.ObjectModel;
 
 namespace Server;
     
@@ -11,6 +12,8 @@ public class Room
 
     private GameManager _gameManager;
 
+    private List<Client> _players = [];
+
     private bool _isLocked;
 
     #endregion
@@ -21,15 +24,10 @@ public class Room
 
     public int Id { get; }
 
-    public bool IsJoinable
-    { 
-        get
-        {
-            return Players.Count == 1 && _isLocked == false;
-        }
+    public ReadOnlyCollection<Client> Players
+    {
+        get => _players.AsReadOnly();
     }
-
-    public List<Client> Players { get; } = [];
 
     public PieceColor HostColor { get; private set; }
 
@@ -38,14 +36,14 @@ public class Room
 
 
 
-    public Room(PieceColor hostColor)
+    public Room(Client hostClient, PieceColor hostColor)
     {
         Id = GenerateRoomId();
         Board board = new();
         board.Initialize();
         _gameManager = new(board, PieceColor.None);
         
-
+        _players.Add(hostClient);
         HostColor = hostColor;
     }
 
@@ -57,6 +55,29 @@ public class Room
     }
 
 
+    /// <summary>
+    /// Attempts to add the joiningClient to the room.
+    /// </summary>
+    /// <param name="joiningClient"></param>
+    /// <returns>true if successful. Otherwise, false</returns>
+    public bool TryJoin(Client joiningClient)
+    {
+        if (_isLocked || Players.Count != 1)
+        {
+            return false;
+        }
+        
+        _players.Add(joiningClient);
+        return true;
+    }
+
+
+    /// <summary>
+    /// Gets the Client object of the opponent.
+    /// </summary>
+    /// <param name="client">The Client object of the player</param>
+    /// <returns></returns>
+    /// <exception cref="Exception">The Room does not contain an opponent</exception>
     public Client GetOpponent(Client client)
     {
         foreach (Client player in Players)
