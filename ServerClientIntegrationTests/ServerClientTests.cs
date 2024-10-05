@@ -15,7 +15,7 @@ public sealed class ServerClientTests : IDisposable
         _gameServer.Start();
         while (_gameServer.IsListening == false)
         {
-
+            // wait for game server to listen
         }
     }
 
@@ -41,7 +41,7 @@ public sealed class ServerClientTests : IDisposable
     {
         GameClient gameClient = new();
         await gameClient.ConnectToServer();
-        List<byte> message = await gameClient.ReadServerMessage();
+        byte[] message = await gameClient.ReadServerMessage();
         ServerMessage msgCode = (ServerMessage)MessageHelpers.ReadCode(message);
 
         Assert.NotEmpty(message);
