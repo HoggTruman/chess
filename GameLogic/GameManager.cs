@@ -45,7 +45,7 @@ public class GameManager
         // Avoids using StartNewGame so that a manually set up Board can be used in testing
         Board = board;
         PlayerColor = playerColor;
-        ActivePlayerMoves = GetPlayerMoves(playerColor);
+        ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
         PlayerUnderCheck = board.Kings[ActivePlayerColor].IsChecked();
     }
 

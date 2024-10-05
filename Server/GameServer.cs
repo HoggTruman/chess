@@ -1,4 +1,5 @@
 ﻿using GameLogic.Enums;
+using GameLogic.Helpers;
 using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Server;
@@ -49,10 +50,11 @@ public class GameServer
     }
 
 
-    public async void ShutDown()
+    public async Task ShutDown()
     {
         if (_token.IsCancellationRequested)
         {
+            // prevent attempting to shutdown twice
             return;
         }
 
@@ -137,19 +139,39 @@ public class GameServer
                 byte[] outMsg = RoomHostedMessage.Encode(client.RoomId);
                 await client.Stream.WriteAsync(outMsg, _token);
                 break;
+
             case ClientMessage.JoinRoom:
                 int roomId = JoinRoomMessage.Decode(inMsg);
-                bool joined = JoinRoom(client, roomId);
-                if (joined)
+                ServerMessage response = JoinRoom(client, roomId);
+
+                if (response == ServerMessage.StartGame)
                 {
                     // set up the room's board etc
-                    // send message to both players to start the game
+                    Room room = Rooms[client.RoomId];
+                    room.StartNewGame();
+
+                    // send message to host
+                    Client host = room.GetOpponent(client);
+                    byte[] hostMessage = StartGameMessage.Encode(room.HostColor);
+                    await host.Stream.WriteAsync(hostMessage, _token);
+
+                    // send message to joiner
+                    PieceColor joinerColor = ColorHelpers.Opposite(room.HostColor);
+                    byte[] joinerMessage = StartGameMessage.Encode(joinerColor);
+                    await client.Stream.WriteAsync(joinerMessage, _token);
                 }
-                else
+                else if (response == ServerMessage.RoomNotFound)
                 {
-                    // Disconnect / inform client failed to join
+                    byte[] joinerMessage = RoomNotFoundMessage.Encode();
+                    await client.Stream.WriteAsync(joinerMessage, _token);
+                }
+                else if (response == ServerMessage.RoomFull)
+                {
+                    byte[] joinerMessage = RoomFullMessage.Encode();
+                    await client.Stream.WriteAsync(joinerMessage, _token);
                 }
                 break;
+
             default:
                 // Disconnect Player
                 break;
@@ -165,10 +187,11 @@ public class GameServer
     public void HostRoom(Client client, PieceColor hostColor)
     {
         Room room = new(hostColor);
+        room.Players.Add(client);
+
         Rooms[room.Id] = room;
         
         client.RoomId = room.Id;
-        client.IsHost = true;
     }
 
 
@@ -177,20 +200,24 @@ public class GameServer
     /// </summary>
     /// <param name="client">The Client object for the joining player.</param>
     /// <param name="roomId">The Id of the room to join.</param>
-    /// <returns>true if succesfully joined. Otherwise, false.</returns>
-    public bool JoinRoom(Client client, int roomId)
+    /// <returns>A ServerMessage enum corresponding to the response.</returns>
+    public ServerMessage JoinRoom(Client client, int roomId)
     {
-        if (Rooms.TryGetValue(roomId, out Room room) == false ||
-            room.IsFull)
+        if (Rooms.TryGetValue(roomId, out Room? room) == false ||
+            room == null)
         {
-            return false;
+            return ServerMessage.RoomNotFound;
+        }
+
+        if (room.IsJoinable == false)
+        {
+            return ServerMessage.RoomFull;
         }
 
         room.Players.Add(client);
         client.RoomId = room.Id;
-        client.IsHost = false;
 
-        return true;        
+        return ServerMessage.StartGame;        
     }
 
 
