@@ -148,17 +148,16 @@ public class GameServer
                 {
                     // set up the room's board etc
                     Room room = Rooms[client.RoomId];
-                    room.StartNewGame();
-
-                    // send message to host
-                    Client host = room.GetOpponent(client);
-                    byte[] hostMessage = StartGameMessage.Encode(room.HostColor);
-                    await host.Stream.WriteAsync(hostMessage, _token);
 
                     // send message to joiner
                     PieceColor joinerColor = ColorHelpers.Opposite(room.HostColor);
                     byte[] joinerMessage = StartGameMessage.Encode(joinerColor);
                     await client.Stream.WriteAsync(joinerMessage, _token);
+
+                    // send message to host
+                    Client host = room.GetOpponent(client);
+                    byte[] hostMessage = StartGameMessage.Encode(room.HostColor);
+                    await host.Stream.WriteAsync(hostMessage, _token);
                 }
                 else if (response == ServerMessage.RoomNotFound)
                 {

@@ -51,7 +51,6 @@ public class Room
     public void StartNewGame()
     {
         _gameManager.StartNewGame(PieceColor.None);
-        _isLocked = true;
     }
 
 
@@ -68,6 +67,8 @@ public class Room
         }
         
         _players.Add(joiningClient);
+        _isLocked = true;
+
         return true;
     }
 
