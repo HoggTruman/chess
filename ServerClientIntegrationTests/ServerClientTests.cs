@@ -114,6 +114,7 @@ public sealed class ServerClientTests : IAsyncLifetime
 
         // Join Room
         await joiningClient.JoinRoom(roomId);
+        byte[] joinerResponseMessage = await joiningClient.ReadServerMessage();
 
         // Attempt to join the full room
         await testClient.JoinRoom(roomId);
