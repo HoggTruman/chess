@@ -135,40 +135,14 @@ public class GameServer
         {
             case ClientMessage.HostRoom:
                 PieceColor hostColor = HostRoomMessage.Decode(inMsg);
-                HostRoom(client, hostColor);
-                byte[] outMsg = RoomHostedMessage.Encode(client.RoomId);
-                await client.Stream.WriteAsync(outMsg, _token);
+                HandleHostRoom(client, hostColor);
+                await RespondHostRoom(client);
                 break;
 
             case ClientMessage.JoinRoom:
                 int roomId = JoinRoomMessage.Decode(inMsg);
-                ServerMessage response = JoinRoom(client, roomId);
-
-                if (response == ServerMessage.StartGame)
-                {
-                    // set up the room's board etc
-                    Room room = Rooms[client.RoomId];
-
-                    // send message to joiner
-                    PieceColor joinerColor = ColorHelpers.Opposite(room.HostColor);
-                    byte[] joinerMessage = StartGameMessage.Encode(joinerColor);
-                    await client.Stream.WriteAsync(joinerMessage, _token);
-
-                    // send message to host
-                    Client host = room.GetOpponent(client);
-                    byte[] hostMessage = StartGameMessage.Encode(room.HostColor);
-                    await host.Stream.WriteAsync(hostMessage, _token);
-                }
-                else if (response == ServerMessage.RoomNotFound)
-                {
-                    byte[] joinerMessage = RoomNotFoundMessage.Encode();
-                    await client.Stream.WriteAsync(joinerMessage, _token);
-                }
-                else if (response == ServerMessage.RoomFull)
-                {
-                    byte[] joinerMessage = RoomFullMessage.Encode();
-                    await client.Stream.WriteAsync(joinerMessage, _token);
-                }
+                ServerMessage response = HandleJoinRoom(client, roomId);
+                await RespondJoinRoom(client, response);
                 break;
 
             default:
@@ -178,12 +152,16 @@ public class GameServer
     }
     
 
+
+
+    #region Message Handlers
+
     /// <summary>
     /// Creates a Room with the Client as the specified PieceColor.
     /// </summary>
     /// <param name="client">The Client object of the hosting player.</param>
     /// <param name="hostColor">The PieceColor of the hosting player.</param>
-    public void HostRoom(Client client, PieceColor hostColor)
+    public void HandleHostRoom(Client client, PieceColor hostColor)
     {
         Room room = new(client, hostColor);
 
@@ -199,7 +177,7 @@ public class GameServer
     /// <param name="client">The Client object for the joining player.</param>
     /// <param name="roomId">The Id of the room to join.</param>
     /// <returns>A ServerMessage enum corresponding to the response.</returns>
-    public ServerMessage JoinRoom(Client client, int roomId)
+    public ServerMessage HandleJoinRoom(Client client, int roomId)
     {
         if (Rooms.TryGetValue(roomId, out Room? room) == false ||
             room == null)
@@ -215,6 +193,61 @@ public class GameServer
         
         return ServerMessage.RoomFull;
     }
+
+    #endregion
+
+
+
+    #region Response Methods
+
+    /// <summary>
+    /// Sends a RoomHostedMessage back to the Client.
+    /// </summary>
+    /// <param name="client"></param>
+    /// <returns></returns>
+    private async Task RespondHostRoom(Client client)
+    {
+        byte[] outMsg = RoomHostedMessage.Encode(client.RoomId);
+        await client.Stream.WriteAsync(outMsg, _token);
+    }
+
+
+    /// <summary>
+    /// Sends a StartGameMessage to the host and joiner if the Client could join the room.
+    /// Otherwise, sends a RoomNotFoundMessage or RoomFullMessage to the Client.
+    /// </summary>
+    /// <param name="client"></param>
+    /// <param name="response"></param>
+    /// <returns></returns>
+    private async Task RespondJoinRoom(Client client, ServerMessage response)
+    {
+        if (response == ServerMessage.StartGame)
+        {
+            Room room = Rooms[client.RoomId];
+
+            // send message to joiner
+            PieceColor joinerColor = ColorHelpers.Opposite(room.HostColor);
+            byte[] joinerMessage = StartGameMessage.Encode(joinerColor);
+            await client.Stream.WriteAsync(joinerMessage, _token);
+
+            // send message to host
+            Client host = room.GetOpponent(client);
+            byte[] hostMessage = StartGameMessage.Encode(room.HostColor);
+            await host.Stream.WriteAsync(hostMessage, _token);
+        }
+        else if (response == ServerMessage.RoomNotFound)
+        {
+            byte[] joinerMessage = RoomNotFoundMessage.Encode();
+            await client.Stream.WriteAsync(joinerMessage, _token);
+        }
+        else if (response == ServerMessage.RoomFull)
+        {
+            byte[] joinerMessage = RoomFullMessage.Encode();
+            await client.Stream.WriteAsync(joinerMessage, _token);
+        }
+    }
+
+    #endregion
 
 
 }
