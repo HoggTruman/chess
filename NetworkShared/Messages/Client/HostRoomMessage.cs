@@ -1,7 +1,7 @@
 ﻿using GameLogic.Enums;
 using NetworkShared.Enums;
 
-namespace NetworkShared.Messages.Server;
+namespace NetworkShared.Messages.Client;
 
 public class HostRoomMessage
 {

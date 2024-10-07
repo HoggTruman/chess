@@ -1,5 +1,5 @@
 ﻿using GameLogic.Enums;
-using NetworkShared.Messages.Server;
+using NetworkShared.Messages.Client;
 
 namespace NetworkSharedTests.Messages.Client;
 

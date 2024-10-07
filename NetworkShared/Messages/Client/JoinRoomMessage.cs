@@ -2,7 +2,7 @@
 using NetworkShared.Enums;
 using System.Buffers.Binary;
 
-namespace NetworkShared.Messages.Server;
+namespace NetworkShared.Messages.Client;
 
 public class JoinRoomMessage
 {

@@ -1,10 +1,9 @@
-﻿using NetworkShared.Enums;
+﻿using GameLogic.Enums;
+using NetworkShared;
+using NetworkShared.Enums;
+using NetworkShared.Messages.Client;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using NetworkShared;
-using GameLogic.Enums;
-using NetworkShared.Messages.Server;
 
 namespace Client;
 

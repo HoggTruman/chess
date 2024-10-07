@@ -2,6 +2,7 @@
 using GameLogic.Helpers;
 using NetworkShared;
 using NetworkShared.Enums;
+using NetworkShared.Messages.Client;
 using NetworkShared.Messages.Server;
 using System.Collections.Concurrent;
 using System.Net;
