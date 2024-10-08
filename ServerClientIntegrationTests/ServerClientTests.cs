@@ -37,7 +37,7 @@ public sealed class ServerClientTests : IAsyncLifetime
 
 
 
-    [Fact(Timeout=5000)]
+    [Fact(Timeout = 1000)]
     public async void ServerStartsAndShutsDownWithClient()
     {
         GameClient gameClient = new();
@@ -46,25 +46,11 @@ public sealed class ServerClientTests : IAsyncLifetime
     }
 
 
-    [Fact(Timeout=5000)]
-    public async void ClientReceivesConnectedMessage()
-    {
-        GameClient gameClient = new();
-        await gameClient.ConnectToServer();
-        byte[] message = await gameClient.ReadServerMessage();
-        ServerMessage msgCode = (ServerMessage)MessageHelpers.ReadCode(message);
-
-        Assert.NotEmpty(message);
-        Assert.Equal(ServerMessage.Connected, msgCode);
-    }
-
-
-    [Fact(Timeout=5000)]
+    [Fact(Timeout = 1000)]
     public async void ClientSendsHostRoom_ReceivesRoomHosted()
     {
         GameClient gameClient = new();
         await gameClient.ConnectToServer();
-        byte[] connectedMessage = await gameClient.ReadServerMessage();
 
         await gameClient.HostRoom(PieceColor.White);
         byte[] roomHostedMessage = await gameClient.ReadServerMessage();
@@ -75,12 +61,11 @@ public sealed class ServerClientTests : IAsyncLifetime
     }
 
 
-    [Fact(Timeout=5000)]
+    [Fact(Timeout = 1000)]
     public async void ClientSendsJoinRoom_WithNoHostedRooms_ReceivesRoomNotFound()
     {
         GameClient gameClient = new();
         await gameClient.ConnectToServer();
-        byte[] connectedMessage = await gameClient.ReadServerMessage();
 
         int roomId = 1234;
         await gameClient.JoinRoom(roomId);
@@ -92,7 +77,7 @@ public sealed class ServerClientTests : IAsyncLifetime
     }
 
 
-    [Fact(Timeout=5000)]
+    [Fact(Timeout = 1000)]
     public async void ClientSendsJoinRoom_WithRoomAlreadyFull_ReceivesRoomFull()
     {
         // Connect Clients
@@ -101,11 +86,8 @@ public sealed class ServerClientTests : IAsyncLifetime
         GameClient testClient = new();
 
         await hostClient.ConnectToServer();
-        await hostClient.ReadServerMessage();
         await joiningClient.ConnectToServer();
-        await joiningClient.ReadServerMessage();
         await testClient.ConnectToServer();
-        await testClient.ReadServerMessage();
 
         // Host Room
         await hostClient.HostRoom(PieceColor.White);
@@ -126,7 +108,7 @@ public sealed class ServerClientTests : IAsyncLifetime
     }
 
 
-    [Fact(Timeout=5000)]
+    [Fact(Timeout = 1000)]
     public async void ClientJoinsRoom_HostAndJoinerReceiveStartGame()
     {
         // Connect Clients
@@ -134,9 +116,7 @@ public sealed class ServerClientTests : IAsyncLifetime
         GameClient joiningClient = new();
 
         await hostClient.ConnectToServer();
-        await hostClient.ReadServerMessage();
         await joiningClient.ConnectToServer();
-        await joiningClient.ReadServerMessage();
 
         // Host Room
         PieceColor hostColor = PieceColor.White;
@@ -168,13 +148,12 @@ public sealed class ServerClientTests : IAsyncLifetime
     }
 
 
-    [Fact(Timeout=5000)]
+    [Fact(Timeout = 1000)]
     public async void RoomCancelled_BeforeJoined_JoinerGetsRoomNotFound()
     {
         // Connect Host
         GameClient hostClient = new();
         await hostClient.ConnectToServer();
-        await hostClient.ReadServerMessage();
 
         // Host Room
         PieceColor hostColor = PieceColor.White;
@@ -189,7 +168,6 @@ public sealed class ServerClientTests : IAsyncLifetime
         // Connect Joiner
         GameClient joiningClient = new();
         await joiningClient.ConnectToServer();
-        await joiningClient.ReadServerMessage();
 
         // Attempt to Join Room
         await joiningClient.JoinRoom(roomId);
@@ -201,13 +179,12 @@ public sealed class ServerClientTests : IAsyncLifetime
     }
 
 
-    [Fact(Timeout=5000)]
+    [Fact(Timeout = 1000)]
     public async void RoomCancelled_AfterJoined_JoinerGetsStartGame()
     {
         // Connect Host
         GameClient hostClient = new();
         await hostClient.ConnectToServer();
-        await hostClient.ReadServerMessage();
 
         // Host Room
         PieceColor hostColor = PieceColor.White;
@@ -218,7 +195,6 @@ public sealed class ServerClientTests : IAsyncLifetime
         // Connect Joiner
         GameClient joiningClient = new();
         await joiningClient.ConnectToServer();
-        await joiningClient.ReadServerMessage();
 
         // Attempt to Join Room
         await joiningClient.JoinRoom(roomId);

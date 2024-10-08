@@ -85,22 +85,11 @@ public class GameServer
 
     private async Task StartClientCommunications(Client client)
     {
-        await SendConnectedMessage(client);
-
         while (client.TcpClient.Connected && _token.IsCancellationRequested == false)
         {
             byte[] message = await ReadClientMessage(client.Stream);
             await HandleClientMessage(client, message);
         }
-    }
-
-
-    private async Task SendConnectedMessage(Client client)
-    {
-        byte msgCode = (byte)ServerMessage.Connected;
-        byte[] outMsg = [msgCode];
-
-        await client.Stream.WriteAsync(outMsg, _token);
     }
 
 

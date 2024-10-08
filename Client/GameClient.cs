@@ -78,9 +78,6 @@ public class GameClient
 
         switch (msgCode)
         {
-            case ServerMessage.Connected:
-                // remove code, get other data, etc ...
-                break;
             case ServerMessage.RoomHosted:
                 // trigger an event?
                 break;
