@@ -7,6 +7,7 @@ public enum ServerMessage
     RoomHosted,
     StartGame,
     RoomNotFound,
-    RoomFull
+    RoomFull,
+    RoomClosed
 }
 

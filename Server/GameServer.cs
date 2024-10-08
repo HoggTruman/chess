@@ -78,7 +78,7 @@ public class GameServer
 
         foreach (var client in Clients.Values)
         {
-            client.TcpClient.Dispose();
+            client.TcpClient.Close();
         }
     }
 
@@ -146,12 +146,34 @@ public class GameServer
                 await RespondJoinRoom(client, response);
                 break;
 
+            case ClientMessage.CancelHost:
+                await ShutDownRoom(client.RoomId);
+                break;
+
             default:
                 // Disconnect Player
                 break;
         }
     }
     
+
+
+    private async Task ShutDownRoom(int roomId)
+    {
+        Room room = Rooms[roomId];
+        Rooms.Remove(roomId);
+
+        foreach(Client client in room.Players)
+        {
+            if (client.Stream.CanWrite)
+            {
+                await client.Stream.WriteAsync(RoomClosedMessage.Encode(), _token);
+            }
+            
+            client.TcpClient.Close();
+            Clients.Remove(client.Id);
+        }
+    }
 
 
 

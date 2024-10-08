@@ -25,7 +25,7 @@ public sealed class ServerClientTests : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-
+        //await Task.Delay(1000);
     }
 
 
@@ -165,6 +165,72 @@ public sealed class ServerClientTests : IAsyncLifetime
         PieceColor hostResponseColor = StartGameMessage.Decode(hostResponse);
         Assert.Equal(ColorHelpers.Opposite(hostColor), joinerResponseColor);
 
+    }
+
+
+    [Fact(Timeout=5000)]
+    public async void RoomCancelled_BeforeJoined_JoinerGetsRoomNotFound()
+    {
+        // Connect Host
+        GameClient hostClient = new();
+        await hostClient.ConnectToServer();
+        await hostClient.ReadServerMessage();
+
+        // Host Room
+        PieceColor hostColor = PieceColor.White;
+        await hostClient.HostRoom(hostColor);
+        byte[] roomHostedMessage = await hostClient.ReadServerMessage();
+        int roomId = RoomHostedMessage.Decode(roomHostedMessage);
+
+        // Cancel Host
+        await hostClient.CancelHost();
+        await Task.Delay(10); // Make sure the room is fully closed down
+
+        // Connect Joiner
+        GameClient joiningClient = new();
+        await joiningClient.ConnectToServer();
+        await joiningClient.ReadServerMessage();
+
+        // Attempt to Join Room
+        await joiningClient.JoinRoom(roomId);
+        byte[] joinerResponse = await joiningClient.ReadServerMessage();
+        ServerMessage joinerResponseCode = (ServerMessage)MessageHelpers.ReadCode(joinerResponse);
+
+        Assert.NotEmpty(joinerResponse);
+        Assert.Equal(ServerMessage.RoomNotFound, joinerResponseCode);
+    }
+
+
+    [Fact(Timeout=5000)]
+    public async void RoomCancelled_AfterJoined_JoinerGetsStartGame()
+    {
+        // Connect Host
+        GameClient hostClient = new();
+        await hostClient.ConnectToServer();
+        await hostClient.ReadServerMessage();
+
+        // Host Room
+        PieceColor hostColor = PieceColor.White;
+        await hostClient.HostRoom(hostColor);
+        byte[] roomHostedMessage = await hostClient.ReadServerMessage();
+        int roomId = RoomHostedMessage.Decode(roomHostedMessage);
+
+        // Connect Joiner
+        GameClient joiningClient = new();
+        await joiningClient.ConnectToServer();
+        await joiningClient.ReadServerMessage();
+
+        // Attempt to Join Room
+        await joiningClient.JoinRoom(roomId);
+        byte[] joinerResponse = await joiningClient.ReadServerMessage();
+        ServerMessage joinerResponseCode = (ServerMessage)MessageHelpers.ReadCode(joinerResponse);
+
+
+        // Cancel Host
+        await hostClient.CancelHost();
+
+        Assert.NotEmpty(joinerResponse);
+        Assert.Equal(ServerMessage.StartGame, joinerResponseCode);
     }
 
 }

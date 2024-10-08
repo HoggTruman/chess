@@ -55,7 +55,7 @@ public class Room
 
 
     /// <summary>
-    /// Attempts to add the joiningClient to the room.
+    /// Attempts to add a Client to the room.
     /// </summary>
     /// <param name="joiningClient"></param>
     /// <returns>true if successful. Otherwise, false</returns>

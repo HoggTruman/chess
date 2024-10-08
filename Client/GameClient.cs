@@ -7,6 +7,11 @@ using System.Net.Sockets;
 
 namespace Client;
 
+/// <summary>
+/// A class which handles server communication.
+/// A new GameClient should be created on hosting a room or on
+/// attempting to join a room.
+/// </summary>
 public class GameClient
 {
     public TcpClient _tcpClient { get; private set; }
@@ -79,6 +84,12 @@ public class GameClient
             case ServerMessage.RoomHosted:
                 // trigger an event?
                 break;
+            case ServerMessage.StartGame:
+                //
+                break;
+            case ServerMessage.RoomClosed:
+                //
+                break;
         }
     }
 
@@ -94,6 +105,15 @@ public class GameClient
     {
         byte[] message = JoinRoomMessage.Encode(roomId);
         await _stream.WriteAsync(message);
+    }
+
+
+    public async Task CancelHost()
+    {
+        // use generic disconnect message??
+        byte[] message = CancelHostMessage.Encode();
+        await _stream.WriteAsync(message);
+        _tcpClient.Close(); // make a new GameClient every time a client hosts
     }
 }
 
