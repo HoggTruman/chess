@@ -25,7 +25,7 @@ public class GameServer
 
     public GameServer()
     {
-        var ipEndPoint = new IPEndPoint(IPAddress.Parse(ServerInfo.ipAddress), ServerInfo.port);
+        var ipEndPoint = new IPEndPoint(IPAddress.Parse(ServerInfo.IpAddress), ServerInfo.Port);
         _tcpListener = new TcpListener(ipEndPoint);
         _token = _cancellationTokenSource.Token;
     }

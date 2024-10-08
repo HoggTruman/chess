@@ -27,7 +27,7 @@ public class GameClient
 
     public async Task ConnectToServer()
     {
-        var ipEndpoint = new IPEndPoint(IPAddress.Parse(ServerInfo.ipAddress), ServerInfo.port);
+        var ipEndpoint = new IPEndPoint(IPAddress.Parse(ServerInfo.IpAddress), ServerInfo.Port);
         await _tcpClient.ConnectAsync(ipEndpoint);
 
         if (_tcpClient.Connected)
