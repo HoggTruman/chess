@@ -18,8 +18,6 @@ public class GameClient
     private NetworkStream _stream;
     private byte[] _buffer = new byte[1024];
 
-    public int ClientId;
-
 
     public GameClient()
     {
@@ -35,17 +33,6 @@ public class GameClient
         if (_tcpClient.Connected)
         {
             _stream = _tcpClient.GetStream();
-        }
-    }
-
-
-    private async Task StartServerCommunications()
-    {
-        while (_tcpClient.Connected)
-        {
-            byte[] message = await ReadServerMessage();
-
-            HandleServerMessage(message);
         }
     }
 
@@ -107,7 +94,6 @@ public class GameClient
 
     public async Task CancelHost()
     {
-        // use generic disconnect message??
         byte[] message = CancelHostMessage.Encode();
         await _stream.WriteAsync(message);
         _tcpClient.Close(); // make a new GameClient every time a client hosts
