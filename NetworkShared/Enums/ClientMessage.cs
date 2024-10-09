@@ -4,7 +4,10 @@ public enum ClientMessage
 {
     None,
     HostRoom,
+    CancelHost,
     JoinRoom,
-    CancelHost
+
+    Move
+    
 }
 
