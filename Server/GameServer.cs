@@ -119,7 +119,7 @@ public class GameServer
 
     private async Task HandleClientMessage(Client client, byte[] inMsg)
     {
-        ClientMessage msgCode = (ClientMessage)MessageHelpers.ReadCode(inMsg);
+        ClientMessage msgCode = MessageHelpers.ReadClientCode(inMsg);
 
         switch (msgCode)
         {

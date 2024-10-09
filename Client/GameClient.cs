@@ -61,7 +61,7 @@ public class GameClient
 
     private async void HandleServerMessage(byte[] message)
     {
-        ServerMessage msgCode = (ServerMessage)MessageHelpers.ReadCode(message);
+        ServerMessage msgCode = MessageHelpers.ReadServerCode(message);
 
         switch (msgCode)
         {

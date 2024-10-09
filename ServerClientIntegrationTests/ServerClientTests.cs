@@ -70,7 +70,7 @@ public sealed class ServerClientTests : IAsyncLifetime
         int roomId = 1234;
         await gameClient.JoinRoom(roomId);
         byte[] roomNotFoundMessage = await gameClient.ReadServerMessage();
-        ServerMessage responseCode = (ServerMessage)MessageHelpers.ReadCode(roomNotFoundMessage);
+        ServerMessage responseCode = MessageHelpers.ReadServerCode(roomNotFoundMessage);
 
         Assert.NotEmpty(roomNotFoundMessage);
         Assert.Equal(ServerMessage.RoomNotFound, responseCode);
@@ -101,7 +101,7 @@ public sealed class ServerClientTests : IAsyncLifetime
         // Attempt to join the full room
         await testClient.JoinRoom(roomId);
         byte[] testResponseMessage = await testClient.ReadServerMessage();
-        ServerMessage responseCode = (ServerMessage)MessageHelpers.ReadCode(testResponseMessage);
+        ServerMessage responseCode = MessageHelpers.ReadServerCode(testResponseMessage);
 
         Assert.NotEmpty(testResponseMessage);
         Assert.Equal(ServerMessage.RoomFull, responseCode);
@@ -127,7 +127,7 @@ public sealed class ServerClientTests : IAsyncLifetime
         // Join Room
         await joiningClient.JoinRoom(roomId);
         byte[] joinerResponse = await joiningClient.ReadServerMessage();
-        ServerMessage joinerResponseCode = (ServerMessage)MessageHelpers.ReadCode(joinerResponse);
+        ServerMessage joinerResponseCode = MessageHelpers.ReadServerCode(joinerResponse);
 
         Assert.NotEmpty(joinerResponse);
         Assert.Equal(ServerMessage.StartGame, joinerResponseCode);
@@ -137,7 +137,7 @@ public sealed class ServerClientTests : IAsyncLifetime
 
         // Host Response
         byte[] hostResponse = await hostClient.ReadServerMessage();        
-        ServerMessage hostResponseCode = (ServerMessage)MessageHelpers.ReadCode(hostResponse);       
+        ServerMessage hostResponseCode = MessageHelpers.ReadServerCode(hostResponse);       
         
         Assert.NotEmpty(hostResponse);
         Assert.Equal(ServerMessage.StartGame, hostResponseCode);
@@ -172,7 +172,7 @@ public sealed class ServerClientTests : IAsyncLifetime
         // Attempt to Join Room
         await joiningClient.JoinRoom(roomId);
         byte[] joinerResponse = await joiningClient.ReadServerMessage();
-        ServerMessage joinerResponseCode = (ServerMessage)MessageHelpers.ReadCode(joinerResponse);
+        ServerMessage joinerResponseCode = MessageHelpers.ReadServerCode(joinerResponse);
 
         Assert.NotEmpty(joinerResponse);
         Assert.Equal(ServerMessage.RoomNotFound, joinerResponseCode);
@@ -199,7 +199,7 @@ public sealed class ServerClientTests : IAsyncLifetime
         // Attempt to Join Room
         await joiningClient.JoinRoom(roomId);
         byte[] joinerResponse = await joiningClient.ReadServerMessage();
-        ServerMessage joinerResponseCode = (ServerMessage)MessageHelpers.ReadCode(joinerResponse);
+        ServerMessage joinerResponseCode = MessageHelpers.ReadServerCode(joinerResponse);
 
 
         // Cancel Host
