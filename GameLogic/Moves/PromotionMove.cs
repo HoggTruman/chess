@@ -19,7 +19,7 @@ public class PromotionMove : SinglePieceMove
     public PromotionMove(
         (int row, int col) from, 
         (int row, int col) to, 
-        PieceType promotedTo = PieceType.Pawn
+        PieceType promotedTo
     ) 
         :base(MoveType.Promotion, from, to)
     {

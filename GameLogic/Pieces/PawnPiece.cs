@@ -51,10 +51,15 @@ public class PawnPiece : Piece
 
         // Add targeted squares (if in bounds)
         if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col - 1)))
+        {
             targetedSquares.Add((Row + _fwd, Col - 1));
-        
+        }
+            
         if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col + 1)))
+        {
             targetedSquares.Add((Row + _fwd, Col + 1));
+        }
+            
 
         return targetedSquares;
     }
@@ -70,8 +75,8 @@ public class PawnPiece : Piece
         List<(int row, int col)> squares = [];
 
         // Add non-capturing move squares
-        if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col)) 
-            && _board.State[Row + _fwd, Col] == null)
+        if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col)) && 
+            _board.State[Row + _fwd, Col] == null)
         {
             squares.Add((Row + _fwd, Col));
 
@@ -113,9 +118,10 @@ public class PawnPiece : Piece
             {
                 if (toSquare.row == Board.MinIndex || toSquare.row == Board.MaxIndex)
                 {
-                    validMoves.Add(
-                        new PromotionMove(Square, toSquare)
-                    );
+                    validMoves.Add(new PromotionMove(Square, toSquare, PieceType.Queen));
+                    validMoves.Add(new PromotionMove(Square, toSquare, PieceType.Rook));
+                    validMoves.Add(new PromotionMove(Square, toSquare, PieceType.Knight));
+                    validMoves.Add(new PromotionMove(Square, toSquare, PieceType.Bishop));
                 }
                 else
                 {
@@ -162,8 +168,7 @@ public class PawnPiece : Piece
             _board.State[lastMove.To.row, lastMove.To.col]?.PieceType == PieceType.Pawn &&
             Math.Abs(lastMove.From.row - lastMove.To.row) == 2 &&
             lastMove.To.row == Row &&
-            (Col == lastMove.To.col - 1 || Col == lastMove.To.col + 1)
-        )
+            (Col == lastMove.To.col - 1 || Col == lastMove.To.col + 1))
         {
             (int row, int col) to = (Row + _fwd, lastMove.To.col);
             (int row, int col) captured = lastMove.To;
