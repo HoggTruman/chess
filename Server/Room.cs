@@ -1,5 +1,7 @@
 ﻿using GameLogic;
 using GameLogic.Enums;
+using GameLogic.Helpers;
+using GameLogic.Interfaces;
 using System.Collections.ObjectModel;
 
 namespace Server;
@@ -13,6 +15,8 @@ public class Room
     private GameManager _gameManager;
 
     private List<Client> _players = [];
+
+    private Dictionary<Client, PieceColor> _playerColors = [];
 
     private bool _isLocked;
 
