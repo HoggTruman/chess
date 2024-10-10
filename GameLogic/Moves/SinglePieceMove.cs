@@ -41,5 +41,7 @@ public abstract class SinglePieceMove : IMove
         return square == From;
     }
 
+    public abstract bool IsEquivalentTo(IMove move);
+
     #endregion
 }

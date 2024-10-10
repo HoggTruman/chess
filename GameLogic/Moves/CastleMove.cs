@@ -62,5 +62,20 @@ public class CastleMove : IMove
         return square == From || square == RookFrom;
     }
 
+    public bool IsEquivalentTo(IMove move)
+    {
+        if (move.MoveType != MoveType)
+        {
+            return false;
+        }
+
+        CastleMove castleMove = (CastleMove)move;
+
+        return castleMove.From == From &&
+               castleMove.To == To &&
+               castleMove.RookFrom == RookFrom &&
+               castleMove.RookTo == RookTo;
+    }
+
     #endregion
 }

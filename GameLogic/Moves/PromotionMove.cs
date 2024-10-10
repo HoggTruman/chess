@@ -1,4 +1,6 @@
 using GameLogic.Enums;
+using GameLogic.Interfaces;
+using System.Text.RegularExpressions;
 
 namespace GameLogic.Moves;
 
@@ -22,5 +24,19 @@ public class PromotionMove : SinglePieceMove
         :base(MoveType.Promotion, from, to)
     {
         PromotedTo = promotedTo;
+    }
+
+    public override bool IsEquivalentTo(IMove move)
+    {
+        if (move.MoveType != MoveType)
+        {
+            return false;
+        }
+
+        PromotionMove promotionMove = (PromotionMove)move;
+
+        return promotionMove.From == From &&
+               promotionMove.To == To &&
+               promotionMove.PromotedTo == PromotedTo;
     }
 }
