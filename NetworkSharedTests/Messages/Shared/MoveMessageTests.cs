@@ -1,10 +1,9 @@
 ﻿using FluentAssertions;
-using GameLogic.Constants;
 using GameLogic.Enums;
 using GameLogic.Moves;
-using NetworkShared.Messages.Client;
+using NetworkShared.Messages.Shared;
 
-namespace NetworkSharedTests.Messages.Client;
+namespace NetworkSharedTests.Messages.Shared;
 
 public class MoveMessageTests
 {
@@ -18,7 +17,7 @@ public class MoveMessageTests
     [InlineData(0, 0, 0, 0, 0, 0, 0, 0)]
     [InlineData(2, 6, 7, 2, 1, 0, 4, 2)]
     public void Encode_Decode_WithCastleMove_ReturnsOriginal(
-        int fromRow, int fromCol, int toRow, int toCol, 
+        int fromRow, int fromCol, int toRow, int toCol,
         int rookFromRow, int rookFromCol, int rookToRow, int rookToCol)
     {
         // Arrange

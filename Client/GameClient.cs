@@ -2,6 +2,7 @@
 using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Client;
+using NetworkShared.Messages.Shared;
 using System.Net;
 using System.Net.Sockets;
 

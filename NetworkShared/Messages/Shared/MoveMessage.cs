@@ -3,7 +3,7 @@ using GameLogic.Interfaces;
 using GameLogic.Moves;
 using NetworkShared.Enums;
 
-namespace NetworkShared.Messages.Client;
+namespace NetworkShared.Messages.Shared;
 
 public class MoveMessage
 {
