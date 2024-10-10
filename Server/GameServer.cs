@@ -136,7 +136,7 @@ public class GameServer
                 break;
 
             case ClientMessage.CancelHost:
-                await ShutDownRoom(client.RoomId);
+                await ShutDownRoom(client.RoomId, PieceColor.None);
                 break;
 
             default:
@@ -147,7 +147,7 @@ public class GameServer
     
 
 
-    private async Task ShutDownRoom(int roomId)
+    private async Task ShutDownRoom(int roomId, PieceColor winnerColor)
     {
         Room room = Rooms[roomId];
         Rooms.Remove(roomId);
@@ -156,7 +156,7 @@ public class GameServer
         {
             if (client.Stream.CanWrite)
             {
-                await client.Stream.WriteAsync(RoomClosedMessage.Encode(), _token);
+                await client.Stream.WriteAsync(RoomClosedMessage.Encode(winnerColor), _token);
             }
             
             client.TcpClient.Close();
