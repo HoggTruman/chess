@@ -29,7 +29,15 @@ public class Room
         get => _players.AsReadOnly();
     }
 
-    public PieceColor HostColor { get; private set; }
+    public ReadOnlyDictionary<Client, PieceColor> PlayerColors
+    {
+        get => _playerColors.AsReadOnly();
+    }
+
+    public Client Host
+    {
+        get => _players[0];
+    }
 
     #endregion
 
@@ -44,7 +52,7 @@ public class Room
         _gameManager = new(board, PieceColor.None);
         
         _players.Add(hostClient);
-        HostColor = hostColor;
+        _playerColors[hostClient] = hostColor;
     }
 
 
@@ -66,7 +74,10 @@ public class Room
             return false;
         }
         
+        PieceColor playerColor = ColorHelpers.Opposite(_playerColors[Host]);
+        
         _players.Add(joiningClient);
+        _playerColors[joiningClient] = playerColor;
         _isLocked = true;
 
         return true;

@@ -1,5 +1,5 @@
 ﻿using GameLogic.Enums;
-using GameLogic.Helpers;
+using GameLogic.Interfaces;
 using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Client;
@@ -238,13 +238,13 @@ public class GameServer
             Room room = Rooms[client.RoomId];
 
             // send message to joiner
-            PieceColor joinerColor = ColorHelpers.Opposite(room.HostColor);
+            PieceColor joinerColor = room.PlayerColors[client];
             byte[] joinerMessage = StartGameMessage.Encode(joinerColor);
             await client.Stream.WriteAsync(joinerMessage, _token);
 
             // send message to host
-            Client host = room.GetOpponent(client);
-            byte[] hostMessage = StartGameMessage.Encode(room.HostColor);
+            Client host = room.Host;
+            byte[] hostMessage = StartGameMessage.Encode(room.PlayerColors[host]);
             await host.Stream.WriteAsync(hostMessage, _token);
         }
         else if (response == ServerMessage.RoomNotFound)
