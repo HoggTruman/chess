@@ -20,8 +20,6 @@ public class GameServer
     private readonly TcpListener _tcpListener;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
     private readonly CancellationToken _token;
-    private readonly ConcurrentBag<Task> _clientTasks = [];
-
 
 
     public GameServer()
@@ -36,22 +34,28 @@ public class GameServer
     {
         _tcpListener.Start();
         IsListening = true;
+        Console.WriteLine("Server is listening for connections...");
 
         while (_token.IsCancellationRequested == false)
-        {
-            Console.WriteLine("Server is listening for connections...");
+        {            
             TcpClient tcpClient = await _tcpListener.AcceptTcpClientAsync(_token);
 
-            Client client = new(tcpClient);
+            Client client = new(
+                tcpClient, 
+                new CancellationTokenSource(), 
+                StartClientCommunications);
+
             Clients[client.Id] = client;
 
-            Console.WriteLine($"[{DateTime.Now}] Client connected with IP {tcpClient.Client.RemoteEndPoint}");
-
-            _clientTasks.Add(StartClientCommunications(client));
+            Console.WriteLine($"[{DateTime.Now}] Client connected with IP {tcpClient.Client.RemoteEndPoint}");            
         }
     }
 
 
+    /// <summary>
+    /// Disconnects all clients and shuts down the server.
+    /// </summary>
+    /// <returns></returns>
     public async Task ShutDown()
     {
         if (_token.IsCancellationRequested)
@@ -60,15 +64,39 @@ public class GameServer
             return;
         }
 
-        _cancellationTokenSource.Cancel();
+        // Stops the server accepting new clients
+        _cancellationTokenSource.Cancel();        
+
+        // cancel each client's token
+        ConcurrentBag<Task> clientTasks = [];
+
+        foreach (Client client in Clients.Values)
+        {
+            client.CancellationTokenSource.Cancel();
+            clientTasks.Add(client.ServerCommunications);
+        }
+
+        // Check the exceptions from the clients are all OperationCancelledException
+        Task resolvePlayerTasks = Task.WhenAll(clientTasks);
 
         try
         {
-            await Task.WhenAll(_clientTasks);
+            await resolvePlayerTasks;
         }
-        catch (OperationCanceledException)
+        catch (Exception)
         {
-            Console.WriteLine($"{nameof(OperationCanceledException)} thrown");
+            if (resolvePlayerTasks.Exception != null)
+            {
+                var exceptions = resolvePlayerTasks.Exception.Flatten().InnerExceptions;
+
+                foreach(Exception e in exceptions)
+                {
+                    if (e is not OperationCanceledException)
+                    {
+                        throw e;
+                    }
+                }   
+            }         
         }
 
         _tcpListener.Stop();
@@ -80,28 +108,29 @@ public class GameServer
         foreach (var client in Clients.Values)
         {
             client.TcpClient.Close();
+            client.CancellationTokenSource.Dispose();
         }
     }
 
 
     private async Task StartClientCommunications(Client client)
     {
-        while (client.TcpClient.Connected && _token.IsCancellationRequested == false)
+        while (client.Token.IsCancellationRequested == false && client.TcpClient.Connected)
         {
-            byte[] message = await ReadClientMessage(client.Stream);
+            byte[] message = await ReadClientMessage(client.Stream, client.Token);
             await HandleClientMessage(client, message);
         }
     }
 
 
-    private async Task<byte[]> ReadClientMessage(NetworkStream stream)
+    private async Task<byte[]> ReadClientMessage(NetworkStream stream, CancellationToken clientToken)
     {
         byte[] buffer = new byte[256];
         
         List<byte> message = [];
         int bytesRead;
 
-        while ((bytesRead = await stream.ReadAsync(buffer, _token)) > 0)
+        while ((bytesRead = await stream.ReadAsync(buffer, clientToken)) > 0)
         {
             for (int i = 0; i < bytesRead; i++)
             {
@@ -153,21 +182,59 @@ public class GameServer
     }
     
 
-
+    /// <summary>
+    /// Closes a room and disconnects its clients.
+    /// </summary>
+    /// <param name="roomId">The Id of the room to close.</param>
+    /// <param name="winnerColor">The PieceColor of the winner to send to the clients.</param>
+    /// <returns></returns>
     private async Task ShutDownRoom(int roomId, PieceColor winnerColor)
     {
         Room room = Rooms[roomId];
         Rooms.Remove(roomId);
 
+        ConcurrentBag<Task> playerTasks = [];
+
         foreach(Client client in room.Players)
         {
+            Clients.Remove(client.Id);
+
             if (client.Stream.CanWrite)
             {
                 await client.Stream.WriteAsync(RoomClosedMessage.Encode(winnerColor), _token);
             }
             
+            client.CancellationTokenSource.Cancel();
+            playerTasks.Add(client.ServerCommunications);
+        }
+
+        // Check the exceptions from the clients are all OperationCancelledException
+        Task resolvePlayerTasks = Task.WhenAll(playerTasks);
+
+        try
+        {
+            await resolvePlayerTasks;
+        }
+        catch (Exception)
+        {
+            if (resolvePlayerTasks.Exception != null)
+            {
+                var exceptions = resolvePlayerTasks.Exception.Flatten().InnerExceptions;
+
+                foreach(Exception e in exceptions)
+                {
+                    if (e is not OperationCanceledException)
+                    {
+                        throw e;
+                    }
+                }   
+            }         
+        }
+
+        foreach(Client client in room.Players)
+        {
             client.TcpClient.Close();
-            Clients.Remove(client.Id);
+            client.CancellationTokenSource.Dispose();
         }
     }
 
@@ -240,7 +307,7 @@ public class GameServer
     private async Task RespondHostRoom(Client client)
     {
         byte[] outMsg = RoomHostedMessage.Encode(client.RoomId);
-        await client.Stream.WriteAsync(outMsg, _token);
+        await client.Stream.WriteAsync(outMsg, client.Token);
     }
 
 
@@ -260,22 +327,22 @@ public class GameServer
             // send message to joiner
             PieceColor joinerColor = room.PlayerColors[client];
             byte[] joinerMessage = StartGameMessage.Encode(joinerColor);
-            await client.Stream.WriteAsync(joinerMessage, _token);
+            await client.Stream.WriteAsync(joinerMessage, client.Token);
 
             // send message to host
             Client host = room.Host;
             byte[] hostMessage = StartGameMessage.Encode(room.PlayerColors[host]);
-            await host.Stream.WriteAsync(hostMessage, _token);
+            await host.Stream.WriteAsync(hostMessage, host.Token);
         }
         else if (response == ServerMessage.RoomNotFound)
         {
             byte[] joinerMessage = RoomNotFoundMessage.Encode();
-            await client.Stream.WriteAsync(joinerMessage, _token);
+            await client.Stream.WriteAsync(joinerMessage, client.Token);
         }
         else if (response == ServerMessage.RoomFull)
         {
             byte[] joinerMessage = RoomFullMessage.Encode();
-            await client.Stream.WriteAsync(joinerMessage, _token);
+            await client.Stream.WriteAsync(joinerMessage, client.Token);
         }
     }
 
@@ -295,7 +362,7 @@ public class GameServer
 
         if (isValidMove)
         {
-            await opponent.Stream.WriteAsync(moveMessage, _token);
+            await opponent.Stream.WriteAsync(moveMessage, opponent.Token);
         }
         else
         {            
