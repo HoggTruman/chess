@@ -26,12 +26,7 @@ public sealed class MoveTests : IAsyncLifetime
         _hostClient = new();
         _joiningClient = new();
 
-        Task serverStart = _gameServer.Start();
-        while (_gameServer.IsListening == false)
-        {
-            // wait for game server to listen
-        }
-
+        _gameServer.Start();
     }
 
 

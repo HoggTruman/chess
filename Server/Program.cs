@@ -4,7 +4,8 @@ using Server;
 
 
 GameServer server = new();
-await server.Start();
+server.Start();
 
-//Console.WriteLine("Press key to exit");
+Console.WriteLine("Press key to shut down");
+await server.ShutDown();
 //Console.ReadKey();

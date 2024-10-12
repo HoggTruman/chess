@@ -13,7 +13,6 @@ namespace Server;
 
 public class GameServer
 {
-    public bool IsListening { get; private set; }
     public Dictionary<int, Client> Clients = [];
     public Dictionary<int, Room> Rooms = [];
 
@@ -30,26 +29,31 @@ public class GameServer
     }
 
 
-    public async Task Start()
+    public void Start()
     {
         _tcpListener.Start();
-        IsListening = true;
         Console.WriteLine("Server is listening for connections...");
+        Task.Run(AcceptClients); // exceptions lost??
+    }
 
+
+    private async Task AcceptClients()
+    {
         while (_token.IsCancellationRequested == false)
-        {            
+        {
             TcpClient tcpClient = await _tcpListener.AcceptTcpClientAsync(_token);
 
             Client client = new(
-                tcpClient, 
-                new CancellationTokenSource(), 
+                tcpClient,
+                new CancellationTokenSource(),
                 StartClientCommunications);
 
             Clients[client.Id] = client;
 
-            Console.WriteLine($"[{DateTime.Now}] Client connected with IP {tcpClient.Client.RemoteEndPoint}");            
+            Console.WriteLine($"[{DateTime.Now}] Client connected with IP {tcpClient.Client.RemoteEndPoint}");
         }
     }
+
 
 
     /// <summary>
@@ -100,8 +104,6 @@ public class GameServer
         }
 
         _tcpListener.Stop();
-        IsListening = false;
-
         _tcpListener.Dispose();
         _cancellationTokenSource.Dispose();
 
