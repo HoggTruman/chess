@@ -4,6 +4,7 @@ using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Client;
 using NetworkShared.Messages.Server;
+using NetworkShared.Messages.Shared;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
@@ -139,6 +140,12 @@ public class GameServer
                 await ShutDownRoom(client.RoomId, PieceColor.None);
                 break;
 
+            case ClientMessage.Move:
+                IMove move = MoveMessage.Decode(inMsg);
+                bool isValidMove = HandleMove(client, move);
+                await RespondMove(client, isValidMove, inMsg);
+                break;
+
             default:
                 // Disconnect Player
                 break;
@@ -206,6 +213,19 @@ public class GameServer
         return ServerMessage.RoomFull;
     }
 
+
+    /// <summary>
+    /// Attempts to apply the move to the client's room.
+    /// </summary>
+    /// <param name="client">The Client object for the moving player.</param>
+    /// <param name="move">The IMove to attempt.</param>
+    /// <returns>true if the move is valid and applied successfully. Otherwise, false.</returns>
+    public bool HandleMove(Client client, IMove move)
+    {
+        Room room = Rooms[client.RoomId];
+        return room.TryMove(client, move);        
+    }
+
     #endregion
 
 
@@ -256,6 +276,31 @@ public class GameServer
         {
             byte[] joinerMessage = RoomFullMessage.Encode();
             await client.Stream.WriteAsync(joinerMessage, _token);
+        }
+    }
+
+
+    /// <summary>
+    /// Relays the move to the client's opponent if it is valid.
+    /// Otherwise shuts down the room, with the opponent as the winner.
+    /// </summary>
+    /// <param name="client"></param>
+    /// <param name="isValidMove"></param>
+    /// <param name="moveMessage"></param>
+    /// <returns></returns>
+    private async Task RespondMove(Client client, bool isValidMove, byte[] moveMessage)
+    {
+        Room room = Rooms[client.RoomId];
+        Client opponent = room.GetOpponent(client);
+
+        if (isValidMove)
+        {
+            await opponent.Stream.WriteAsync(moveMessage, _token);
+        }
+        else
+        {            
+            PieceColor winnerColor = room.PlayerColors[opponent];
+            await ShutDownRoom(client.RoomId, winnerColor);
         }
     }
 

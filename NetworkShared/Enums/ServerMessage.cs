@@ -7,6 +7,7 @@ public enum ServerMessage
     StartGame,
     RoomNotFound,
     RoomFull,
-    RoomClosed
+    RoomClosed,
+    Move,
 }
 

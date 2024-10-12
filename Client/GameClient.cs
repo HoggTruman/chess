@@ -1,4 +1,5 @@
 ﻿using GameLogic.Enums;
+using GameLogic.Interfaces;
 using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Client;
@@ -75,6 +76,9 @@ public class GameClient
             case ServerMessage.RoomClosed:
                 //
                 break;
+            case ServerMessage.Move:
+                //
+                break;
         }
     }
 
@@ -98,6 +102,13 @@ public class GameClient
         byte[] message = CancelHostMessage.Encode();
         await _stream.WriteAsync(message);
         _tcpClient.Close(); // make a new GameClient every time a client hosts
+    }
+
+
+    public async Task Move(IMove move)
+    {
+        byte[] message = MoveMessage.Encode(move);
+        await _stream.WriteAsync(message);
     }
 }
 
