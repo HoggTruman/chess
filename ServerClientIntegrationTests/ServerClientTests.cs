@@ -8,6 +8,7 @@ using Server;
 
 namespace ServerClientIntegrationTests;
 
+[Collection("ServerClientIntegrationTests")]
 public sealed class ServerClientTests : IAsyncLifetime
 {
     private GameServer _gameServer;
