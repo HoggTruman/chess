@@ -2,6 +2,7 @@
 using GameLogic;
 using GameLogic.Constants;
 using GameLogic.Enums;
+using GameLogic.Moves;
 using GameLogic.Pieces;
 
 namespace GameLogicTests;
@@ -234,6 +235,39 @@ public class GameManagerTests
         // Assert
         winner.Should().Be(PieceColor.None);
         reason.Should().Be(GameOverReason.InsufficientMaterial);
+    }
+
+
+    [Fact]
+    public void GetGameResult_WhiteWinsByCheckmate_FullGameTest()
+    {
+        // Arrange
+        Board board = new();
+        board.Initialize();
+
+        GameManager gameManager = new(board, PieceColor.None);
+
+        gameManager.HandleMove(new StandardMove((6, 4), (4, 4)));
+        gameManager.SwitchTurn();
+        gameManager.HandleMove(new StandardMove((1, 0), (2, 0)));
+        gameManager.SwitchTurn();
+        gameManager.HandleMove(new StandardMove((7, 5), (4, 2)));
+        gameManager.SwitchTurn();
+        gameManager.HandleMove(new StandardMove((2, 0), (3, 0)));
+        gameManager.SwitchTurn();
+        gameManager.HandleMove(new StandardMove((7, 3), (5, 5)));
+        gameManager.SwitchTurn();
+        gameManager.HandleMove(new StandardMove((3, 0), (4, 0)));
+        gameManager.SwitchTurn();
+        gameManager.HandleMove(new StandardMove((5, 5), (1, 5)));
+        gameManager.SwitchTurn();
+
+        // Act
+        var (winner, reason) = gameManager.GetGameResult();
+
+        // Assert
+        winner.Should().Be(PieceColor.White);
+        reason.Should().Be(GameOverReason.Checkmate);
     }
 
     #endregion
