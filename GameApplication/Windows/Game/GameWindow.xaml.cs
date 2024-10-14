@@ -202,7 +202,7 @@ public partial class GameWindow : Window
             selectedSquare = null;
             highlightedMoves = [];
             ClearHighlights();
-            if (gameManager.PlayerUnderCheck)
+            if (gameManager.ActivePlayerUnderCheck)
             {
                 var king = gameManager.Board.Kings[gameManager.ActivePlayerColor];
                 HighlightSquare(king.Square, checkBrush);
@@ -229,7 +229,7 @@ public partial class GameWindow : Window
         gameManager.SwitchTurn();
 
         // Highlight the next player's king square if under check
-        if (gameManager.PlayerUnderCheck)
+        if (gameManager.ActivePlayerUnderCheck)
         {
             var king = gameManager.Board.Kings[gameManager.ActivePlayerColor];
             HighlightSquare(king.Square, checkBrush);

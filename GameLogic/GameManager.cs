@@ -32,7 +32,7 @@ public class GameManager
     /// <summary>
     /// True if the active player is under check.
     /// </summary>
-    public bool PlayerUnderCheck { get; private set; }
+    public bool ActivePlayerUnderCheck { get; private set; }
 
     #endregion
 
@@ -46,7 +46,7 @@ public class GameManager
         Board = board;
         PlayerColor = playerColor;
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
-        PlayerUnderCheck = board.Kings[ActivePlayerColor].IsChecked();
+        ActivePlayerUnderCheck = board.Kings[ActivePlayerColor].IsChecked();
     }
 
     #endregion
@@ -66,7 +66,7 @@ public class GameManager
         PlayerColor = playerColor;
         ActivePlayerColor = PieceColor.White;
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
-        PlayerUnderCheck = Board.Kings[ActivePlayerColor].IsChecked();
+        ActivePlayerUnderCheck = Board.Kings[ActivePlayerColor].IsChecked();
     }
 
 
@@ -128,7 +128,7 @@ public class GameManager
     {
         ActivePlayerColor = ColorHelpers.Opposite(ActivePlayerColor);
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
-        PlayerUnderCheck = Board.Kings[ActivePlayerColor].IsChecked();
+        ActivePlayerUnderCheck = Board.Kings[ActivePlayerColor].IsChecked();
     }
 
 
@@ -176,7 +176,7 @@ public class GameManager
             throw new Exception("The Game is not over so a winner can not be determined.");
         }
 
-        if (PlayerUnderCheck)
+        if (ActivePlayerUnderCheck)
         {
             // Checkmate
             var winner = ColorHelpers.Opposite(ActivePlayerColor);
