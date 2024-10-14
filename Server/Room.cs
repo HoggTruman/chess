@@ -43,8 +43,6 @@ public class Room
         get => _players[0];
     }
 
-    public bool GameIsOver { get; private set; }
-
     #endregion
 
 
@@ -138,12 +136,32 @@ public class Room
             {
                 _gameManager.HandleMove(move);
                 _gameManager.SwitchTurn();
-                GameIsOver = _gameManager.GameIsOver();
                 return true;
             }
         }
 
         return false;
+    }
+
+
+    /// <summary>
+    /// Determines if the game is over.
+    /// </summary>
+    /// <returns>true if the game is over. Otherwise, false.</returns>
+    public bool GameIsOver()
+    {
+        return _gameManager.GameIsOver();
+    }
+
+
+    /// <summary>
+    /// Determines the winner of the game.
+    /// </summary>
+    /// <returns>A PieceColor</returns>
+    public PieceColor GetWinner()
+    {
+        var (winnerColor, _) = _gameManager.GetGameResult();
+        return winnerColor;
     }
 
 

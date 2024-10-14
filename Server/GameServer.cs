@@ -186,12 +186,12 @@ public class GameServer
 
     /// <summary>
     /// Closes a room and disconnects its clients.
-    /// If a winnerColor is provided, a message is sent to the clients containing it.
+    /// A RoomClosed message is sent to the clients containing the winnerColor.
     /// </summary>
     /// <param name="roomId">The Id of the room to close.</param>
     /// <param name="winnerColor">The PieceColor of the winner to send to the clients.</param>
     /// <returns></returns>
-    private async Task CloseRoom(int roomId, PieceColor? winnerColor)
+    private async Task CloseRoom(int roomId, PieceColor winnerColor)
     {
         Room room = Rooms[roomId];
         Rooms.Remove(roomId);
@@ -202,9 +202,9 @@ public class GameServer
         {
             Clients.Remove(client.Id);
 
-            if (winnerColor != null && client.Stream.CanWrite)
+            if (client.Stream.CanWrite)
             {
-                await client.Stream.WriteAsync(RoomClosedMessage.Encode(winnerColor.Value), _token);
+                await client.Stream.WriteAsync(RoomClosedMessage.Encode(winnerColor), _token);
             }
             
             client.CancellationTokenSource.Cancel();
@@ -367,9 +367,9 @@ public class GameServer
         {
             await opponent.Stream.WriteAsync(moveMessage, opponent.Token);
 
-            if (room.GameIsOver)
+            if (room.GameIsOver())
             {
-                await CloseRoom(client.RoomId, null);
+                await CloseRoom(client.RoomId, room.GetWinner());
             }
         }
         else
