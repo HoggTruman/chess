@@ -168,7 +168,7 @@ public class GameServer
                 break;
 
             case ClientMessage.CancelHost:
-                await ShutDownRoom(client.RoomId, PieceColor.None);
+                await CloseRoom(client.RoomId, PieceColor.None);
                 break;
 
             case ClientMessage.Move:
@@ -190,7 +190,7 @@ public class GameServer
     /// <param name="roomId">The Id of the room to close.</param>
     /// <param name="winnerColor">The PieceColor of the winner to send to the clients.</param>
     /// <returns></returns>
-    private async Task ShutDownRoom(int roomId, PieceColor winnerColor)
+    private async Task CloseRoom(int roomId, PieceColor winnerColor)
     {
         Room room = Rooms[roomId];
         Rooms.Remove(roomId);
@@ -351,7 +351,7 @@ public class GameServer
 
     /// <summary>
     /// Relays the move to the client's opponent if it is valid.
-    /// Otherwise shuts down the room, with the opponent as the winner.
+    /// Otherwise closes the room, with the opponent as the winner.
     /// </summary>
     /// <param name="client"></param>
     /// <param name="isValidMove"></param>
@@ -369,7 +369,7 @@ public class GameServer
         else
         {            
             PieceColor winnerColor = room.PlayerColors[opponent];
-            await ShutDownRoom(client.RoomId, winnerColor);
+            await CloseRoom(client.RoomId, winnerColor);
         }
     }
 
