@@ -167,7 +167,7 @@ public class GameManager
     /// <summary>
     /// Determines the winner of the game (or if it is a draw) and the reason for the game ending.
     /// </summary>
-    /// <returns>A tuple of the PieceColor of the winner (or null for a draw) and a GameOverReason</returns>
+    /// <returns>A tuple of the PieceColor of the winner and a GameOverReason</returns>
     /// <exception cref="Exception">The game is not over</exception>
     public (PieceColor, GameOverReason) GetGameResult()
     {
