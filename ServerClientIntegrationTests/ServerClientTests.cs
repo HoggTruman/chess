@@ -5,17 +5,21 @@ using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Server;
 using Server;
+using System.Net.Sockets;
+using System.Net;
 
 namespace ServerClientIntegrationTests;
 
 [Collection("ServerClientIntegrationTests")]
 public sealed class ServerClientTests : IAsyncLifetime
 {
-    private GameServer _gameServer;
+    private readonly GameServer _gameServer;
 
     public ServerClientTests()
     {
-        _gameServer = new();
+        IPEndPoint ipEndPoint = new(IPAddress.Parse(ServerInfo.IpAddress), ServerInfo.Port);
+        TcpListener tcpListener = new(ipEndPoint);
+        _gameServer = new GameServer(tcpListener);
         _gameServer.Start();
     }
 

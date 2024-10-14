@@ -7,24 +7,28 @@ using NetworkShared.Enums;
 using NetworkShared.Messages.Server;
 using NetworkShared.Messages.Shared;
 using Server;
+using System.Net.Sockets;
+using System.Net;
 
 namespace ServerClientIntegrationTests;
 
 [Collection("ServerClientIntegrationTests")]
 public sealed class MoveTests : IAsyncLifetime
 {
-    private GameServer _gameServer;
-    private GameClient _hostClient;
-    private GameClient _joiningClient;
+    private readonly GameServer _gameServer;
+    private readonly GameClient _hostClient;
+    private readonly GameClient _joiningClient;
 
     private const PieceColor HostColor = PieceColor.White;
     private const PieceColor JoinerColor = PieceColor.Black;
 
     public MoveTests()
     {
-        _gameServer = new();
-        _hostClient = new();
-        _joiningClient = new();
+        IPEndPoint ipEndPoint = new(IPAddress.Parse(ServerInfo.IpAddress), ServerInfo.Port);
+        TcpListener tcpListener = new(ipEndPoint);
+        _gameServer = new GameServer(tcpListener);
+        _hostClient = new GameClient();
+        _joiningClient = new GameClient();
 
         _gameServer.Start();
     }

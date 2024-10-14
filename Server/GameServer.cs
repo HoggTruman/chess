@@ -21,10 +21,9 @@ public class GameServer
     private readonly CancellationToken _token;
 
 
-    public GameServer()
+    public GameServer(TcpListener tcpListener)
     {
-        var ipEndPoint = new IPEndPoint(IPAddress.Parse(ServerInfo.IpAddress), ServerInfo.Port);
-        _tcpListener = new TcpListener(ipEndPoint);
+        _tcpListener = tcpListener;
         _token = _cancellationTokenSource.Token;
     }
 
