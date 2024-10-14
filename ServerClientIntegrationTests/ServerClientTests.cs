@@ -106,7 +106,7 @@ public sealed class ServerClientTests : IAsyncLifetime
 
 
     [Fact(Timeout = 1000)]
-    public async void ClientJoinsRoom_HostAndJoinerReceiveStartGame()
+    public async void ClientJoinsRoom_HostAndJoinerReceiveStartGame_WithCorrectColors()
     {
         // Connect Clients
         GameClient hostClient = new();
@@ -140,8 +140,7 @@ public sealed class ServerClientTests : IAsyncLifetime
         Assert.Equal(ServerMessage.StartGame, hostResponseCode);
 
         PieceColor hostResponseColor = StartGameMessage.Decode(hostResponse);
-        Assert.Equal(ColorHelpers.Opposite(hostColor), joinerResponseColor);
-
+        Assert.Equal(hostColor, hostResponseColor);
     }
 
 
