@@ -7,5 +7,6 @@ GameServer server = new();
 server.Start();
 
 Console.WriteLine("Press key to shut down");
+Console.ReadKey();
 await server.ShutDown();
-//Console.ReadKey();
+
