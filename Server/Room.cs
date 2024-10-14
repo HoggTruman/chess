@@ -43,6 +43,8 @@ public class Room
         get => _players[0];
     }
 
+    public bool GameIsOver { get; private set; }
+
     #endregion
 
 
@@ -136,6 +138,7 @@ public class Room
             {
                 _gameManager.HandleMove(move);
                 _gameManager.SwitchTurn();
+                GameIsOver = _gameManager.GameIsOver();
                 return true;
             }
         }
