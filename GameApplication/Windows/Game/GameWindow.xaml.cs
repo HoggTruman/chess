@@ -22,50 +22,50 @@ public partial class GameWindow : Window
     /// <summary>
     /// The GameManager for the current game.
     /// </summary>
-    private readonly GameManager gameManager;
+    private readonly GameManager _gameManager;
 
     /// <summary>
     /// A 2D array with piece Images in positions corresponding to the Board.
     /// </summary>
-    private readonly Image[,] pieceImages = new Image[Board.BoardSize, Board.BoardSize];
+    private readonly Image[,] _pieceImages = new Image[Board.BoardSize, Board.BoardSize];
 
     /// <summary>
     /// A 2D array of Rectangles.
     /// The Fill of a Rectangle is modified to represent an available move.
     /// </summary>
-    private readonly Rectangle[,] highlights = new Rectangle[Board.BoardSize, Board.BoardSize];
+    private readonly Rectangle[,] _highlights = new Rectangle[Board.BoardSize, Board.BoardSize];
 
 
     /// <summary>
     /// The square of the currently selected Piece of the player.
     /// </summary>
-    private (int row, int col)? selectedSquare; 
+    private (int row, int col)? _selectedSquare; 
 
     /// <summary>
     /// A Dictionary with To square as key, and the corresponding IMove as the value.
     /// </summary>
-    private Dictionary<(int row, int col), IMove> highlightedMoves = [];
+    private Dictionary<(int row, int col), IMove> _highlightedMoves = [];
 
     /// <summary>
     /// A bool to dictate whether the player's clicks should interact with the board at all.
     /// </summary>
-    private bool frozenBoard = false;
+    private bool _frozenBoard = false;
 
 
     /// <summary>
     /// A SolidColorBrush used to set the Fill for highlighted squares.
     /// </summary>
-    private readonly SolidColorBrush highlightBrush = new(Color.FromArgb(150, 125, 255, 125));
+    private static readonly SolidColorBrush HighlightBrush = new(Color.FromArgb(150, 125, 255, 125));
 
     /// <summary>
     /// A SolidColorBrush used to set the Fill for the king's square when under check.
     /// </summary>
-    private readonly SolidColorBrush selectBrush = new(Color.FromArgb(200, 255, 255, 125));
+    private static readonly SolidColorBrush SelectBrush = new(Color.FromArgb(200, 255, 255, 125));
 
     /// <summary>
     /// A SolidColorBrush used to set the Fill for the king's square when under check.
     /// </summary>
-    private readonly SolidColorBrush checkBrush = new(Color.FromArgb(175, 255, 20, 20));
+    private static readonly SolidColorBrush CheckBrush = new(Color.FromArgb(175, 255, 20, 20));
 
     #endregion
 
@@ -76,7 +76,7 @@ public partial class GameWindow : Window
     public GameWindow(GameManager gameManager)
     {
         InitializeComponent();
-        this.gameManager = gameManager;
+        _gameManager = gameManager;
         InitializeGrids();
         DrawPieces();
     }
@@ -98,11 +98,11 @@ public partial class GameWindow : Window
             for (int colIndex = 0; colIndex < Board.BoardSize; colIndex++)
             {
                 Image image = new();
-                pieceImages[rowIndex, colIndex] = image;
+                _pieceImages[rowIndex, colIndex] = image;
                 PieceGrid.Children.Add(image);
 
                 Rectangle highlight = new();
-                highlights[rowIndex, colIndex] = highlight;
+                _highlights[rowIndex, colIndex] = highlight;
                 HighlightGrid.Children.Add(highlight);
             }
         }
@@ -120,17 +120,17 @@ public partial class GameWindow : Window
         {
             for (int c = 0; c < Board.BoardSize; c++)
             {
-                IPiece? piece = gameManager.Board.State[r, c];
+                IPiece? piece = _gameManager.Board.State[r, c];
 
-                if (gameManager.PlayerColor == PieceColor.Black)
+                if (_gameManager.PlayerColor == PieceColor.Black)
                 {
                     // rotate board if player is black
                     var (row, col) = BoardHelpers.RotateSquare180((r, c));
-                    pieceImages[row, col].Source = Images.GetImageSource(piece);
+                    _pieceImages[row, col].Source = Images.GetImageSource(piece);
                 }
                 else 
                 {
-                    pieceImages[r, c].Source = Images.GetImageSource(piece);
+                    _pieceImages[r, c].Source = Images.GetImageSource(piece);
                 }
             }
         }
@@ -144,7 +144,7 @@ public partial class GameWindow : Window
     /// <param name="e"></param>
     private void BoardGrid_MouseDown(object sender, MouseButtonEventArgs e)
     {
-        if (frozenBoard)
+        if (_frozenBoard)
         {
             return;
         }
@@ -152,38 +152,38 @@ public partial class GameWindow : Window
         Point point = e.GetPosition(BoardGrid);
         (int row, int col) square = PointToSquare(point);
 
-        if (gameManager.PlayerColor == PieceColor.Black)
+        if (_gameManager.PlayerColor == PieceColor.Black)
         {
             // Adjust for Black player board rotation
             square = BoardHelpers.RotateSquare180(square);
         }
 
-        if (selectedSquare == null)
+        if (_selectedSquare == null)
         {
-            var moveOptions = gameManager.ActivePlayerMoves[square.row, square.col];
+            var moveOptions = _gameManager.ActivePlayerMoves[square.row, square.col];
             
             if (moveOptions != null)
             {   
-                selectedSquare = square;
-                HighlightSquare(square, selectBrush);
+                _selectedSquare = square;
+                HighlightSquare(square, SelectBrush);
 
                 foreach (var move in moveOptions)
                 {
-                    highlightedMoves[move.To] = move;
-                    HighlightSquare(move.To, highlightBrush);
+                    _highlightedMoves[move.To] = move;
+                    HighlightSquare(move.To, HighlightBrush);
                 }
             }
         }
-        else if (highlightedMoves.TryGetValue(square, out IMove? move))
+        else if (_highlightedMoves.TryGetValue(square, out IMove? move))
         {
             if (move.MoveType == MoveType.Promotion)
             {
-                frozenBoard = true;
-                PromotionMenu promotionMenu = new(gameManager.ActivePlayerColor);
+                _frozenBoard = true;
+                PromotionMenu promotionMenu = new(_gameManager.ActivePlayerColor);
                 MenuContainer.Content = promotionMenu;
                 promotionMenu.PieceClicked += pieceType =>
                 {
-                    frozenBoard = false;
+                    _frozenBoard = false;
                     move = new PromotionMove(move.From, move.To, pieceType);
                     MenuContainer.Content = null;
                     HandleMove(move);
@@ -199,13 +199,13 @@ public partial class GameWindow : Window
         else
         {
             // A square is clicked that is not a highlighted move while a piece is selected
-            selectedSquare = null;
-            highlightedMoves = [];
+            _selectedSquare = null;
+            _highlightedMoves = [];
             ClearHighlights();
-            if (gameManager.ActivePlayerUnderCheck)
+            if (_gameManager.ActivePlayerUnderCheck)
             {
-                var king = gameManager.Board.Kings[gameManager.ActivePlayerColor];
-                HighlightSquare(king.Square, checkBrush);
+                var king = _gameManager.Board.Kings[_gameManager.ActivePlayerColor];
+                HighlightSquare(king.Square, CheckBrush);
             }
         }      
     }
@@ -218,26 +218,26 @@ public partial class GameWindow : Window
     private void HandleMove(IMove move)
     {
         // Update pieces
-        gameManager.HandleMove(move);
+        _gameManager.HandleMove(move);
         DrawPieces();
 
         // Remove current highlights and selection
-        selectedSquare = null;
-        highlightedMoves = [];
+        _selectedSquare = null;
+        _highlightedMoves = [];
         ClearHighlights();
         
-        gameManager.SwitchTurn();
+        _gameManager.SwitchTurn();
 
         // Highlight the next player's king square if under check
-        if (gameManager.ActivePlayerUnderCheck)
+        if (_gameManager.ActivePlayerUnderCheck)
         {
-            var king = gameManager.Board.Kings[gameManager.ActivePlayerColor];
-            HighlightSquare(king.Square, checkBrush);
+            var king = _gameManager.Board.Kings[_gameManager.ActivePlayerColor];
+            HighlightSquare(king.Square, CheckBrush);
         }
 
         //FrozenBoard = gameManager.ActivePlayerColor != gameManager.PlayerColor;
 
-        if (gameManager.GameIsOver())
+        if (_gameManager.GameIsOver())
         {
             HandleGameOver();
         }
@@ -249,9 +249,9 @@ public partial class GameWindow : Window
     /// </summary>
     private void HandleGameOver()
     {
-        frozenBoard = true;
+        _frozenBoard = true;
         ClearHighlights();
-        GameOverMenu gameOverMenu = new(gameManager);
+        GameOverMenu gameOverMenu = new(_gameManager);
         MenuContainer.Content = gameOverMenu;
 
         gameOverMenu.ExitClicked += () =>
@@ -263,10 +263,10 @@ public partial class GameWindow : Window
 
         gameOverMenu.PlayAgainClicked += () =>
         {
-            var nextGameColor = ColorHelpers.Opposite(gameManager.PlayerColor);
-            gameManager.StartNewGame(nextGameColor);
+            var nextGameColor = ColorHelpers.Opposite(_gameManager.PlayerColor);
+            _gameManager.StartNewGame(nextGameColor);
             DrawPieces();
-            frozenBoard = false;
+            _frozenBoard = false;
             MenuContainer.Content = null;
         };
     }
@@ -283,7 +283,7 @@ public partial class GameWindow : Window
         {
             for (int c = 0; c < Board.BoardSize; c++)
             {
-                highlights[r, c].Fill = null; 
+                _highlights[r, c].Fill = null; 
             }
         }
     }
@@ -298,12 +298,12 @@ public partial class GameWindow : Window
     {
         var (row, col) = square;
 
-        if (gameManager.PlayerColor == PieceColor.Black)
+        if (_gameManager.PlayerColor == PieceColor.Black)
         {
             (row, col) = BoardHelpers.RotateSquare180(square);
         }
 
-        highlights[row, col].Fill = brush;
+        _highlights[row, col].Fill = brush;
     }
 
 
