@@ -96,7 +96,7 @@ public class GameServer
                 {
                     if (e is not OperationCanceledException)
                     {
-                        throw e;
+                        Console.WriteLine(e.Message);
                     }
                 }   
             }         
@@ -126,25 +126,17 @@ public class GameServer
 
     private async Task<byte[]> ReadClientMessage(NetworkStream stream, CancellationToken clientToken)
     {
-        byte[] buffer = new byte[256];
+        // get message length
+        byte[] buffer = new byte[1];
+        await stream.ReadAsync(buffer, 0, 1, clientToken);
+        byte messageLength = buffer[0];
         
-        List<byte> message = [];
-        int bytesRead;
+        // read message
+        byte[] message = new byte[messageLength];
+        message[0] = messageLength;
+        await stream.ReadAsync(message, 1, messageLength - 1, clientToken);
 
-        while ((bytesRead = await stream.ReadAsync(buffer, clientToken)) > 0)
-        {
-            for (int i = 0; i < bytesRead; i++)
-            {
-                message.Add(buffer[i]);
-            }
-
-            if (stream.DataAvailable == false)
-            {
-                break;
-            }
-        }
-
-        return message.ToArray();
+        return message;
     }
 
 
@@ -227,10 +219,10 @@ public class GameServer
                 {
                     if (e is not OperationCanceledException)
                     {
-                        throw e;
+                        Console.WriteLine(e.Message);
                     }
                 }   
-            }         
+            }
         }
 
         foreach(Client client in room.Players)

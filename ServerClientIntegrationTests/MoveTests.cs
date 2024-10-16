@@ -210,9 +210,6 @@ public sealed class MoveTests : IAsyncLifetime
         StandardMove whiteMove4 = new((5, 5), (1, 5));
         await _hostClient.Move(whiteMove4);
 
-
-        await Task.Delay(100); // waits for server to finish processing. The Move and RoomClosed messages should both be available at the same time
-
         // Joiner receives
         byte[] receivedWhiteMove4 = await _joiningClient.ReadServerMessage();
 

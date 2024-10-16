@@ -1,4 +1,5 @@
-﻿using NetworkShared.Enums;
+﻿using NetworkShared;
+using NetworkShared.Enums;
 using NetworkShared.Messages.Server;
 
 namespace NetworkSharedTests.Messages.Server;
@@ -20,7 +21,7 @@ public class RoomNotFoundMessageTests
     {
         // Arrange + Act
         var encoded = RoomNotFoundMessage.Encode();
-        var containedCode = (ServerMessage)encoded[0];
+        var containedCode = MessageHelpers.ReadServerCode(encoded);
 
         // Assert
         Assert.Equal(RoomNotFoundMessage.Code, containedCode);

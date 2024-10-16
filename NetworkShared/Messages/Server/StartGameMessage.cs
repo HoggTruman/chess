@@ -5,17 +5,26 @@ namespace NetworkShared.Messages.Server;
 
 public class StartGameMessage
 {
-    // Encoded Message Structure:
-    // Byte 0: Message code
-    // Byte 1: PieceColor of the Client player
+    /// Encoded Message Structure:
+    /// Byte 0: Message Length
+    /// Byte 1: Message Code
+    /// Byte 2: PieceColor of the Client player
 
 
-    public static ServerMessage Code { get; } = ServerMessage.StartGame;
+    /// <summary>
+    /// The number of bytes in the message (including the Length and Code bytes).
+    /// </summary>
+    public const int Length = 3;
+
+    /// <summary>
+    /// The ServerMessage message type.
+    /// </summary>
+    public const ServerMessage Code = ServerMessage.StartGame;
 
 
     public static PieceColor Decode(byte[] message)
     {
-        PieceColor clientColor = (PieceColor)message[1];
+        PieceColor clientColor = (PieceColor)message[2];
         return clientColor;
     }
 
@@ -25,7 +34,7 @@ public class StartGameMessage
         byte codeByte = (byte)Code;
         byte clientColorByte = (byte)clientColor;
 
-        byte[] message = [codeByte, clientColorByte];
+        byte[] message = [Length, codeByte, clientColorByte];
 
         return message;
     }

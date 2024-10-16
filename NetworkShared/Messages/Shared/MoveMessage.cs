@@ -8,38 +8,59 @@ namespace NetworkShared.Messages.Shared;
 public class MoveMessage
 {
     /// Encoded Message Structure:
-    ///     Byte 0: Message code
-    ///     Byte 1: MoveType
-    ///     Byte 2: Row From
-    ///     Byte 3: Column From
-    ///     Byte 4: Row To
-    ///     Byte 5: Column To
+    ///     Byte 0: Message Length
+    ///     Byte 1: Message Code
+    ///     Byte 2: MoveType
+    ///     Byte 3: Row From
+    ///     Byte 4: Column From
+    ///     Byte 5: Row To
+    ///     Byte 6: Column To
     ///     
     /// 
     /// Subsequent Bytes depend on MoveType:
     ///
     ///     CastleMove:
-    ///         Byte 6: RookFrom Row
-    ///         Byte 7: RookFrom Column
-    ///         Byte 8: RookTo Row
-    ///         Byte 9: RookTo Column
+    ///         Byte 7: RookFrom Row
+    ///         Byte 8: RookFrom Column
+    ///         Byte 9: RookTo Row
+    ///         Byte 10: RookTo Column
     ///
     ///     EnPassantMove:
-    ///         Byte 6: Captured Row 
-    ///         Byte 7: Captured Column
+    ///         Byte 7: Captured Row 
+    ///         Byte 8: Captured Column
     ///
     ///     PromotionMove:
-    ///         Byte 6: PromotedTo PieceType
+    ///         Byte 7: PromotedTo PieceType
     ///
     ///     StandardMove:
     ///         No extra bytes
 
 
+    /// <summary>
+    /// The number of bytes in the message for a CastleMove.
+    /// </summary>
+    public const int CastleLength = 11;
 
     /// <summary>
-    /// The ClientCode for a MoveMessage.
+    /// The number of bytes in the message for an EnPassantMove.
     /// </summary>
-    public static ClientMessage Code { get; } = ClientMessage.Move;
+    public const int EnPassantLength = 9;
+
+    /// <summary>
+    /// The number of bytes in the message for a PromotionMove.
+    /// </summary>
+    public const int PromotionLength = 8;
+
+    /// <summary>
+    /// The number of bytes in the message for a StandardMove.
+    /// </summary>
+    public const int StandardLength = 7;
+
+
+    /// <summary>
+    /// The ClientMessage message type.
+    /// </summary>
+    public const ClientMessage Code = ClientMessage.Move;
 
 
 
@@ -54,7 +75,7 @@ public class MoveMessage
     /// <exception cref="ArgumentException"></exception>
     public static IMove Decode(byte[] message)
     {
-        MoveType moveType = (MoveType)message[1];
+        MoveType moveType = (MoveType)message[2];
 
         return moveType switch
         {
@@ -94,36 +115,36 @@ public class MoveMessage
     private static CastleMove DecodeCastleMove(byte[] msg)
     {
         return new CastleMove(
-            from: (msg[2], msg[3]),
-            to: (msg[4], msg[5]),
-            rookFrom: (msg[6], msg[7]),
-            rookTo: (msg[8], msg[9]));
+            from: (msg[3], msg[4]),
+            to: (msg[5], msg[6]),
+            rookFrom: (msg[7], msg[8]),
+            rookTo: (msg[9], msg[10]));
     }
 
 
     private static EnPassantMove DecodeEnPassantMove(byte[] msg)
     {
         return new EnPassantMove(
-            from: (msg[2], msg[3]),
-            to: (msg[4], msg[5]),
-            captured: (msg[6], msg[7]));
+            from: (msg[3], msg[4]),
+            to: (msg[5], msg[6]),
+            captured: (msg[7], msg[8]));
     }
 
 
     private static PromotionMove DecodePromotionMove(byte[] msg)
     {
         return new PromotionMove(
-            from: (msg[2], msg[3]),
-            to: (msg[4], msg[5]),
-            promotedTo: (PieceType)msg[6]);
+            from: (msg[3], msg[4]),
+            to: (msg[5], msg[6]),
+            promotedTo: (PieceType)msg[7]);
     }
 
 
     private static StandardMove DecodeStandardMove(byte[] msg)
     {
         return new StandardMove(
-            from: (msg[2], msg[3]),
-            to: (msg[4], msg[5]));
+            from: (msg[3], msg[4]),
+            to: (msg[5], msg[6]));
     }
 
     #endregion
@@ -153,6 +174,7 @@ public class MoveMessage
     private static byte[] EncodeCastleMove(CastleMove castleMove)
     {
         return [
+            CastleLength,
             .. BaseEncode(castleMove),
             (byte)castleMove.RookFrom.row,
             (byte)castleMove.RookFrom.col,
@@ -165,6 +187,7 @@ public class MoveMessage
     private static byte[] EncodeEnPassantMove(EnPassantMove enPassantMove)
     {
         return [
+            EnPassantLength,
             .. BaseEncode(enPassantMove),
             (byte)enPassantMove.Captured.row,
             (byte)enPassantMove.Captured.col,
@@ -175,6 +198,7 @@ public class MoveMessage
     private static byte[] EncodePromotionMove(PromotionMove promotionMove)
     {
         return [
+            PromotionLength,
             .. BaseEncode(promotionMove),
             (byte)promotionMove.PromotedTo
         ];
@@ -183,7 +207,10 @@ public class MoveMessage
 
     private static byte[] EncodeStandardMove(StandardMove standardMove)
     {
-        return BaseEncode(standardMove);
+        return [
+            StandardLength,
+            .. BaseEncode(standardMove)
+        ];
     }
 
     #endregion

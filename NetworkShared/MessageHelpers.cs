@@ -11,7 +11,7 @@ public class MessageHelpers
     /// <returns>A ServerMessage enum</returns>
     public static ServerMessage ReadServerCode(byte[] message)
     {
-        return (ServerMessage)message[0];
+        return (ServerMessage)message[1];
     }
 
     /// <summary>
@@ -21,6 +21,6 @@ public class MessageHelpers
     /// <returns>A ClientMessage enum</returns>
     public static ClientMessage ReadClientCode(byte[] message)
     {
-        return (ClientMessage)message[0];
+        return (ClientMessage)message[1];
     }
 }

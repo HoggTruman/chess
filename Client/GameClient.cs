@@ -18,7 +18,7 @@ public class GameClient
 {
     public TcpClient _tcpClient { get; private set; }
     private NetworkStream _stream;
-    private byte[] _buffer = new byte[1024];
+    private readonly byte[] _buffer = new byte[16];
 
 
     public GameClient()
@@ -41,23 +41,16 @@ public class GameClient
 
     public async Task<byte[]> ReadServerMessage()
     {
-        List<byte> message = [];
-        int bytesRead;
+        // get message length
+        await _stream.ReadAsync(_buffer, 0, 1);
+        byte messageLength = _buffer[0];
+        
+        // read message
+        byte[] message = new byte[messageLength];
+        message[0] = messageLength;
+        await _stream.ReadAsync(message, 1, messageLength - 1);
 
-        while ((bytesRead = await _stream.ReadAsync(_buffer, 0, _buffer.Length)) > 0)
-        {
-            for (int i = 0; i < bytesRead; i++)
-            {
-                message.Add(_buffer[i]);
-            }
-
-            if (_stream.DataAvailable == false)
-            {
-                break;
-            }
-        }
-
-        return message.ToArray();
+        return message;
     }
 
 
