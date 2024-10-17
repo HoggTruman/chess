@@ -100,7 +100,7 @@ public class GameClient
 
     public async Task Move(IMove move)
     {
-        byte[] message = MoveMessage.Encode(move);
+        byte[] message = MoveMessage.ClientEncode(move);
         await _stream.WriteAsync(message);
     }
 }

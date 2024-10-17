@@ -58,9 +58,15 @@ public class MoveMessage
 
 
     /// <summary>
+    /// The ServerMessage message type.
+    /// </summary>
+    public const ServerMessage ServerCode = ServerMessage.Move;
+
+
+    /// <summary>
     /// The ClientMessage message type.
     /// </summary>
-    public const ClientMessage Code = ClientMessage.Move;
+    public const ClientMessage ClientCode = ClientMessage.Move;
 
 
 
@@ -88,13 +94,30 @@ public class MoveMessage
 
     }
 
+
+    public static byte[] ServerEncode(IMove move)
+    {
+        byte[] message = Encode(move);
+        message[1] = (byte)ServerCode;
+        return message;
+    }
+
+
+    public static byte[] ClientEncode(IMove move)
+    {
+        byte[] message = Encode(move);
+        message[1] = (byte)ClientCode;
+        return message;
+    }
+
+
     /// <summary>
     /// Encodes an IMove to an encoded MoveMessage byte array.
     /// </summary>
     /// <param name="move">The IMove to encode.</param>
     /// <returns>A byte array MoveMessage.</returns>
     /// <exception cref="ArgumentException"></exception>
-    public static byte[] Encode(IMove move)
+    private static byte[] Encode(IMove move)
     {
         return move.MoveType switch
         {
@@ -161,7 +184,7 @@ public class MoveMessage
     private static byte[] BaseEncode(IMove move)
     {
         return [
-            (byte)Code,
+            0, // Code goes here
             (byte)move.MoveType,
             (byte)move.From.row,
             (byte)move.From.col,

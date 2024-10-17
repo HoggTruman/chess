@@ -165,7 +165,7 @@ public class GameServer
             case ClientMessage.Move:
                 IMove move = MoveMessage.Decode(inMsg);
                 bool isValidMove = HandleMove(client, move);
-                await RespondMove(client, isValidMove, inMsg);
+                await RespondMove(client, isValidMove, move);
                 break;
 
             default:
@@ -349,14 +349,15 @@ public class GameServer
     /// <param name="isValidMove"></param>
     /// <param name="moveMessage"></param>
     /// <returns></returns>
-    private async Task RespondMove(Client client, bool isValidMove, byte[] moveMessage)
+    private async Task RespondMove(Client client, bool isValidMove, IMove move)
     {
         Room room = Rooms[client.RoomId];
         Client opponent = room.GetOpponent(client);
 
         if (isValidMove)
         {
-            await opponent.Stream.WriteAsync(moveMessage, opponent.Token);
+            byte[] message = MoveMessage.ServerEncode(move);
+            await opponent.Stream.WriteAsync(message, opponent.Token);
 
             if (room.GameIsOver())
             {
