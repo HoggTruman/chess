@@ -150,13 +150,7 @@ public partial class GameWindow : Window
         }
 
         Point point = e.GetPosition(BoardGrid);
-        (int row, int col) square = PointToSquare(point);
-
-        if (_gameManager.PlayerColor == PieceColor.Black)
-        {
-            // Adjust for Black player board rotation
-            square = BoardHelpers.RotateSquare180(square);
-        }
+        (int row, int col) square = PointToSquare(point);        
 
         if (_selectedSquare == null)
         {
@@ -309,7 +303,6 @@ public partial class GameWindow : Window
 
     /// <summary>
     /// Converts a Point clicked to a corresponding square on the Board.
-    /// (Does not account for Black player board rotation)
     /// </summary>
     /// <param name="point"></param>
     /// <returns></returns>
@@ -318,6 +311,13 @@ public partial class GameWindow : Window
         double squareSize = BoardGrid.ActualWidth / Board.BoardSize;
         int row = (int)(point.Y / squareSize);
         int col = (int)(point.X / squareSize);
+
+        // Adjust for Black player board rotation
+        if (_gameManager.PlayerColor == PieceColor.Black)
+        {
+            (row, col) = BoardHelpers.RotateSquare180((row, col));
+        }
+
         return (row, col);
     }
 
