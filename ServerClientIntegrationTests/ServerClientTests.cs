@@ -53,7 +53,7 @@ public sealed class ServerClientTests : IAsyncLifetime
         GameClient gameClient = new();
         await gameClient.ConnectToServer();
 
-        await gameClient.HostRoom(PieceColor.White);
+        await gameClient.SendHostRoom(PieceColor.White);
         byte[] roomHostedMessage = await gameClient.ReadServerMessage();
         int roomId = RoomHostedMessage.Decode(roomHostedMessage);
 
@@ -69,7 +69,7 @@ public sealed class ServerClientTests : IAsyncLifetime
         await gameClient.ConnectToServer();
 
         int roomId = 1234;
-        await gameClient.JoinRoom(roomId);
+        await gameClient.SendJoinRoom(roomId);
         byte[] roomNotFoundMessage = await gameClient.ReadServerMessage();
         ServerMessage responseCode = MessageHelpers.ReadServerCode(roomNotFoundMessage);
 
@@ -91,16 +91,16 @@ public sealed class ServerClientTests : IAsyncLifetime
         await testClient.ConnectToServer();
 
         // Host Room
-        await hostClient.HostRoom(PieceColor.White);
+        await hostClient.SendHostRoom(PieceColor.White);
         byte[] roomHostedMessage = await hostClient.ReadServerMessage();
         int roomId = RoomHostedMessage.Decode(roomHostedMessage);
 
         // Join Room
-        await joiningClient.JoinRoom(roomId);
+        await joiningClient.SendJoinRoom(roomId);
         byte[] joinerResponseMessage = await joiningClient.ReadServerMessage();
 
         // Attempt to join the full room
-        await testClient.JoinRoom(roomId);
+        await testClient.SendJoinRoom(roomId);
         byte[] testResponseMessage = await testClient.ReadServerMessage();
         ServerMessage responseCode = MessageHelpers.ReadServerCode(testResponseMessage);
 
@@ -121,12 +121,12 @@ public sealed class ServerClientTests : IAsyncLifetime
 
         // Host Room
         PieceColor hostColor = PieceColor.White;
-        await hostClient.HostRoom(hostColor);
+        await hostClient.SendHostRoom(hostColor);
         byte[] roomHostedMessage = await hostClient.ReadServerMessage();
         int roomId = RoomHostedMessage.Decode(roomHostedMessage);
 
         // Join Room
-        await joiningClient.JoinRoom(roomId);
+        await joiningClient.SendJoinRoom(roomId);
         byte[] joinerResponse = await joiningClient.ReadServerMessage();
         ServerMessage joinerResponseCode = MessageHelpers.ReadServerCode(joinerResponse);
 
@@ -157,12 +157,12 @@ public sealed class ServerClientTests : IAsyncLifetime
 
         // Host Room
         PieceColor hostColor = PieceColor.White;
-        await hostClient.HostRoom(hostColor);
+        await hostClient.SendHostRoom(hostColor);
         byte[] roomHostedMessage = await hostClient.ReadServerMessage();
         int roomId = RoomHostedMessage.Decode(roomHostedMessage);
 
         // Cancel Host
-        await hostClient.CancelHost();
+        await hostClient.SendCancelHost();
         await Task.Delay(10); // Make sure the room is fully closed down
 
         // Connect Joiner
@@ -170,7 +170,7 @@ public sealed class ServerClientTests : IAsyncLifetime
         await joiningClient.ConnectToServer();
 
         // Attempt to Join Room
-        await joiningClient.JoinRoom(roomId);
+        await joiningClient.SendJoinRoom(roomId);
         byte[] joinerResponse = await joiningClient.ReadServerMessage();
         ServerMessage joinerResponseCode = MessageHelpers.ReadServerCode(joinerResponse);
 
@@ -188,7 +188,7 @@ public sealed class ServerClientTests : IAsyncLifetime
 
         // Host Room
         PieceColor hostColor = PieceColor.White;
-        await hostClient.HostRoom(hostColor);
+        await hostClient.SendHostRoom(hostColor);
         byte[] roomHostedMessage = await hostClient.ReadServerMessage();
         int roomId = RoomHostedMessage.Decode(roomHostedMessage);
 
@@ -197,13 +197,13 @@ public sealed class ServerClientTests : IAsyncLifetime
         await joiningClient.ConnectToServer();
 
         // Attempt to Join Room
-        await joiningClient.JoinRoom(roomId);
+        await joiningClient.SendJoinRoom(roomId);
         byte[] joinerResponse = await joiningClient.ReadServerMessage();
         ServerMessage joinerResponseCode = MessageHelpers.ReadServerCode(joinerResponse);
 
 
         // Cancel Host
-        await hostClient.CancelHost();
+        await hostClient.SendCancelHost();
 
         Assert.NotEmpty(joinerResponse);
         Assert.Equal(ServerMessage.StartGame, joinerResponseCode);

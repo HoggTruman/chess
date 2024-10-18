@@ -75,21 +75,37 @@ public class GameClient
     }
 
 
-    public async Task HostRoom(PieceColor hostColor)
+    #region Send Message To Server Methods
+
+    /// <summary>
+    /// Sends a message to the server to host a room.
+    /// </summary>
+    /// <param name="hostColor">The PieceColor of the host.</param>
+    /// <returns></returns>
+    public async Task SendHostRoom(PieceColor hostColor)
     {
         byte[] message = HostRoomMessage.Encode(hostColor);
         await _stream.WriteAsync(message);
     }
 
 
-    public async Task JoinRoom(int roomId)
+    /// <summary>
+    /// Sends a message to the server to join a room.
+    /// </summary>
+    /// <param name="roomId">The ID of the room to join.</param>
+    /// <returns></returns>
+    public async Task SendJoinRoom(int roomId)
     {
         byte[] message = JoinRoomMessage.Encode(roomId);
         await _stream.WriteAsync(message);
     }
 
 
-    public async Task CancelHost()
+    /// <summary>
+    /// Sends a message to the server to cancel hosting a room.
+    /// </summary>
+    /// <returns></returns>
+    public async Task SendCancelHost()
     {
         byte[] message = CancelHostMessage.Encode();
         await _stream.WriteAsync(message);
@@ -97,10 +113,17 @@ public class GameClient
     }
 
 
-    public async Task Move(IMove move)
+    /// <summary>
+    /// Sends a message to the server containing the player's IMove.
+    /// </summary>
+    /// <param name="move">The IMove the player is making.</param>
+    /// <returns></returns>
+    public async Task SendMove(IMove move)
     {
         byte[] message = ClientMoveMessage.Encode(move);
         await _stream.WriteAsync(message);
     }
+
+    #endregion
 }
 
