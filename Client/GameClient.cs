@@ -3,6 +3,7 @@ using GameLogic.Interfaces;
 using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Client;
+using NetworkShared.Messages.Server;
 using System.Net;
 using System.Net.Sockets;
 
@@ -15,9 +16,32 @@ namespace Client;
 /// </summary>
 public class GameClient
 {
-    public TcpClient _tcpClient { get; private set; }
+    #region fields
+
+    private TcpClient _tcpClient;
     private NetworkStream _stream;
     private readonly byte[] _buffer = new byte[16];
+
+    #endregion
+
+
+
+    #region Events
+
+    public event Action<int>? RoomHosted;
+
+    public event Action<PieceColor>? StartGame;
+
+    public event Action? RoomNotFound;
+
+    public event Action? RoomFull;
+
+    public event Action<PieceColor>? RoomClosed;
+
+    public event Action<IMove>? MoveReceived;
+
+    #endregion
+
 
 
     public GameClient()
@@ -53,23 +77,33 @@ public class GameClient
     }
 
 
-    private async void HandleServerMessage(byte[] message)
+    public void HandleServerMessage(byte[] message)
     {
         ServerMessage msgCode = MessageHelpers.ReadServerCode(message);
 
         switch (msgCode)
         {
             case ServerMessage.RoomHosted:
-                // trigger an event?
+                int roomId = RoomHostedMessage.Decode(message);
+                RoomHosted?.Invoke(roomId);
                 break;
             case ServerMessage.StartGame:
-                //
+                PieceColor playerColor = StartGameMessage.Decode(message);
+                StartGame?.Invoke(playerColor);
+                break;
+            case ServerMessage.RoomNotFound:
+                RoomNotFound?.Invoke();
+                break;
+            case ServerMessage.RoomFull:
+                RoomFull?.Invoke();
                 break;
             case ServerMessage.RoomClosed:
-                //
+                PieceColor winnerColor = RoomClosedMessage.Decode(message);
+                RoomClosed?.Invoke(winnerColor);
                 break;
             case ServerMessage.Move:
-                //
+                IMove move = ServerMoveMessage.Decode(message);
+                MoveReceived?.Invoke(move);
                 break;
         }
     }
