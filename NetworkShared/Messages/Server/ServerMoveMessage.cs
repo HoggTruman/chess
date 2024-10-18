@@ -49,7 +49,6 @@ public class ServerMoveMessage : MoveMessage
     /// </summary>
     /// <param name="message">A byte array ServerMoveMessage.</param>
     /// <returns>An IMove.</returns>
-    /// <exception cref="ArgumentException"></exception>
     new public static IMove Decode(byte[] message)
     {
         return MoveMessage.Decode(message);
@@ -61,7 +60,6 @@ public class ServerMoveMessage : MoveMessage
     /// </summary>
     /// <param name="move">The IMove to encode.</param>
     /// <returns>A byte array ServerMoveMessage.</returns>
-    /// <exception cref="ArgumentException"></exception>
     new public static byte[] Encode(IMove move)
     {
         byte[] message = MoveMessage.Encode(move);

@@ -22,6 +22,11 @@ public class StartGameMessage
     public const ServerMessage Code = ServerMessage.StartGame;
 
 
+    /// <summary>
+    /// Decodes the player's PieceColor from a StartGameMessage byte array.
+    /// </summary>
+    /// <param name="message">A StartGameMessage byte array.</param>
+    /// <returns>The PieceColor of the player.</returns>
     public static PieceColor Decode(byte[] message)
     {
         PieceColor clientColor = (PieceColor)message[2];
@@ -29,6 +34,11 @@ public class StartGameMessage
     }
 
 
+    /// <summary>
+    /// Encodes the player's PieceColor to a StartGameMessage byte array.
+    /// </summary>
+    /// <param name="clientColor">The PieceColor of the player.</param>
+    /// <returns>A StartGameMessage byte array.</returns>
     public static byte[] Encode(PieceColor clientColor)
     {
         byte codeByte = (byte)Code;

@@ -22,6 +22,11 @@ public class RoomHostedMessage
     public const ServerMessage Code = ServerMessage.RoomHosted;
 
 
+    /// <summary>
+    /// Decodes a room ID from a RoomHostedMessage byte array.
+    /// </summary>
+    /// <param name="message">A RoomHostedMessage byte array.</param>
+    /// <returns>An int representing the room ID.</returns>
     public static int Decode(byte[] message)
     {
         byte[] roomIdBytes = new byte[4];
@@ -32,6 +37,11 @@ public class RoomHostedMessage
     }
 
 
+    /// <summary>
+    /// Encodes a room ID to a RoomHostedMessage byte array.
+    /// </summary>
+    /// <param name="roomId">An int representing the room ID.</param>
+    /// <returns>A RoomHostedMessage byte array.</returns>
     public static byte[] Encode(int roomId)
     {
         byte codeByte = (byte)ServerMessage.RoomHosted;

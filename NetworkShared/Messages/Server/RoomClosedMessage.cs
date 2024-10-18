@@ -22,12 +22,23 @@ public class RoomClosedMessage
     public const ServerMessage Code = ServerMessage.RoomClosed;
 
 
+    /// <summary>
+    /// Decodes the PieceColor of the game's winner from an encoded RoomClosedMessage byte array.
+    /// </summary>
+    /// <param name="message">A byte array RoomClosedMessage.</param>
+    /// <returns>A PieceColor.</returns>
     public static PieceColor Decode(byte[] message)
     {
         PieceColor winnerColor = (PieceColor)message[2];
         return winnerColor;
     }
 
+
+    /// <summary>
+    /// Encodes the PieceColor of the game's winner to an encoded RoomClosedMessage byte array.
+    /// </summary>
+    /// <param name="winnerColor">The PieceColor of the winner.</param>
+    /// <returns>A byte array.</returns>
     public static byte[] Encode(PieceColor winnerColor)
     {
         byte codeByte = (byte)Code;
