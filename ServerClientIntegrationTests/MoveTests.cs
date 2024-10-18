@@ -5,10 +5,9 @@ using GameLogic.Moves;
 using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Server;
-using NetworkShared.Messages.Shared;
 using Server;
-using System.Net.Sockets;
 using System.Net;
+using System.Net.Sockets;
 
 namespace ServerClientIntegrationTests;
 
@@ -81,7 +80,7 @@ public sealed class MoveTests : IAsyncLifetime
 
         // Joiner receives move from server
         byte[] joinerReceivedMove = await _joiningClient.ReadServerMessage();
-        IMove joinerDecodedMove = MoveMessage.Decode(joinerReceivedMove);
+        IMove joinerDecodedMove = ServerMoveMessage.Decode(joinerReceivedMove);
         Assert.True(joinerDecodedMove.IsEquivalentTo(hostMove));
 
         // Joiner sends move
@@ -90,7 +89,7 @@ public sealed class MoveTests : IAsyncLifetime
 
         // Host receives move from server
         byte[] hostReceivedMove = await _hostClient.ReadServerMessage();
-        IMove hostDecodedMove = MoveMessage.Decode(hostReceivedMove);
+        IMove hostDecodedMove = ServerMoveMessage.Decode(hostReceivedMove);
         Assert.True(hostDecodedMove.IsEquivalentTo(joinerMove));
     }
 

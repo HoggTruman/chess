@@ -4,9 +4,7 @@ using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Client;
 using NetworkShared.Messages.Server;
-using NetworkShared.Messages.Shared;
 using System.Collections.Concurrent;
-using System.Net;
 using System.Net.Sockets;
 
 namespace Server;
@@ -163,7 +161,7 @@ public class GameServer
                 break;
 
             case ClientMessage.Move:
-                IMove move = MoveMessage.Decode(inMsg);
+                IMove move = ClientMoveMessage.Decode(inMsg);
                 bool isValidMove = HandleMove(client, move);
                 await RespondMove(client, isValidMove, move);
                 break;
@@ -356,7 +354,7 @@ public class GameServer
 
         if (isValidMove)
         {
-            byte[] message = MoveMessage.ServerEncode(move);
+            byte[] message = ServerMoveMessage.Encode(move);
             await opponent.Stream.WriteAsync(message, opponent.Token);
 
             if (room.GameIsOver())

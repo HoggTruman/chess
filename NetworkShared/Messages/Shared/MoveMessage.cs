@@ -1,11 +1,10 @@
 ﻿using GameLogic.Enums;
 using GameLogic.Interfaces;
 using GameLogic.Moves;
-using NetworkShared.Enums;
 
 namespace NetworkShared.Messages.Shared;
 
-public class MoveMessage
+public abstract class MoveMessage
 {
     /// Encoded Message Structure:
     ///     Byte 0: Message Length
@@ -57,21 +56,8 @@ public class MoveMessage
     public const int StandardLength = 7;
 
 
-    /// <summary>
-    /// The ServerMessage message type.
-    /// </summary>
-    public const ServerMessage ServerCode = ServerMessage.Move;
 
-
-    /// <summary>
-    /// The ClientMessage message type.
-    /// </summary>
-    public const ClientMessage ClientCode = ClientMessage.Move;
-
-
-
-
-    #region Public Methods
+    #region Protected Methods
 
     /// <summary>
     /// Decodes an IMove from an encoded MoveMessage byte array.
@@ -79,7 +65,7 @@ public class MoveMessage
     /// <param name="message">A byte array MoveMessage.</param>
     /// <returns>An IMove.</returns>
     /// <exception cref="ArgumentException"></exception>
-    public static IMove Decode(byte[] message)
+    protected static IMove Decode(byte[] message)
     {
         MoveType moveType = (MoveType)message[2];
 
@@ -95,29 +81,13 @@ public class MoveMessage
     }
 
 
-    public static byte[] ServerEncode(IMove move)
-    {
-        byte[] message = Encode(move);
-        message[1] = (byte)ServerCode;
-        return message;
-    }
-
-
-    public static byte[] ClientEncode(IMove move)
-    {
-        byte[] message = Encode(move);
-        message[1] = (byte)ClientCode;
-        return message;
-    }
-
-
     /// <summary>
     /// Encodes an IMove to an encoded MoveMessage byte array.
     /// </summary>
     /// <param name="move">The IMove to encode.</param>
     /// <returns>A byte array MoveMessage.</returns>
     /// <exception cref="ArgumentException"></exception>
-    private static byte[] Encode(IMove move)
+    protected static byte[] Encode(IMove move)
     {
         return move.MoveType switch
         {

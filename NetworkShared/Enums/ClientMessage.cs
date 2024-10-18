@@ -6,8 +6,6 @@ public enum ClientMessage
     HostRoom,
     CancelHost,
     JoinRoom,
-
-    Move
-    
+    Move    
 }
 

@@ -3,7 +3,6 @@ using GameLogic.Interfaces;
 using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Client;
-using NetworkShared.Messages.Shared;
 using System.Net;
 using System.Net.Sockets;
 
@@ -100,7 +99,7 @@ public class GameClient
 
     public async Task Move(IMove move)
     {
-        byte[] message = MoveMessage.ClientEncode(move);
+        byte[] message = ClientMoveMessage.Encode(move);
         await _stream.WriteAsync(message);
     }
 }
