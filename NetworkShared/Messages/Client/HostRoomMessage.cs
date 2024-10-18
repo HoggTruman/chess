@@ -22,6 +22,11 @@ public class HostRoomMessage
     public const ClientMessage Code = ClientMessage.HostRoom;
 
     
+    /// <summary>
+    /// Decodes the host's PieceColor from an encoded HostRoomMessage byte array.
+    /// </summary>
+    /// <param name="message"></param>
+    /// <returns></returns>
     public static PieceColor Decode(byte[] message)
     {
         PieceColor hostColor = (PieceColor)message[2];
@@ -29,6 +34,11 @@ public class HostRoomMessage
     }
 
 
+    /// <summary>
+    /// Encodes the host's PieceColor to an encoded HostRoomMessage byte array.
+    /// </summary>
+    /// <param name="hostColor">The host's PieceColor.</param>
+    /// <returns>A HostRoomMessage byte array.</returns>
     public static byte[] Encode(PieceColor hostColor)
     {
         byte codeByte = (byte)ClientMessage.HostRoom;

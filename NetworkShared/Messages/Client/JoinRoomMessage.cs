@@ -23,6 +23,11 @@ public class JoinRoomMessage
     public const ClientMessage Code = ClientMessage.JoinRoom;
 
     
+    /// <summary>
+    /// Decodes the room ID from an encoded JoinRoomMessage byte array.
+    /// </summary>
+    /// <param name="message">A JoinRoomMessage byte array.</param>
+    /// <returns>An int representing the room ID.</returns>
     public static int Decode(byte[] message)
     {
         byte[] roomIdBytes = new byte[4];
@@ -33,6 +38,11 @@ public class JoinRoomMessage
     }
 
 
+    /// <summary>
+    /// Encodes the room ID to an encoded JoinRoomMessage byte array.
+    /// </summary>
+    /// <param name="roomId">An int representing the room ID.</param>
+    /// <returns>A JoinRoomMessage byte array.</returns>
     public static byte[] Encode(int roomId)
     {
         byte codeByte = (byte)Code;
