@@ -1,5 +1,4 @@
 ﻿using GameLogic.Enums;
-using GameLogic.Helpers;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -11,6 +10,8 @@ namespace GameApplication.Windows.Game;
 /// </summary>
 public partial class GameOverMenu : UserControl
 {
+    #region Events
+
     /// <summary>
     /// Event fired when GameOverMenu "Exit" button is clicked. 
     /// </summary>
@@ -20,6 +21,20 @@ public partial class GameOverMenu : UserControl
     /// Event fired when GameOverMenu "Play Again" button is clicked. 
     /// </summary>
     public event Action? PlayAgainClicked;
+
+    #endregion
+
+
+
+    #region Text
+
+    public const string WhiteWinsText = "White Wins!";
+    public const string BlackWinsText = "Black Wins!";
+    public const string YouWinText = "You Win!";
+    public const string YouLoseText = "You Lose!";
+    public const string NoWinnerText = "It's A Draw!";
+
+    #endregion
 
 
 
@@ -37,27 +52,28 @@ public partial class GameOverMenu : UserControl
 
     public static string GetWinnerText(PieceColor winnerColor, PieceColor playerColor)
     {
-        if (playerColor == PieceColor.None)
+        return playerColor switch
         {
-            return winnerColor switch
+            PieceColor.None => winnerColor switch
             {
-                PieceColor.White => "White Wins!",
-                PieceColor.Black => "Black Wins!",
-                _ => "It's A Draw!"
-            };
-        }
-        else if (playerColor == winnerColor)
-        {
-            return "You Win!";
-        }
-        else if (playerColor == ColorHelpers.Opposite(winnerColor))
-        {
-            return "You Lose!";
-        }
-        else 
-        {
-            return "It's A Draw!";
-        }        
+                PieceColor.White => WhiteWinsText,
+                PieceColor.Black => BlackWinsText,
+                _ => NoWinnerText
+            },
+            PieceColor.White => winnerColor switch
+            {
+                PieceColor.White => YouWinText,
+                PieceColor.Black => YouLoseText,
+                _ => NoWinnerText
+            },
+            PieceColor.Black => winnerColor switch
+            {
+                PieceColor.White => YouLoseText,
+                PieceColor.Black => YouWinText,
+                _ => NoWinnerText
+            },
+            _ => throw new ArgumentException($"Can not determine winner with winnerColor: {winnerColor}, playerColor: {playerColor}."),
+        };
     }
 
 
@@ -77,6 +93,7 @@ public partial class GameOverMenu : UserControl
     {
         ExitClicked?.Invoke();
     }
+
 
     private void PlayAgain_Click(object sender, RoutedEventArgs e)
     {
