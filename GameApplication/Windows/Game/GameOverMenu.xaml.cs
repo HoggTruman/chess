@@ -1,5 +1,4 @@
-﻿using GameLogic;
-using GameLogic.Enums;
+﻿using GameLogic.Enums;
 using GameLogic.Helpers;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,9 +11,6 @@ namespace GameApplication.Windows.Game;
 /// </summary>
 public partial class GameOverMenu : UserControl
 {
-    private readonly GameManager _gameManager;
-    private readonly PieceColor _playerColor;
-
     /// <summary>
     /// Event fired when GameOverMenu "Exit" button is clicked. 
     /// </summary>
@@ -28,36 +24,33 @@ public partial class GameOverMenu : UserControl
 
 
 
-    public GameOverMenu(GameManager gameManager, PieceColor playerColor)
+    public GameOverMenu(PieceColor winnerColor, GameOverReason reason, PieceColor playerColor)
     {
         InitializeComponent();
-        _gameManager = gameManager;
-        _playerColor = playerColor;
 
-        var (winner, reason) = gameManager.GetGameResult();
-        WinnerText.Text = GetWinnerText(winner);
+        WinnerText.Text = GetWinnerText(winnerColor, playerColor);
         ReasonText.Text = GetReasonText(reason);
     }
 
 
 
 
-    public string GetWinnerText(PieceColor winner)
+    public static string GetWinnerText(PieceColor winnerColor, PieceColor playerColor)
     {
-        if (_playerColor == PieceColor.None)
+        if (playerColor == PieceColor.None)
         {
-            return winner switch
+            return winnerColor switch
             {
                 PieceColor.White => "White Wins!",
                 PieceColor.Black => "Black Wins!",
                 _ => "It's A Draw!"
             };
         }
-        else if (_playerColor == winner)
+        else if (playerColor == winnerColor)
         {
             return "You Win!";
         }
-        else if (_playerColor == ColorHelpers.Opposite(winner))
+        else if (playerColor == ColorHelpers.Opposite(winnerColor))
         {
             return "You Lose!";
         }
@@ -68,7 +61,7 @@ public partial class GameOverMenu : UserControl
     }
 
 
-    public string GetReasonText(GameOverReason reason)
+    public static string GetReasonText(GameOverReason reason)
     {
         return reason switch
         {

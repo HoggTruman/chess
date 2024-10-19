@@ -251,7 +251,9 @@ public partial class GameWindow : Window
     {
         _frozenBoard = true;
         ClearHighlights();
-        GameOverMenu gameOverMenu = new(_gameManager, _playerColor);
+
+        var (winnerColor, reason) = _gameManager.GetGameResult();
+        GameOverMenu gameOverMenu = new(winnerColor, reason, _playerColor);
         MenuContainer.Content = gameOverMenu;
 
         gameOverMenu.ExitClicked += () =>
