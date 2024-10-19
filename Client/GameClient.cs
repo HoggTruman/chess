@@ -18,7 +18,7 @@ public class GameClient
 {
     #region fields
 
-    private TcpClient _tcpClient;
+    private readonly TcpClient _tcpClient;
     private NetworkStream _stream;
     private readonly byte[] _buffer = new byte[16];
 
