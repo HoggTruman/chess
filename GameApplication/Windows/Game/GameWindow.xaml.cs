@@ -1,4 +1,5 @@
-﻿using GameApplication.Windows.Start;
+﻿using Client;
+using GameApplication.Windows.Start;
 using GameLogic;
 using GameLogic.Enums;
 using GameLogic.Helpers;
@@ -28,6 +29,12 @@ public partial class GameWindow : Window
     /// The PieceColor of the player.
     /// </summary>
     private readonly PieceColor _playerColor;
+
+    /// <summary>
+    /// The GameClient for an online game or null for a local game.
+    /// </summary>
+    private readonly GameClient? _gameClient;
+
 
     /// <summary>
     /// A 2D array with piece Images in positions corresponding to the Board.
@@ -78,11 +85,13 @@ public partial class GameWindow : Window
 
     #region Constructors
 
-    public GameWindow(GameManager gameManager, PieceColor playerColor)
+    public GameWindow(GameManager gameManager, PieceColor playerColor, GameClient? gameClient = null)
     {
-        InitializeComponent();
+        InitializeComponent();        
         _gameManager = gameManager;
         _playerColor = playerColor;
+        _gameClient = gameClient;
+
         InitializeGrids();
         DrawPieces();
     }
