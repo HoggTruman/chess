@@ -15,11 +15,6 @@ public class GameManager
     public Board Board { get; private set; } = new();
 
     /// <summary>
-    /// The PieceColor of the player.
-    /// </summary>
-    public PieceColor PlayerColor { get; private set; }
-
-    /// <summary>
     /// The PieceColor of the player whose turn it is.
     /// </summary>
     public PieceColor ActivePlayerColor { get; set; } = PieceColor.White;
@@ -40,11 +35,10 @@ public class GameManager
 
     #region Constructors
 
-    public GameManager(Board board, PieceColor playerColor)
+    public GameManager(Board board)
     {        
         // Avoids using StartNewGame so that a manually set up Board can be used in testing
         Board = board;
-        PlayerColor = playerColor;
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
         ActivePlayerUnderCheck = board.Kings[ActivePlayerColor].IsChecked();
     }
@@ -59,11 +53,10 @@ public class GameManager
     /// Sets up a new game.
     /// </summary>
     /// <param name="playerColor">The PieceColor of the player in the new game.</param>
-    public void StartNewGame(PieceColor playerColor)
+    public void StartNewGame()
     {
         Board = new();
         Board.Initialize();
-        PlayerColor = playerColor;
         ActivePlayerColor = PieceColor.White;
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
         ActivePlayerUnderCheck = Board.Kings[ActivePlayerColor].IsChecked();

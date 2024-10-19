@@ -53,7 +53,7 @@ public class Room
         Id = GenerateRoomId();
         Board board = new();
         board.Initialize();
-        _gameManager = new(board, PieceColor.None);
+        _gameManager = new(board);
         
         _players.Add(hostClient);
         _playerColors[hostClient] = hostColor;
@@ -62,7 +62,7 @@ public class Room
 
     public void StartNewGame()
     {
-        _gameManager.StartNewGame(PieceColor.None);
+        _gameManager.StartNewGame();
     }
 
 

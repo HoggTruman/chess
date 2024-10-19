@@ -13,6 +13,7 @@ namespace GameApplication.Windows.Game;
 public partial class GameOverMenu : UserControl
 {
     private readonly GameManager _gameManager;
+    private readonly PieceColor _playerColor;
 
     /// <summary>
     /// Event fired when GameOverMenu "Exit" button is clicked. 
@@ -27,10 +28,11 @@ public partial class GameOverMenu : UserControl
 
 
 
-    public GameOverMenu(GameManager gameManager)
+    public GameOverMenu(GameManager gameManager, PieceColor playerColor)
     {
         InitializeComponent();
         _gameManager = gameManager;
+        _playerColor = playerColor;
 
         var (winner, reason) = gameManager.GetGameResult();
         WinnerText.Text = GetWinnerText(winner);
@@ -42,7 +44,7 @@ public partial class GameOverMenu : UserControl
 
     public string GetWinnerText(PieceColor winner)
     {
-        if (_gameManager.PlayerColor == PieceColor.None)
+        if (_playerColor == PieceColor.None)
         {
             return winner switch
             {
@@ -51,11 +53,11 @@ public partial class GameOverMenu : UserControl
                 _ => "It's A Draw!"
             };
         }
-        else if (_gameManager.PlayerColor == winner)
+        else if (_playerColor == winner)
         {
             return "You Win!";
         }
-        else if (_gameManager.PlayerColor == ColorHelpers.Opposite(winner))
+        else if (_playerColor == ColorHelpers.Opposite(winner))
         {
             return "You Lose!";
         }

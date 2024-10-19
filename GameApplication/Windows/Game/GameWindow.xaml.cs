@@ -25,6 +25,11 @@ public partial class GameWindow : Window
     private readonly GameManager _gameManager;
 
     /// <summary>
+    /// The PieceColor of the player.
+    /// </summary>
+    private readonly PieceColor _playerColor;
+
+    /// <summary>
     /// A 2D array with piece Images in positions corresponding to the Board.
     /// </summary>
     private readonly Image[,] _pieceImages = new Image[Board.BoardSize, Board.BoardSize];
@@ -73,10 +78,11 @@ public partial class GameWindow : Window
 
     #region Constructors
 
-    public GameWindow(GameManager gameManager)
+    public GameWindow(GameManager gameManager, PieceColor playerColor)
     {
         InitializeComponent();
         _gameManager = gameManager;
+        _playerColor = playerColor;
         InitializeGrids();
         DrawPieces();
     }
@@ -122,7 +128,7 @@ public partial class GameWindow : Window
             {
                 IPiece? piece = _gameManager.Board.State[r, c];
 
-                if (_gameManager.PlayerColor == PieceColor.Black)
+                if (_playerColor == PieceColor.Black)
                 {
                     // rotate board if player is black
                     var (row, col) = BoardHelpers.RotateSquare180((r, c));
@@ -245,7 +251,7 @@ public partial class GameWindow : Window
     {
         _frozenBoard = true;
         ClearHighlights();
-        GameOverMenu gameOverMenu = new(_gameManager);
+        GameOverMenu gameOverMenu = new(_gameManager, _playerColor);
         MenuContainer.Content = gameOverMenu;
 
         gameOverMenu.ExitClicked += () =>
@@ -257,8 +263,8 @@ public partial class GameWindow : Window
 
         gameOverMenu.PlayAgainClicked += () =>
         {
-            var nextGameColor = ColorHelpers.Opposite(_gameManager.PlayerColor);
-            _gameManager.StartNewGame(nextGameColor);
+            var nextGameColor = ColorHelpers.Opposite(_playerColor);
+            _gameManager.StartNewGame();
             DrawPieces();
             _frozenBoard = false;
             MenuContainer.Content = null;
@@ -292,7 +298,7 @@ public partial class GameWindow : Window
     {
         var (row, col) = square;
 
-        if (_gameManager.PlayerColor == PieceColor.Black)
+        if (_playerColor == PieceColor.Black)
         {
             (row, col) = BoardHelpers.RotateSquare180(square);
         }
@@ -313,7 +319,7 @@ public partial class GameWindow : Window
         int col = (int)(point.X / squareSize);
 
         // Adjust for Black player board rotation
-        if (_gameManager.PlayerColor == PieceColor.Black)
+        if (_playerColor == PieceColor.Black)
         {
             (row, col) = BoardHelpers.RotateSquare180((row, col));
         }

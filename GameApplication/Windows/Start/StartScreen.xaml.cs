@@ -24,9 +24,9 @@ public partial class StartScreen : UserControl
     {
         Board board = new();
         board.Initialize();
-        GameManager gameManager = new(board, playerColor); 
+        GameManager gameManager = new(board); 
 
-        GameWindow gameWindow = new(gameManager);
+        GameWindow gameWindow = new(gameManager, playerColor);
         gameWindow.Show();
 
         window.Close();

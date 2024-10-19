@@ -18,7 +18,7 @@ public class GameManagerTests
         Board board = new();
         board.Initialize();
 
-        GameManager gameManager = new(board, PieceColor.White);
+        GameManager gameManager = new(board);
 
         // Act
         var result = gameManager.GameIsOver();
@@ -36,7 +36,7 @@ public class GameManagerTests
         board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
         board.AddNewPiece<KingPiece>(StartSquares.BlackKing, PieceColor.Black);
 
-        GameManager gameManager = new(board, PieceColor.White);
+        GameManager gameManager = new(board);
 
         // Act
         var result = gameManager.GameIsOver();
@@ -56,7 +56,7 @@ public class GameManagerTests
         board.AddNewPiece<RookPiece>((7, 7), PieceColor.Black);
         board.AddNewPiece<RookPiece>((6, 7), PieceColor.Black);
 
-        GameManager gameManager = new(board, PieceColor.White);
+        GameManager gameManager = new(board);
 
         // Act
         var result = gameManager.GameIsOver();
@@ -76,7 +76,7 @@ public class GameManagerTests
         board.AddNewPiece<RookPiece>((1, 7), PieceColor.Black);
         board.AddNewPiece<RookPiece>((7, 1), PieceColor.Black);
 
-        GameManager gameManager = new(board, PieceColor.White);
+        GameManager gameManager = new(board);
 
         // Act
         var result = gameManager.GameIsOver();
@@ -98,7 +98,7 @@ public class GameManagerTests
         Board board = new();
         board.Initialize();
 
-        GameManager gameManager = new(board, PieceColor.White);
+        GameManager gameManager = new(board);
 
         // Act + Assert
         Assert.Throws<Exception>(() => gameManager.GetGameResult());
@@ -117,7 +117,7 @@ public class GameManagerTests
         board.AddNewPiece<RookPiece>((0, 7), PieceColor.White);
         board.AddNewPiece<RookPiece>((1, 7), PieceColor.White);
 
-        GameManager gameManager = new(board, PieceColor.White);
+        GameManager gameManager = new(board);
         gameManager.SwitchTurn();
 
         // Act
@@ -141,7 +141,7 @@ public class GameManagerTests
         board.AddNewPiece<RookPiece>((0, 7), PieceColor.Black);
         board.AddNewPiece<RookPiece>((1, 7), PieceColor.Black);
 
-        GameManager gameManager = new(board, PieceColor.White);
+        GameManager gameManager = new(board);
 
         // Act
         var (winner, reason) = gameManager.GetGameResult();
@@ -164,7 +164,7 @@ public class GameManagerTests
         board.AddNewPiece<RookPiece>((1, 7), PieceColor.Black);
         board.AddNewPiece<RookPiece>((7, 1), PieceColor.Black);
 
-        GameManager gameManager = new(board, PieceColor.White);
+        GameManager gameManager = new(board);
 
         // Act
         var (winner, reason) = gameManager.GetGameResult();
@@ -187,7 +187,7 @@ public class GameManagerTests
         board.AddNewPiece<RookPiece>((1, 7), PieceColor.White);
         board.AddNewPiece<RookPiece>((7, 1), PieceColor.White);
 
-        GameManager gameManager = new(board, PieceColor.White);
+        GameManager gameManager = new(board);
         gameManager.SwitchTurn();
 
         // Act
@@ -207,7 +207,7 @@ public class GameManagerTests
         board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
         board.AddNewPiece<KingPiece>(StartSquares.BlackKing, PieceColor.Black);
 
-        GameManager gameManager = new(board, PieceColor.White);
+        GameManager gameManager = new(board);
 
         // Act
         var (winner, reason) = gameManager.GetGameResult();
@@ -226,7 +226,7 @@ public class GameManagerTests
         board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
         board.AddNewPiece<KingPiece>(StartSquares.BlackKing, PieceColor.Black);
 
-        GameManager gameManager = new(board, PieceColor.White);
+        GameManager gameManager = new(board);
         gameManager.SwitchTurn();
 
         // Act
@@ -245,7 +245,7 @@ public class GameManagerTests
         Board board = new();
         board.Initialize();
 
-        GameManager gameManager = new(board, PieceColor.None);
+        GameManager gameManager = new(board);
 
         gameManager.HandleMove(new StandardMove((6, 4), (4, 4)));
         gameManager.SwitchTurn();
@@ -288,7 +288,7 @@ public class GameManagerTests
         Board board = new();
         board.Initialize();
 
-        GameManager gameManager = new(board, PieceColor.White);
+        GameManager gameManager = new(board);
 
         // Act
         var result = gameManager.GetPlayerMoves(playerColor);
