@@ -61,6 +61,12 @@ public class GameClient
         }
     }
 
+    public async Task ReadAndHandleServerMessage()
+    {
+        byte[] message = await ReadServerMessage();
+        HandleServerMessage(message);
+    }
+
 
     public async Task<byte[]> ReadServerMessage()
     {
