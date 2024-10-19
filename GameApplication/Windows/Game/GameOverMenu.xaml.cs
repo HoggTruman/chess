@@ -17,11 +17,6 @@ public partial class GameOverMenu : UserControl
     /// </summary>
     public event Action? ExitClicked;
 
-    /// <summary>
-    /// Event fired when GameOverMenu "Play Again" button is clicked. 
-    /// </summary>
-    public event Action? PlayAgainClicked;
-
     #endregion
 
 
@@ -92,12 +87,6 @@ public partial class GameOverMenu : UserControl
     private void Exit_Click(object sender, RoutedEventArgs e)
     {
         ExitClicked?.Invoke();
-    }
-
-
-    private void PlayAgain_Click(object sender, RoutedEventArgs e)
-    {
-        PlayAgainClicked?.Invoke();
     }
 }
 

@@ -17,22 +17,17 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
             <TextBlock x:Name="WinnerText"
                        Grid.ColumnSpan="2"
                        Grid.Row="0"
-                       Text="YOU WIN/LOSE!" 
+                       Text="X WINS" 
                        FontSize="25"
                        Style="{StaticResource TextStyle}"/>
 
             <TextBlock x:Name="ReasonText"
                        Grid.ColumnSpan="2"
                        Grid.Row="1"
-                       Text="Checkmate/ insufficient material" 
+                       Text="REASON FOR WIN/LOSE/DRAW" 
                        FontSize="14"
                        Style="{StaticResource TextStyle}"/>
 
@@ -43,14 +38,6 @@
                     Height="30"
                     Style="{StaticResource ButtonStyle}"
                     Click="Exit_Click"/>
-
-            <Button Content="Play Again"
-                    Grid.Column="1"
-                    Grid.Row="2"
-                    Width="80"
-                    Height="30"
-                    Style="{StaticResource ButtonStyle}"
-                    Click="PlayAgain_Click"/>
 
         </Grid>
 

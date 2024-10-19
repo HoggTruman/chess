@@ -262,15 +262,6 @@ public partial class GameWindow : Window
             startWindow.Show();
             Close();
         };
-
-        gameOverMenu.PlayAgainClicked += () =>
-        {
-            var nextGameColor = ColorHelpers.Opposite(_playerColor);
-            _gameManager.StartNewGame();
-            DrawPieces();
-            _frozenBoard = false;
-            MenuContainer.Content = null;
-        };
     }
 
 
