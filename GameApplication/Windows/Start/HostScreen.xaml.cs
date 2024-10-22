@@ -87,7 +87,7 @@ public partial class HostScreen : UserControl
             var serverMessage = await _gameClient.ReadServerMessage();
             _gameClient.HandleServerMessage(serverMessage);
         }
-        catch(Exception)
+        catch (Exception)
         {
             StatusTextBlock.Text = ServerErrorText;
             _colorButtonsEnabled = true;
@@ -151,7 +151,20 @@ public partial class HostScreen : UserControl
 
     private void Back_Click(object sender, RoutedEventArgs e)
     {
-        _gameClient?.Dispose();
+        if (_gameClient != null)
+        {
+            try
+            {
+                _gameClient.SendCancelHost().Wait();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            _gameClient.Dispose();
+        }
+        
         StartScreen startScreen = new(_window);
         _window.Content = startScreen;
     }
