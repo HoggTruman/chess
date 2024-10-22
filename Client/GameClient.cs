@@ -21,6 +21,8 @@ public class GameClient
     private readonly TcpClient _tcpClient;
     private NetworkStream _stream;
     private readonly byte[] _buffer = new byte[16];
+    private readonly CancellationTokenSource _cancellationTokenSource;
+    private readonly CancellationToken _token;
 
     #endregion
 
@@ -47,13 +49,15 @@ public class GameClient
     public GameClient()
     {
         _tcpClient = new TcpClient();
+        _cancellationTokenSource = new CancellationTokenSource();
+        _token = _cancellationTokenSource.Token;
     }
 
 
     public async Task ConnectToServer()
     {
         var ipEndpoint = new IPEndPoint(IPAddress.Parse(ServerInfo.IpAddress), ServerInfo.Port);
-        await _tcpClient.ConnectAsync(ipEndpoint);
+        await _tcpClient.ConnectAsync(ipEndpoint, _token);
 
         if (_tcpClient.Connected)
         {
@@ -71,13 +75,13 @@ public class GameClient
     public async Task<byte[]> ReadServerMessage()
     {
         // get message length
-        await _stream.ReadAsync(_buffer, 0, 1);
+        await _stream.ReadAsync(_buffer, 0, 1, _token);
         byte messageLength = _buffer[0];
         
         // read message
         byte[] message = new byte[messageLength];
         message[0] = messageLength;
-        await _stream.ReadAsync(message, 1, messageLength - 1);
+        await _stream.ReadAsync(message, 1, messageLength - 1, _token);
 
         return message;
     }
@@ -93,20 +97,25 @@ public class GameClient
                 int roomId = RoomHostedMessage.Decode(message);
                 RoomHosted?.Invoke(roomId);
                 break;
+
             case ServerMessage.StartGame:
                 PieceColor playerColor = StartGameMessage.Decode(message);
                 StartGame?.Invoke(playerColor);
                 break;
+
             case ServerMessage.RoomNotFound:
                 RoomNotFound?.Invoke();
                 break;
+
             case ServerMessage.RoomFull:
                 RoomFull?.Invoke();
                 break;
+
             case ServerMessage.RoomClosed:
                 PieceColor winnerColor = RoomClosedMessage.Decode(message);
                 RoomClosed?.Invoke(winnerColor);
                 break;
+
             case ServerMessage.Move:
                 IMove move = ServerMoveMessage.Decode(message);
                 MoveReceived?.Invoke(move);
@@ -125,7 +134,7 @@ public class GameClient
     public async Task SendHostRoom(PieceColor hostColor)
     {
         byte[] message = HostRoomMessage.Encode(hostColor);
-        await _stream.WriteAsync(message);
+        await _stream.WriteAsync(message, _token);
     }
 
 
@@ -137,7 +146,7 @@ public class GameClient
     public async Task SendJoinRoom(int roomId)
     {
         byte[] message = JoinRoomMessage.Encode(roomId);
-        await _stream.WriteAsync(message);
+        await _stream.WriteAsync(message, _token);
     }
 
 
@@ -148,8 +157,8 @@ public class GameClient
     public async Task SendCancelHost()
     {
         byte[] message = CancelHostMessage.Encode();
-        await _stream.WriteAsync(message);
-        _tcpClient.Close(); // make a new GameClient every time a client hosts
+        await _stream.WriteAsync(message, _token);
+        _cancellationTokenSource.Cancel();
     }
 
 
@@ -161,7 +170,7 @@ public class GameClient
     public async Task SendMove(IMove move)
     {
         byte[] message = ClientMoveMessage.Encode(move);
-        await _stream.WriteAsync(message);
+        await _stream.WriteAsync(message, _token);
     }
 
     #endregion
