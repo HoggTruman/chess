@@ -33,12 +33,24 @@ public partial class HostScreen : UserControl, IDisposable
     /// <summary>
     /// A bool to control what elements are rendered based on if the room has been hosted.
     /// </summary>
-    private bool _waitingForOpponent = false;
+    private bool _colorButtonsEnabled = true;
 
     /// <summary>
     /// A brush to highlight the selected color.
     /// </summary>
     private static readonly SolidColorBrush HighlightBrush = new(Colors.LightGreen);
+
+    #endregion
+
+
+    #region Text
+
+    private const string RoomNotHostedText = "(No Room Hosted)";
+
+
+    private const string WaitingForOpponentText = "Waiting for opponent...";
+
+    private const string ServerErrorText = "An error occured while communicating with the server...";
 
     #endregion
 
@@ -58,13 +70,11 @@ public partial class HostScreen : UserControl, IDisposable
 
     #region Event Handlers
 
-    private async void HostButton_ClickHost(object sender, RoutedEventArgs e)
+    private async void HostButton_Click(object sender, RoutedEventArgs e)
     {
-        HostButton.Content = "Cancel Host";
-        HostButton.Click -= HostButton_ClickHost;
-        HostButton.Click += HostButton_ClickCancel;
-
-        _waitingForOpponent = true;
+        HostButton.IsEnabled = false;
+        _colorButtonsEnabled = false;
+        StatusTextBlock.Text = "";
 
         _gameClient = new GameClient();
         _gameClient.RoomHosted += OnRoomHosted;
@@ -74,43 +84,56 @@ public partial class HostScreen : UserControl, IDisposable
         {
             await _gameClient.ConnectToServer();
             await _gameClient.SendHostRoom(_hostColor);
-            await _gameClient.ReadAndHandleServerMessage();
+            var serverMessage = await _gameClient.ReadServerMessage();
+            _gameClient.HandleServerMessage(serverMessage);
         }
         catch(Exception)
         {
-            StatusTextBlock.Text = "An error occured while communicating with the server...";
+            StatusTextBlock.Text = ServerErrorText;
+            _colorButtonsEnabled = true;
             _gameClient = null;
+            HostButton.IsEnabled = true;
         }
-
     }
 
 
-    private void HostButton_ClickCancel(object sender, RoutedEventArgs e)
+    private async void CancelButton_Click(object sender, RoutedEventArgs e)
     {
-        HostButton.Content = "Host Game";
-        HostButton.Click -= HostButton_ClickCancel;
-        HostButton.Click += HostButton_ClickHost;
+        CancelButton.IsEnabled = false;
 
-        _waitingForOpponent = false;
-        _gameClient = null;
+        try
+        {
+            await _gameClient.SendCancelHost();
+        }
+        finally
+        {
+            CancelButton.Visibility = Visibility.Hidden;
+            HostButton.Visibility = Visibility.Visible;        
+
+            StatusTextBlock.Text = "";
+            RoomCodeTextBlock.Text = RoomNotHostedText;
+
+            _colorButtonsEnabled = true;
+            _gameClient = null;
+            CancelButton.IsEnabled = true;
+        }
     }
 
 
     private void WhiteOption_Click(object sender, RoutedEventArgs e)
     {
-        if (_waitingForOpponent == false)
+        if (_colorButtonsEnabled)
         {
             _hostColor = PieceColor.White;
             WhiteOptionHighlight.Background = HighlightBrush;
             BlackOptionHighlight.Background = null;
         }
-
     }
 
 
     private void BlackOption_Click(object sender, RoutedEventArgs e)
     {
-        if (_waitingForOpponent == false)
+        if (_colorButtonsEnabled)
         {
             _hostColor = PieceColor.Black;
             BlackOptionHighlight.Background = HighlightBrush;
@@ -133,9 +156,31 @@ public partial class HostScreen : UserControl, IDisposable
 
     private async void OnRoomHosted(int roomId)
     {
-        StatusTextBlock.Text = "Waiting for opponent...";
+        HostButton.IsEnabled = true;
+        HostButton.Visibility = Visibility.Hidden;
+        CancelButton.Visibility = Visibility.Visible;
+
+        StatusTextBlock.Text = WaitingForOpponentText;
         RoomCodeTextBlock.Text = roomId.ToString();
-        await _gameClient.ReadAndHandleServerMessage();
+
+        try
+        {
+            var serverMessage = await _gameClient.ReadServerMessage();
+            _gameClient.HandleServerMessage(serverMessage);
+        }
+        catch (Exception ex)
+        {
+            if (ex is not OperationCanceledException)
+            {
+                StatusTextBlock.Text = ServerErrorText;
+            }
+            _gameClient = null;            
+            RoomCodeTextBlock.Text = RoomNotHostedText;
+
+            _colorButtonsEnabled = true;
+            HostButton.Visibility = Visibility.Visible;
+            CancelButton.Visibility = Visibility.Hidden;
+        }        
     }
 
 
@@ -160,6 +205,7 @@ public partial class HostScreen : UserControl, IDisposable
         {
             _gameClient.RoomHosted -= OnRoomHosted;
             _gameClient.StartGame -= OnStartGame;
+            _gameClient.SendCancelHost().Wait();
         }
     }
 }

@@ -14,9 +14,9 @@
                 <RowDefinition Height="0.4*"/>
                 <RowDefinition Height="0.25*"/>
                 <RowDefinition Height="0.5*"/>
-                <RowDefinition Height="0.3*"/>
-                <RowDefinition Height="0.3*"/>
-                <RowDefinition Height="0.4*"/>
+                <RowDefinition Height="0.25*"/>
+                <RowDefinition Height="0.25*"/>
+                <RowDefinition Height="0.5*"/>
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -78,16 +78,34 @@
                        Text=""
                        Grid.ColumnSpan="2"
                        Grid.Row="3"
-                       FontSize="25"
+                       FontSize="20"
                        HorizontalAlignment="Center"
                        Style="{StaticResource TextStyle}"/>
 
-            <TextBlock x:Name="RoomCodeTextBlock"
-                       Text=""
-                       Grid.ColumnSpan="2"
+            <TextBlock x:Name="RoomCodeLabel"
+                       Text="Your Room Code: "
+                       Grid.ColumnSpan="1"
                        Grid.Row="4"
-                       FontSize="25"
+                       FontSize="22"
                        Style="{StaticResource TextStyle}"/>
+
+            <TextBlock x:Name="RoomCodeTextBlock"
+                       Text="(No Room Hosted)"
+                       Grid.ColumnSpan="1"
+                       Grid.Row="4"
+                       Grid.Column="1"
+                       FontSize="22"
+                       Style="{StaticResource TextStyle}"/>
+
+            <Button x:Name="CancelButton"
+                    Content="Cancel Host"
+                    Grid.ColumnSpan="2"
+                    Grid.Row="5"
+                    Width="100"
+                    Height="30"
+                    Visibility="Hidden"
+                    Style="{StaticResource ButtonStyle}"
+                    Click="CancelButton_Click"/>
 
             <Button x:Name="HostButton"
                     Content="Host Game"
@@ -96,7 +114,9 @@
                     Width="80"
                     Height="30"
                     Style="{StaticResource ButtonStyle}"
-                    Click="HostButton_ClickHost"/>
+                    Click="HostButton_Click"/>
+
+
 
         </Grid>
     </Border>
