@@ -14,7 +14,7 @@ namespace Client;
 /// A new GameClient should be created on hosting a room or on
 /// attempting to join a room.
 /// </summary>
-public class GameClient
+public class GameClient : IDisposable
 {
     #region fields
 
@@ -168,5 +168,14 @@ public class GameClient
     }
 
     #endregion
+
+
+
+    public void Dispose()
+    {
+        _tcpClient.Close();
+        _cancellationTokenSource.Dispose();
+        GC.SuppressFinalize(this);
+    }
 }
 

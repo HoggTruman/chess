@@ -11,7 +11,7 @@ namespace GameApplication.Windows.Start;
 /// <summary>
 /// Interaction logic for HostScreen.xaml
 /// </summary>
-public partial class HostScreen : UserControl, IDisposable
+public partial class HostScreen : UserControl
 {
     #region Fields
 
@@ -43,10 +43,10 @@ public partial class HostScreen : UserControl, IDisposable
     #endregion
 
 
+
     #region Text
 
     private const string RoomNotHostedText = "(No Room Hosted)";
-
 
     private const string WaitingForOpponentText = "Waiting for opponent...";
 
@@ -91,6 +91,7 @@ public partial class HostScreen : UserControl, IDisposable
         {
             StatusTextBlock.Text = ServerErrorText;
             _colorButtonsEnabled = true;
+            _gameClient.Dispose();
             _gameClient = null;
             HostButton.IsEnabled = true;
         }
@@ -99,6 +100,11 @@ public partial class HostScreen : UserControl, IDisposable
 
     private async void CancelButton_Click(object sender, RoutedEventArgs e)
     {
+        if (_gameClient == null)
+        {
+            return;
+        }
+
         CancelButton.IsEnabled = false;
 
         try
@@ -114,6 +120,7 @@ public partial class HostScreen : UserControl, IDisposable
             RoomCodeTextBlock.Text = RoomNotHostedText;
 
             _colorButtonsEnabled = true;
+            _gameClient.Dispose();
             _gameClient = null;
             CancelButton.IsEnabled = true;
         }
@@ -144,6 +151,7 @@ public partial class HostScreen : UserControl, IDisposable
 
     private void Back_Click(object sender, RoutedEventArgs e)
     {
+        _gameClient?.Dispose();
         StartScreen startScreen = new(_window);
         _window.Content = startScreen;
     }
@@ -156,6 +164,11 @@ public partial class HostScreen : UserControl, IDisposable
 
     private async void OnRoomHosted(int roomId)
     {
+        if (_gameClient == null)
+        {
+            return;
+        }
+
         HostButton.IsEnabled = true;
         HostButton.Visibility = Visibility.Hidden;
         CancelButton.Visibility = Visibility.Visible;
@@ -174,6 +187,8 @@ public partial class HostScreen : UserControl, IDisposable
             {
                 StatusTextBlock.Text = ServerErrorText;
             }
+
+            _gameClient.Dispose();
             _gameClient = null;            
             RoomCodeTextBlock.Text = RoomNotHostedText;
 
@@ -186,7 +201,14 @@ public partial class HostScreen : UserControl, IDisposable
 
     private void OnStartGame(PieceColor playerColor)
     {
-        Dispose();
+        if (_gameClient == null)
+        {
+            return;
+        }
+
+        _gameClient.RoomHosted -= OnRoomHosted;
+        _gameClient.StartGame -= OnStartGame;
+
         GameManager gameManager = new(new Board());
         GameWindow gameWindow = new(gameManager, playerColor, _gameClient);
 
@@ -196,17 +218,5 @@ public partial class HostScreen : UserControl, IDisposable
 
     #endregion
 
-
-
-
-    public void Dispose()
-    {
-        if (_gameClient != null)
-        {
-            _gameClient.RoomHosted -= OnRoomHosted;
-            _gameClient.StartGame -= OnStartGame;
-            _gameClient.SendCancelHost().Wait();
-        }
-    }
 }
 
