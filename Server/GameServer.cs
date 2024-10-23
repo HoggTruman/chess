@@ -13,6 +13,7 @@ public class GameServer
 {
     public Dictionary<int, Client> Clients = [];
     public Dictionary<int, Room> Rooms = [];
+    private readonly Dictionary<Client, Task> _clientTasks = [];
 
     private readonly TcpListener _tcpListener;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
@@ -42,8 +43,9 @@ public class GameServer
 
             Client client = new(
                 tcpClient,
-                new CancellationTokenSource(),
-                StartClientCommunications);
+                new CancellationTokenSource());
+
+            _clientTasks[client] = StartClientCommunications(client);
 
             Clients[client.Id] = client;
 
@@ -74,11 +76,11 @@ public class GameServer
         foreach (Client client in Clients.Values)
         {
             client.CancellationTokenSource.Cancel();
-            clientTasks.Add(client.ServerCommunications);
+            clientTasks.Add(_clientTasks[client]);
         }
 
         // Check the exceptions from the clients are all OperationCancelledException
-        Task resolvePlayerTasks = Task.WhenAll(clientTasks);
+        Task resolvePlayerTasks = Task.WhenAll(clientTasks); //////////////////////////////////////// use when any and while loop
 
         try
         {
@@ -116,8 +118,23 @@ public class GameServer
     {
         while (client.Token.IsCancellationRequested == false && client.TcpClient.Connected)
         {
-            byte[] message = await ReadClientMessage(client.Stream, client.Token);
-            await HandleClientMessage(client, message);
+            try
+            {
+                byte[] message = await ReadClientMessage(client.Stream, client.Token);
+                await HandleClientMessage(client, message);
+            }
+            catch (OperationCanceledException)
+            {
+                // Token is cancelled when room is closed or server is shutdown.
+                // Both of these already handle logging and disconnection of client.
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[{DateTime.Now}] {ex.Message}");
+                Room room = Rooms[client.RoomId];
+                PieceColor winnerColor = room.PlayerColors[room.GetOpponent(client)];
+                await CloseRoom(client.RoomId, winnerColor);
+            }
         }
     }
 
@@ -167,8 +184,7 @@ public class GameServer
                 break;
 
             default:
-                // Disconnect Player
-                break;
+                throw new ArgumentException($"Invalid Message received from client with IP {client.TcpClient.Client.RemoteEndPoint}");
         }
     }
     
@@ -185,48 +201,33 @@ public class GameServer
         Room room = Rooms[roomId];
         Rooms.Remove(roomId);
 
-        ConcurrentBag<Task> playerTasks = [];
-
         foreach(Client client in room.Players)
         {
             Clients.Remove(client.Id);
+            _clientTasks.Remove(client);
 
-            if (client.Stream.CanWrite)
+            try
             {
-                await client.Stream.WriteAsync(RoomClosedMessage.Encode(winnerColor), _token);
-            }
-            
-            client.CancellationTokenSource.Cancel();
-            playerTasks.Add(client.ServerCommunications);
-        }
-
-        // Check the exceptions from the clients are all OperationCancelledException
-        Task resolvePlayerTasks = Task.WhenAll(playerTasks);
-
-        try
-        {
-            await resolvePlayerTasks;
-        }
-        catch (Exception)
-        {
-            if (resolvePlayerTasks.Exception != null)
-            {
-                var exceptions = resolvePlayerTasks.Exception.Flatten().InnerExceptions;
-
-                foreach(Exception e in exceptions)
+                if (client.Stream.CanWrite)
                 {
-                    if (e is not OperationCanceledException)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
-                }   
+                    await client.Stream.WriteAsync(RoomClosedMessage.Encode(winnerColor), client.Token);
+                }
             }
-        }
-
-        foreach(Client client in room.Players)
-        {
-            client.TcpClient.Close();
-            client.CancellationTokenSource.Dispose();
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine($"[{DateTime.Now}] Client disconnected with IP {client.TcpClient.Client.RemoteEndPoint} due to server shutdown");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[{DateTime.Now}] {ex.Message}");
+            }
+            finally
+            {
+                Console.WriteLine($"[{DateTime.Now}] Client disconnected with IP {client.TcpClient.Client.RemoteEndPoint}");
+                client.CancellationTokenSource.Cancel();
+                client.TcpClient.Close();
+                client.CancellationTokenSource.Dispose();                
+            }
         }
     }
 
