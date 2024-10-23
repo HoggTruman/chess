@@ -108,6 +108,17 @@ public class Room
     }
 
 
+    public PieceColor GetOpponentColor(Client client)
+    {
+        if (_playerColors.TryGetValue(client, out PieceColor playerColor))
+        {
+            return ColorHelpers.Opposite(playerColor);
+        }
+
+        throw new ArgumentException("Client is not a member of this room.");
+    }
+
+
     /// <summary>
     /// Performs server-side validation of the IMove and applies it if it is valid.
     /// </summary>
