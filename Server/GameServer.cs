@@ -4,7 +4,6 @@ using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Client;
 using NetworkShared.Messages.Server;
-using System.Collections.Concurrent;
 using System.Net.Sockets;
 
 namespace Server;
@@ -70,44 +69,37 @@ public class GameServer
         // Stops the server accepting new clients
         _cancellationTokenSource.Cancel();        
 
-        // cancel each client's token
-        ConcurrentBag<Task> clientTasks = [];
-
         foreach (Client client in Clients.Values)
         {
             client.CancellationTokenSource.Cancel();
-            clientTasks.Add(_clientTasks[client]);
         }
 
-        // Check the exceptions from the clients are all OperationCancelledException
-        Task resolvePlayerTasks = Task.WhenAll(clientTasks); //////////////////////////////////////// use when any and while loop
+        List<Task> remainingTasks = _clientTasks.Values.ToList();
 
-        try
+        while (remainingTasks.Count != 0)
         {
-            await resolvePlayerTasks;
-        }
-        catch (Exception)
-        {
-            if (resolvePlayerTasks.Exception != null)
+            Task finishedTask = await Task.WhenAny(remainingTasks);
+            remainingTasks.Remove(finishedTask);
+
+            try
             {
-                var exceptions = resolvePlayerTasks.Exception.Flatten().InnerExceptions;
-
-                foreach(Exception e in exceptions)
+                await finishedTask;
+            }
+            catch (Exception ex)
+            {
+                if (ex is not OperationCanceledException)
                 {
-                    if (e is not OperationCanceledException)
-                    {
-                        Console.WriteLine(e.Message);
-                    }
-                }   
-            }         
+                    Console.WriteLine($"[{DateTime.Now}] {ex.Message}");
+                }
+            }
         }
 
         _tcpListener.Stop();
-        _tcpListener.Dispose();
         _cancellationTokenSource.Dispose();
 
         foreach (var client in Clients.Values)
         {
+            Console.WriteLine($"[{DateTime.Now}] Client disconnected with IP {client.TcpClient.Client.RemoteEndPoint} due to server shutdown");
             client.TcpClient.Close();
             client.CancellationTokenSource.Dispose();
         }
@@ -133,7 +125,7 @@ public class GameServer
                 Console.WriteLine($"[{DateTime.Now}] {ex.Message}");
                 Room room = Rooms[client.RoomId];
                 PieceColor winnerColor = room.PlayerColors[room.GetOpponent(client)];
-                await CloseRoom(client.RoomId, winnerColor);
+                await CloseRoom(client.RoomId, winnerColor); 
             }
         }
     }
@@ -226,7 +218,7 @@ public class GameServer
                 Console.WriteLine($"[{DateTime.Now}] Client disconnected with IP {client.TcpClient.Client.RemoteEndPoint}");
                 client.CancellationTokenSource.Cancel();
                 client.TcpClient.Close();
-                client.CancellationTokenSource.Dispose();                
+                client.CancellationTokenSource.Dispose();
             }
         }
     }
@@ -243,9 +235,7 @@ public class GameServer
     public void HandleHostRoom(Client client, PieceColor hostColor)
     {
         Room room = new(client, hostColor);
-
-        Rooms[room.Id] = room;
-        
+        Rooms[room.Id] = room;        
         client.RoomId = room.Id;
     }
 
