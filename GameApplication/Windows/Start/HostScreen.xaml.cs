@@ -201,8 +201,12 @@ public partial class HostScreen : UserControl
                 StatusTextBlock.Text = ServerErrorText;
             }
 
-            _gameClient.Dispose();
-            _gameClient = null;            
+            if (_gameClient != null)
+            {
+                _gameClient.Dispose();
+                _gameClient = null;   
+            }
+         
             RoomCodeTextBlock.Text = RoomNotHostedText;
 
             _colorButtonsEnabled = true;
