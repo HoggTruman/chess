@@ -4,6 +4,7 @@ using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Client;
 using NetworkShared.Messages.Server;
+using System.Collections.Concurrent;
 using System.Net.Sockets;
 
 namespace Server;
@@ -74,14 +75,8 @@ public class GameServer
             client.CancellationTokenSource.Cancel();
         }
 
-        List<Task> remainingTasks = _clientTasks.Values.ToList();
-
-        while (remainingTasks.Count != 0)
-        {
-            Task finishedTask = await Task.WhenAny(remainingTasks);
-            await finishedTask;
-            remainingTasks.Remove(finishedTask);            
-        }
+        ConcurrentBag<Task> remTasks = [.._clientTasks.Values];
+        await Task.WhenAll(remTasks);
 
         _tcpListener.Stop();
         _cancellationTokenSource.Dispose();
