@@ -88,11 +88,9 @@ public class GameServer
         while (client.TcpClient.Connected &&
                client.Token.IsCancellationRequested == false)
         {
-            byte[] message = [];
-
             try
             {
-                message = await ReadClientMessage(client.Stream, client.Token);
+                byte[] message = await ReadClientMessage(client.Stream, client.Token);
                 await HandleClientMessage(client, message);
             }
             catch (OperationCanceledException)
