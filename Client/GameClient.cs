@@ -16,13 +16,24 @@ namespace Client;
 /// </summary>
 public class GameClient : IDisposable
 {
-    #region fields
+    #region Fields
 
     private readonly TcpClient _tcpClient;
     private NetworkStream _stream;
     private readonly byte[] _buffer = new byte[16];
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly CancellationToken _token;
+
+    #endregion
+
+
+
+    #region Properties
+
+    public bool Connected
+    {
+        get => _stream != null && _tcpClient.Connected;
+    }
 
     #endregion
 

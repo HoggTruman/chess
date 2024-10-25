@@ -151,7 +151,7 @@ public partial class HostScreen : UserControl
 
     private void Back_Click(object sender, RoutedEventArgs e)
     {
-        if (_gameClient != null)
+        if (_gameClient?.Connected == true)
         {
             try
             {
