@@ -97,12 +97,13 @@ public class GameServer
 
             try
             {
-                message = await ReadClientMessage(client.Stream, client.Token);                
+                message = await ReadClientMessage(client.Stream, client.Token);
+                await HandleClientMessage(client, message);
             }
             catch (OperationCanceledException)
             {
-                // if cancelled by closing room, room is already closed.
-                // if cancelled by shutting down server, all players disconnected anyway so don't need to close room
+                // Only ShutDown and CloseRoom cause an OperationCanceledException
+                Console.WriteLine($"[{DateTime.Now}] Disconnected client with IP {client.TcpClient.Client.RemoteEndPoint}");
             }
             catch (IOException)
             {
@@ -111,15 +112,8 @@ public class GameServer
                 PieceColor winnerColor = room.GetOpponentColor(client);
                 await CloseRoom(client.RoomId, winnerColor); 
             }
-
-
-            if (message.Length > 0)
-            {
-                await HandleClientMessage(client, message);
-            }
-        }
+        }        
         
-        Console.WriteLine($"[{DateTime.Now}] Disconnected client with IP {client.TcpClient.Client.RemoteEndPoint}");
         Clients.Remove(client.Id);
         _clientTasks.Remove(client);        
         client.TcpClient.Close();
@@ -136,6 +130,8 @@ public class GameServer
     /// A Task that represents the asynchronous read operation. 
     /// The value of its result is the message read as a byte array.
     /// </returns>
+    /// <exception cref="OperationCanceledException"></exception>
+    /// <exception cref="IOException"></exception>
     private async Task<byte[]> ReadClientMessage(NetworkStream stream, CancellationToken clientToken)
     {
         // get message length
@@ -158,8 +154,11 @@ public class GameServer
     /// <param name="client">The client the message was received from.</param>
     /// <param name="inMsg">The message received from the client.</param>
     /// <returns></returns>
+    /// <exception cref="OperationCanceledException"></exception>
     private async Task HandleClientMessage(Client client, byte[] inMsg)
     {
+        client.Token.ThrowIfCancellationRequested();
+
         ClientMessage msgCode = MessageHelpers.ReadClientCode(inMsg);
 
         switch (msgCode)
@@ -196,7 +195,7 @@ public class GameServer
     
 
     /// <summary>
-    /// Closes a room and disconnects its clients.
+    /// Closes a room and cancels the CancellationToken of each Client in the room.
     /// A RoomClosed message is sent to the clients containing the winnerColor.
     /// </summary>
     /// <param name="roomId">The Id of the room to close.</param>
@@ -311,31 +310,37 @@ public class GameServer
     /// <param name="client"></param>
     /// <param name="response"></param>
     /// <returns></returns>
+    /// <exception cref="OperationCanceledException"></exception>
     private async Task RespondJoinRoom(Client client, ServerMessage response)
     {
+        client.Token.ThrowIfCancellationRequested();
+
         if (response == ServerMessage.StartGame)
         {
+            // Try send message to joiner
+            Room room = Rooms[client.RoomId];
+            PieceColor joinerColor = room.PlayerColors[client];
+            byte[] joinerMessage = StartGameMessage.Encode(joinerColor);
             try
-            {
-                Room room = Rooms[client.RoomId];
-
-                // send message to joiner
-                PieceColor joinerColor = room.PlayerColors[client];
-                byte[] joinerMessage = StartGameMessage.Encode(joinerColor);
+            {                
                 await client.Stream.WriteAsync(joinerMessage, client.Token);
-
-                // send message to host
-                Client host = room.Host;
-                byte[] hostMessage = StartGameMessage.Encode(room.PlayerColors[host]);
-                await host.Stream.WriteAsync(hostMessage, host.Token);
-            }
-            catch (OperationCanceledException)
-            {
-                
             }
             catch (IOException)
             {
+                Console.WriteLine($"[{DateTime.Now}] Lost connection to client with IP {client.TcpClient.Client.RemoteEndPoint}");
                 await CloseRoom(client.RoomId, PieceColor.None);
+            }
+
+            // Try send message to host
+            Client host = room.Host;
+            byte[] hostMessage = StartGameMessage.Encode(room.PlayerColors[host]);
+            try
+            {                
+                await host.Stream.WriteAsync(hostMessage, host.Token);
+            }
+            catch (IOException)
+            {
+                Console.WriteLine($"[{DateTime.Now}] Lost connection to client with IP {host.TcpClient.Client.RemoteEndPoint}");
             }
         }
         else if (response == ServerMessage.RoomNotFound)
@@ -344,10 +349,6 @@ public class GameServer
             {
                 byte[] joinerMessage = RoomNotFoundMessage.Encode();
                 await client.Stream.WriteAsync(joinerMessage, client.Token);
-            }
-            catch (OperationCanceledException)
-            {
-
             }
             catch (IOException)
             {
@@ -360,10 +361,6 @@ public class GameServer
             {
                 byte[] joinerMessage = RoomFullMessage.Encode();
                 await client.Stream.WriteAsync(joinerMessage, client.Token);
-            }
-            catch (OperationCanceledException)
-            { 
-                
             }
             catch
             {
@@ -381,8 +378,11 @@ public class GameServer
     /// <param name="isValidMove">A bool of whether the move is valid.</param>
     /// <param name="move">The move to relay to the opponent.</param>
     /// <returns></returns>
+    /// <exception cref="OperationCanceledException"></exception>
     private async Task RespondMove(Client client, bool isValidMove, IMove move)
     {
+        client.Token.ThrowIfCancellationRequested();
+
         Room room = Rooms[client.RoomId];
         Client opponent = room.GetOpponent(client);
 
@@ -392,10 +392,6 @@ public class GameServer
             {
                 byte[] message = ServerMoveMessage.Encode(move);
                 await opponent.Stream.WriteAsync(message, opponent.Token);
-            }
-            catch (OperationCanceledException)
-            {
-
             }
             catch (IOException)
             {
