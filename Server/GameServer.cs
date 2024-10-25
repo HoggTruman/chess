@@ -72,7 +72,14 @@ public class GameServer
 
         foreach (Client client in Clients.Values)
         {
-            client.CancellationTokenSource.Cancel();
+            try
+            {
+                client.CancellationTokenSource.Cancel();
+            }
+            catch (ObjectDisposedException)
+            {
+
+            }
         }
 
         ConcurrentBag<Task> remTasks = [.._clientTasks.Values];
@@ -207,6 +214,10 @@ public class GameServer
                 {
                     await client.Stream.WriteAsync(RoomClosedMessage.Encode(winnerColor));
                 }
+            }
+            catch (ObjectDisposedException)
+            {
+
             }
             catch (IOException)
             {
@@ -361,6 +372,7 @@ public class GameServer
             {
                 byte[] joinerMessage = RoomNotFoundMessage.Encode();
                 await client.Stream.WriteAsync(joinerMessage, client.Token);
+                client.CancellationTokenSource.Cancel();
             }
             catch (IOException)
             {
@@ -373,6 +385,7 @@ public class GameServer
             {
                 byte[] joinerMessage = RoomFullMessage.Encode();
                 await client.Stream.WriteAsync(joinerMessage, client.Token);
+                client.CancellationTokenSource.Cancel();
             }
             catch
             {
