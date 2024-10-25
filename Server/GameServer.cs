@@ -97,7 +97,7 @@ public class GameServer
             }
             catch (OperationCanceledException)
             {
-                // Only ShutDown and CloseRoom cause an OperationCanceledException
+                // OperationCanceledException means client is disconnected by the server.
                 Console.WriteLine($"[{DateTime.Now}] Disconnected client with IP {client.TcpClient.Client.RemoteEndPoint}");
             }
             catch (IOException)
@@ -181,9 +181,7 @@ public class GameServer
                 break;
 
             default:
-                // Handle non-existent message type
-                //CloseRoom(client.RoomId, )
-                Console.WriteLine($"Invalid Message received from client with IP {client.TcpClient.Client.RemoteEndPoint}");
+                HandleUnknownMessageType(client);
                 break;
         }
     }
@@ -270,6 +268,27 @@ public class GameServer
     {
         Room room = Rooms[client.RoomId];
         return room.TryMove(client, move);        
+    }
+
+
+    /// <summary>
+    /// Disconnects the client and shuts down their room when an unrecognised message is received.
+    /// </summary>
+    /// <param name="client">The Client object of the client to disconnect.</param>
+    public async void HandleUnknownMessageType(Client client)
+    {
+        Console.WriteLine($"Invalid Message received from client with IP {client.TcpClient.Client.RemoteEndPoint}");
+
+        if (Rooms.TryGetValue(client.RoomId, out Room? room) &&
+            room != null)
+        {
+            PieceColor winnerColor = room.GetOpponentColor(client);
+            await CloseRoom(client.RoomId, winnerColor);
+        }
+        else
+        {
+            client.CancellationTokenSource.Cancel();
+        }
     }
 
     #endregion
