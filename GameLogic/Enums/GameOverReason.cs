@@ -4,5 +4,6 @@ public enum GameOverReason
 {
     Checkmate,
     Stalemate,
-    InsufficientMaterial
+    InsufficientMaterial,
+    Disconnect
 }
