@@ -41,15 +41,13 @@ public class GameServer
         {
             TcpClient tcpClient = await _tcpListener.AcceptTcpClientAsync(_token);
 
-            Client client = new(
-                tcpClient,
-                new CancellationTokenSource());
-
-            _clientTasks[client] = StartClientCommunications(client);
-
-            Clients[client.Id] = client;
-
-            Console.WriteLine($"[{DateTime.Now}] Client connected with IP {tcpClient.Client.RemoteEndPoint}");
+            if (tcpClient.Connected)
+            {
+                Console.WriteLine($"[{DateTime.Now}] Client connected with IP {tcpClient.Client.RemoteEndPoint}");
+                Client client = new(tcpClient, new CancellationTokenSource());
+                _clientTasks[client] = StartClientCommunications(client);
+                Clients[client.Id] = client;                
+            }
         }
     }
 
