@@ -2,6 +2,8 @@
 using GameApplication.Windows.Game;
 using GameLogic;
 using GameLogic.Enums;
+using System.IO;
+using System.Net.Sockets;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -87,7 +89,10 @@ public partial class HostScreen : UserControl
             var serverMessage = await _gameClient.ReadServerMessage();
             _gameClient.HandleServerMessage(serverMessage);
         }
-        catch (Exception)
+        catch (Exception ex) when (
+            ex is IOException || 
+            ex is OperationCanceledException ||
+            ex is SocketException)
         {
             StatusTextBlock.Text = ServerErrorText;
             _colorButtonsEnabled = true;
@@ -110,6 +115,10 @@ public partial class HostScreen : UserControl
         try
         {
             await _gameClient.SendCancelHost();
+        }
+        catch (Exception ex) when (ex is IOException || ex is OperationCanceledException)
+        {
+
         }
         finally
         {
@@ -157,7 +166,7 @@ public partial class HostScreen : UserControl
             {
                 _gameClient.SendCancelHost().Wait();
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is IOException || ex is OperationCanceledException)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -194,9 +203,9 @@ public partial class HostScreen : UserControl
             var serverMessage = await _gameClient.ReadServerMessage();
             _gameClient.HandleServerMessage(serverMessage);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is IOException || ex is OperationCanceledException)
         {
-            if (ex is not OperationCanceledException)
+            if (ex is IOException)
             {
                 StatusTextBlock.Text = ServerErrorText;
             }
