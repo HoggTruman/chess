@@ -103,7 +103,6 @@ public class GameServer
             catch (OperationCanceledException)
             {
                 // OperationCanceledException means client is disconnected by the server.
-                Console.WriteLine($"[{DateTime.Now}] Disconnected client with IP {client.TcpClient.Client.RemoteEndPoint}");
             }
             catch (IOException)
             {
@@ -114,6 +113,7 @@ public class GameServer
             }
         }        
         
+        Console.WriteLine($"[{DateTime.Now}] Disconnected client with IP {client.TcpClient.Client.RemoteEndPoint}");
         Clients.Remove(client.Id);
         _clientTasks.Remove(client);        
         client.TcpClient.Close();
