@@ -115,6 +115,7 @@ public partial class HostScreen : UserControl
         try
         {
             await _gameClient.SendCancelHost();
+            _gameClient.CancellationTokenSource.Cancel();
         }
         catch (Exception ex) when (ex is IOException || ex is OperationCanceledException)
         {
