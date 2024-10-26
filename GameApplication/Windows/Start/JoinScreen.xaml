@@ -52,17 +52,18 @@
                      Grid.ColumnSpan="2"
                      FontSize="20"
                      TextAlignment="Center"
-                     MaxLength="20"
+                     MaxLength="9"
                      MaxLines="1"/>
 
 
-            <Button Content="Join Game"
+            <Button x:Name="JoinButton"
+                Content="Join Game"
                 Grid.ColumnSpan="2"
-                    Grid.Row="3"
+                Grid.Row="3"
                 Width="80"
                 Height="30"
                 Style="{StaticResource ButtonStyle}"
-                Click="JoinGame_Click"/>
+                Click="JoinButton_Click"/>
 
             <TextBlock x:Name="JoinStatusTextBox"
                        Grid.ColumnSpan="2"

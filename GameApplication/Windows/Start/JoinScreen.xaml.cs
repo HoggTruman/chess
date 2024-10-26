@@ -1,4 +1,10 @@
-﻿using System.Windows;
+﻿using Client;
+using GameApplication.Windows.Game;
+using GameLogic;
+using GameLogic.Enums;
+using System.IO;
+using System.Net.Sockets;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace GameApplication.Windows.Start;
@@ -10,7 +16,31 @@ public partial class JoinScreen : UserControl
 {
     #region Fields
 
-    private readonly Window window;
+    /// <summary>
+    /// The Window object this JoinScreen is contained within.
+    /// </summary>
+    private readonly Window _window;
+
+    /// <summary>
+    /// The GameClient used to communicate with the server.
+    /// </summary>
+    private GameClient? _gameClient;
+
+    #endregion
+
+
+
+    #region Text
+
+    private const string InvalidCodeText = "Invalid Code Provided";
+
+    private const string RoomNotFoundText = "A room can not be found with the provided code";
+
+    private const string RoomFullText = "The room you are trying to join is full";
+
+    private const string AttemptingToJoinText = "Attempting to join room...";
+
+    private const string ServerErrorText = "An error occured while communicating with the server...";
 
     #endregion
 
@@ -21,7 +51,7 @@ public partial class JoinScreen : UserControl
     public JoinScreen(Window window)
     {
         InitializeComponent();
-        this.window = window;
+        _window = window;
     }
 
     #endregion
@@ -30,29 +60,115 @@ public partial class JoinScreen : UserControl
 
     #region Event Handlers
 
-    private void JoinGame_Click(object sender, RoutedEventArgs e)
+    private async void JoinButton_Click(object sender, RoutedEventArgs e)
     {
-        var code = CodeTextBox.Text;
-        if (code.Length != 20)
+        JoinButton.IsEnabled = false;
+        CodeTextBox.IsEnabled = false;
+
+        _gameClient = new GameClient();
+        _gameClient.RoomNotFound += OnRoomNotFound;
+        _gameClient.RoomFull += OnRoomFull;
+        _gameClient.StartGame += OnStartGame;
+
+        string stringCode = CodeTextBox.Text;
+        if (ValidateCode(stringCode) == false)
         {
-            // make separate method for validation
-            JoinStatusTextBox.Text = "Invalid Code Provided";
+            JoinStatusTextBox.Text = InvalidCodeText;
+            JoinButton.IsEnabled = true;
+            CodeTextBox.IsEnabled = true;
             return;
         }
-        else
+
+        JoinStatusTextBox.Text = AttemptingToJoinText;
+        int code = int.Parse(stringCode);
+
+        try
         {
-            JoinStatusTextBox.Text = "joining... / no room exists with code provided";
-            // try to access room on server
-            // if bad tell user no room available with code xyz
+            await _gameClient.ConnectToServer();
+            await _gameClient.SendJoinRoom(code);
+            var message = await _gameClient.ReadServerMessage();
+            _gameClient.HandleServerMessage(message);
         }
-        
+        catch (Exception ex) when (
+            ex is IOException || 
+            ex is OperationCanceledException ||
+            ex is SocketException)
+        {
+            JoinStatusTextBox.Text = ServerErrorText;
+            JoinButton.IsEnabled = true;
+            CodeTextBox.IsEnabled = true;
+            _gameClient?.Dispose();
+            _gameClient = null;
+        }        
     }
 
 
     private void Back_Click(object sender, RoutedEventArgs e)
     {
-        StartScreen startScreen = new(window);
-        window.Content = startScreen;
+        _gameClient?.CancellationTokenSource.Cancel();
+        StartScreen startScreen = new(_window);
+        _window.Content = startScreen;
+        _gameClient?.Dispose(); // Could cause ObjectDisposedException  for the token in JoinGame_Click
+    }
+
+    #endregion
+
+
+
+    #region GameManager Event Handlers
+
+    private void OnRoomNotFound()
+    {
+        JoinStatusTextBox.Text = RoomNotFoundText;
+        JoinButton.IsEnabled = true;
+        CodeTextBox.IsEnabled = true;
+        _gameClient?.Dispose();
+        _gameClient = null;
+    }
+
+
+    private void OnRoomFull()
+    {
+        JoinStatusTextBox.Text = RoomFullText;
+        JoinButton.IsEnabled = true;
+        CodeTextBox.IsEnabled = true;
+        _gameClient?.Dispose();
+        _gameClient = null;
+    }
+
+
+    private void OnStartGame(PieceColor playerColor)
+    {
+        _gameClient!.RoomNotFound -= OnRoomNotFound;
+        _gameClient.RoomFull -= OnRoomFull;
+        _gameClient.StartGame -= OnStartGame;
+
+        Board board = new();
+        board.Initialize();
+        GameManager gameManager = new(board);
+        GameWindow gameWindow = new(gameManager, playerColor, _gameClient);
+
+        gameWindow.Show();
+        _window.Close();
+    }
+
+    #endregion
+
+
+
+    #region Other Methods
+
+    private static bool ValidateCode(string code)
+    {
+        if (code.Length < 1 ||
+            code.Length > 9 ||
+            code.All(char.IsDigit) == false ||
+            code.StartsWith('0'))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     #endregion
