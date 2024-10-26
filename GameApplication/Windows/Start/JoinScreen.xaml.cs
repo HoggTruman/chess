@@ -143,9 +143,7 @@ public partial class JoinScreen : UserControl
         _gameClient.RoomFull -= OnRoomFull;
         _gameClient.StartGame -= OnStartGame;
 
-        Board board = new();
-        board.Initialize();
-        GameManager gameManager = new(board);
+        GameManager gameManager = new();
         GameWindow gameWindow = new(gameManager, playerColor, _gameClient);
 
         gameWindow.Show();

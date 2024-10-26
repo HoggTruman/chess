@@ -35,12 +35,21 @@ public class GameManager
 
     #region Constructors
 
-    public GameManager(Board board)
+    public GameManager(Board? board = null)
     {        
         // Avoids using StartNewGame so that a manually set up Board can be used in testing
-        Board = board;
+        if (board == null)
+        {
+            Board = new Board();
+            Board.Initialize();
+        }
+        else
+        {
+            Board = board;
+        }
+        
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
-        ActivePlayerUnderCheck = board.Kings[ActivePlayerColor].IsChecked();
+        ActivePlayerUnderCheck = Board.Kings[ActivePlayerColor].IsChecked();
     }
 
     #endregion
@@ -52,7 +61,6 @@ public class GameManager
     /// <summary>
     /// Sets up a new game.
     /// </summary>
-    /// <param name="playerColor">The PieceColor of the player in the new game.</param>
     public void StartNewGame()
     {
         Board = new();

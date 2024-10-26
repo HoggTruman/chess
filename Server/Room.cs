@@ -51,9 +51,7 @@ public class Room
     public Room(Client hostClient, PieceColor hostColor)
     {
         Id = GenerateRoomId();
-        Board board = new();
-        board.Initialize();
-        _gameManager = new(board);
+        _gameManager = new GameManager();
         
         _players.Add(hostClient);
         _playerColors[hostClient] = hostColor;
