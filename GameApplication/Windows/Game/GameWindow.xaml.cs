@@ -5,6 +5,7 @@ using GameLogic.Enums;
 using GameLogic.Helpers;
 using GameLogic.Interfaces;
 using GameLogic.Moves;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -92,6 +93,12 @@ public partial class GameWindow : Window
         _playerColor = playerColor;
         _gameClient = gameClient;
 
+        if (_gameClient != null)
+        {
+            _gameClient.MoveReceived += HandleMove;
+            _gameClient.RoomClosed += pieceColor => HandleGameOver(pieceColor, GameOverReason.Disconnect);
+        }        
+
         InitializeGrids();
         DrawPieces();
     }
@@ -100,7 +107,151 @@ public partial class GameWindow : Window
 
 
 
-    #region Private Methods
+    #region Event Handlers
+
+    /// <summary>
+    /// Handles MouseDown on the BoardGrid
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void BoardGrid_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (_frozenBoard)
+        {
+            return;
+        }
+
+        Point point = e.GetPosition(BoardGrid);
+        (int row, int col) square = PointToSquare(point);        
+
+        if (_selectedSquare == null)
+        {
+            var moveOptions = _gameManager.ActivePlayerMoves[square.row, square.col];
+            
+            if (moveOptions != null)
+            {   
+                _selectedSquare = square;
+                HighlightSquare(square, SelectBrush);
+
+                foreach (var move in moveOptions)
+                {
+                    _highlightedMoves[move.To] = move;
+                    HighlightSquare(move.To, HighlightBrush);
+                }
+            }
+        }
+        else if (_highlightedMoves.TryGetValue(square, out IMove? move))
+        {
+            if (move.MoveType == MoveType.Promotion)
+            {
+                _frozenBoard = true;
+                PromotionMenu promotionMenu = new(_gameManager.ActivePlayerColor);
+                MenuContainer.Content = promotionMenu;
+                promotionMenu.PieceClicked += pieceType =>
+                {
+                    _frozenBoard = false;
+                    move = new PromotionMove(move.From, move.To, pieceType);
+                    MenuContainer.Content = null;
+                    HandleMove(move);
+                };
+            }
+            else
+            {
+                HandleMove(move);                
+            }
+        }
+        else
+        {
+            // A non-highlighted square is clicked while a piece is selected
+            _selectedSquare = null;
+            _highlightedMoves = [];
+            ClearHighlights();
+            if (_gameManager.ActivePlayerUnderCheck)
+            {
+                var king = _gameManager.Board.Kings[_gameManager.ActivePlayerColor];
+                HighlightSquare(king.Square, CheckBrush);
+            }
+        }      
+    }
+
+    #endregion
+
+
+
+    #region Game Methods
+
+    /// <summary>
+    /// Updates the game for the provided move.
+    /// </summary>
+    /// <param name="move">The IMove to apply.</param>
+    private void HandleMove(IMove move)
+    {
+        // Update pieces
+        _gameManager.HandleMove(move);
+        _gameManager.SwitchTurn();
+        DrawPieces();
+
+        // Remove current highlights and selection
+        _selectedSquare = null;
+        _highlightedMoves = [];
+        ClearHighlights();        
+
+        // Highlight the next player's king square if under check
+        if (_gameManager.ActivePlayerUnderCheck)
+        {
+            var king = _gameManager.Board.Kings[_gameManager.ActivePlayerColor];
+            HighlightSquare(king.Square, CheckBrush);
+        }
+
+        if (_gameManager.GameIsOver())
+        {
+            var (winnerColor, reason) = _gameManager.GetGameResult();
+            HandleGameOver(winnerColor, reason);
+        }
+
+        // Online Handling
+        if (_gameClient != null)
+        {
+            _frozenBoard = _playerColor != _gameManager.ActivePlayerColor;
+            try
+            {
+                _gameClient.SendMove(move).Wait();
+            }
+            catch (IOException)
+            {
+                if (_gameManager.GameIsOver() == false)
+                {
+                    HandleGameOver(PieceColor.None, GameOverReason.Disconnect);                
+                }                
+            }
+        }        
+    }
+
+
+    /// <summary>
+    /// Updates the GameWindow when the game is over.
+    /// </summary>
+    private void HandleGameOver(PieceColor winnerColor, GameOverReason reason)
+    {
+        _frozenBoard = true;
+        ClearHighlights();
+
+        GameOverMenu gameOverMenu = new(winnerColor, reason, _playerColor);
+        MenuContainer.Content = gameOverMenu;
+
+        gameOverMenu.ExitClicked += () =>
+        {           
+            Close();
+            StartWindow startWindow = new();
+            startWindow.Show();            
+        };
+    }
+
+    #endregion
+
+
+
+    #region Drawing Methods
 
     /// <summary>
     /// Initializes pieceImages and highlights arrays.
@@ -153,130 +304,6 @@ public partial class GameWindow : Window
 
 
     /// <summary>
-    /// Handles MouseDown on the BoardGrid
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void BoardGrid_MouseDown(object sender, MouseButtonEventArgs e)
-    {
-        if (_frozenBoard)
-        {
-            return;
-        }
-
-        Point point = e.GetPosition(BoardGrid);
-        (int row, int col) square = PointToSquare(point);        
-
-        if (_selectedSquare == null)
-        {
-            var moveOptions = _gameManager.ActivePlayerMoves[square.row, square.col];
-            
-            if (moveOptions != null)
-            {   
-                _selectedSquare = square;
-                HighlightSquare(square, SelectBrush);
-
-                foreach (var move in moveOptions)
-                {
-                    _highlightedMoves[move.To] = move;
-                    HighlightSquare(move.To, HighlightBrush);
-                }
-            }
-        }
-        else if (_highlightedMoves.TryGetValue(square, out IMove? move))
-        {
-            if (move.MoveType == MoveType.Promotion)
-            {
-                _frozenBoard = true;
-                PromotionMenu promotionMenu = new(_gameManager.ActivePlayerColor);
-                MenuContainer.Content = promotionMenu;
-                promotionMenu.PieceClicked += pieceType =>
-                {
-                    _frozenBoard = false;
-                    move = new PromotionMove(move.From, move.To, pieceType);
-                    MenuContainer.Content = null;
-                    HandleMove(move);
-                    // SEND MOVE TO SERVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                };
-            }
-            else
-            {
-                HandleMove(move);
-                // SEND MOVE TO SERVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            }
-        }
-        else
-        {
-            // A square is clicked that is not a highlighted move while a piece is selected
-            _selectedSquare = null;
-            _highlightedMoves = [];
-            ClearHighlights();
-            if (_gameManager.ActivePlayerUnderCheck)
-            {
-                var king = _gameManager.Board.Kings[_gameManager.ActivePlayerColor];
-                HighlightSquare(king.Square, CheckBrush);
-            }
-        }      
-    }
-
-
-    /// <summary>
-    /// Updates the game for the provided move.
-    /// </summary>
-    /// <param name="move">The IMove to apply.</param>
-    private void HandleMove(IMove move)
-    {
-        // Update pieces
-        _gameManager.HandleMove(move);
-        DrawPieces();
-
-        // Remove current highlights and selection
-        _selectedSquare = null;
-        _highlightedMoves = [];
-        ClearHighlights();
-        
-        _gameManager.SwitchTurn();
-
-        // Highlight the next player's king square if under check
-        if (_gameManager.ActivePlayerUnderCheck)
-        {
-            var king = _gameManager.Board.Kings[_gameManager.ActivePlayerColor];
-            HighlightSquare(king.Square, CheckBrush);
-        }
-
-        //FrozenBoard = gameManager.ActivePlayerColor != gameManager.PlayerColor;
-
-        if (_gameManager.GameIsOver())
-        {
-            HandleGameOver();
-        }
-    }
-
-
-    /// <summary>
-    /// Updates the GameWindow when the game is over.
-    /// </summary>
-    private void HandleGameOver()
-    {
-        _frozenBoard = true;
-        ClearHighlights();
-
-        var (winnerColor, reason) = _gameManager.GetGameResult();
-        GameOverMenu gameOverMenu = new(winnerColor, reason, _playerColor);
-        MenuContainer.Content = gameOverMenu;
-
-        gameOverMenu.ExitClicked += () =>
-        {            
-            StartWindow startWindow = new();
-            startWindow.Show();
-            Close();
-        };
-    }
-
-
-
-
-    /// <summary>
     /// Clears all highlights on the Board.
     /// </summary>
     private void ClearHighlights()
@@ -306,8 +333,13 @@ public partial class GameWindow : Window
         }
 
         _highlights[row, col].Fill = brush;
-    }
+    }    
 
+    #endregion
+
+
+
+    #region Helpers
 
     /// <summary>
     /// Converts a Point clicked to a corresponding square on the Board.
