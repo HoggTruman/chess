@@ -32,7 +32,7 @@
                    Style="{StaticResource TextStyle}"/>
 
 
-            <TextBlock Text="Play a Friend" 
+            <TextBlock Text="Online Game" 
                    Grid.ColumnSpan="1"
                    Grid.Row="1"
                    FontSize="25"
@@ -42,7 +42,7 @@
                 Grid.ColumnSpan="1"
                 Grid.Row="2"
                 Grid.Column="0"
-                Width="80"
+                Width="100"
                 Height="30"
                 Style="{StaticResource ButtonStyle}"
                 Click="HostGame_Click"/>
@@ -51,25 +51,25 @@
                 Grid.ColumnSpan="1"
                 Grid.Row="3"
                 Grid.Column="0"
-                Width="80"
+                Width="100"
                 Height="30"
                 Style="{StaticResource ButtonStyle}"
                 Click="JoinGame_Click"/>
 
 
-            <TextBlock Text="Play a Stranger" 
+            <TextBlock Text="Local Game" 
                    Grid.ColumnSpan="1"
                    Grid.Row="1"
                    Grid.Column="1"
                    FontSize="25"
                    Style="{StaticResource TextStyle}"/>
 
-            <Button Content="Search For Game"
+            <Button Content="Start Game"
                 Grid.RowSpan="2"
                 Grid.ColumnSpan="1"
                 Grid.Row="2"
                 Grid.Column="1"
-                Width="120"
+                Width="100"
                 Height="30"
                 Style="{StaticResource ButtonStyle}"
                 Click="SearchForGame_Click"/>
