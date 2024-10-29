@@ -39,14 +39,21 @@ public class GameServer
     {
         while (_token.IsCancellationRequested == false)
         {
-            TcpClient tcpClient = await _tcpListener.AcceptTcpClientAsync(_token);
-
-            if (tcpClient.Connected)
+            try
             {
-                Console.WriteLine($"[{DateTime.Now}] Client connected with IP {tcpClient.Client.RemoteEndPoint}");
-                Client client = new(tcpClient, new CancellationTokenSource());
-                _clientTasks[client] = StartClientCommunications(client);
-                Clients[client.Id] = client;                
+                TcpClient tcpClient = await _tcpListener.AcceptTcpClientAsync(_token);
+
+                if (tcpClient.Connected)
+                {
+                    Console.WriteLine($"[{DateTime.Now}] Client connected with IP {tcpClient.Client.RemoteEndPoint}");
+                    Client client = new(tcpClient, new CancellationTokenSource());
+                    _clientTasks[client] = StartClientCommunications(client);
+                    Clients[client.Id] = client;                
+                }
+            }
+            catch (SocketException ex)
+            {
+                Console.WriteLine($"[{DateTime.Now}] SocketException: {ex}");
             }
         }
     }
