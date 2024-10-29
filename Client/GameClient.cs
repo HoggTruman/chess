@@ -67,6 +67,12 @@ public class GameClient : IDisposable
     }
 
 
+    /// <summary>
+    /// Connects the GameClient to the server.
+    /// This method must be called before attempting to interact with the server.
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="SocketException"></exception>
     public async Task ConnectToServer()
     {
         var ipEndpoint = new IPEndPoint(IPAddress.Parse(ServerInfo.IpAddress), ServerInfo.Port);
@@ -79,6 +85,14 @@ public class GameClient : IDisposable
     }
 
 
+    /// <summary>
+    /// Reads a message from the server.
+    /// </summary>
+    /// <returns>
+    /// A Task that represents the async read operation.
+    /// The value of its result is the message read as a byte array.
+    /// </returns>
+    /// <exception cref="IOException"></exception>
     public async Task<byte[]> ReadServerMessage()
     {
         // get message length
@@ -94,6 +108,10 @@ public class GameClient : IDisposable
     }
 
 
+    /// <summary>
+    /// Decodes a message from the server and invokes a corresponding event.
+    /// </summary>
+    /// <param name="message"></param>
     public void HandleServerMessage(byte[] message)
     {
         ServerMessage msgCode = MessageHelpers.ReadServerCode(message);
@@ -138,6 +156,7 @@ public class GameClient : IDisposable
     /// </summary>
     /// <param name="hostColor">The PieceColor of the host.</param>
     /// <returns></returns>
+    /// <exception cref="IOException"></exception>
     public async Task SendHostRoom(PieceColor hostColor)
     {
         byte[] message = HostRoomMessage.Encode(hostColor);
@@ -150,6 +169,7 @@ public class GameClient : IDisposable
     /// </summary>
     /// <param name="roomId">The ID of the room to join.</param>
     /// <returns></returns>
+    /// <exception cref="IOException"></exception>
     public async Task SendJoinRoom(int roomId)
     {
         byte[] message = JoinRoomMessage.Encode(roomId);
@@ -161,6 +181,7 @@ public class GameClient : IDisposable
     /// Sends a message to the server to cancel hosting a room.
     /// </summary>
     /// <returns></returns>
+    /// <exception cref="IOException"></exception>
     public async Task SendCancelHost()
     {
         byte[] message = CancelHostMessage.Encode();
@@ -173,6 +194,7 @@ public class GameClient : IDisposable
     /// </summary>
     /// <param name="move">The IMove the player is making.</param>
     /// <returns></returns>
+    /// <exception cref="IOException"></exception>
     public async Task SendMove(IMove move)
     {
         byte[] message = ClientMoveMessage.Encode(move);
