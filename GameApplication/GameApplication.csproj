@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Assets\iconpawn.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +23,10 @@
     <None Remove="Assets\WhitePawn.png" />
     <None Remove="Assets\WhiteQueen.png" />
     <None Remove="Assets\WhiteRook.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\iconpawn.ico" />
   </ItemGroup>
 
   <ItemGroup>
