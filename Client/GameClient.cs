@@ -21,6 +21,7 @@ public class GameClient : IDisposable
     private readonly TcpClient _tcpClient;
     private NetworkStream _stream;
     private readonly byte[] _buffer = new byte[16];
+    private bool _isDisposed = false;
 
     #endregion
 
@@ -34,7 +35,7 @@ public class GameClient : IDisposable
 
     public bool Connected
     {
-        get => _stream != null && _tcpClient.Connected;
+        get => _stream != null && _tcpClient.Connected && _isDisposed == false;
     }
 
     #endregion
@@ -184,9 +185,13 @@ public class GameClient : IDisposable
 
     public void Dispose()
     {
-        _tcpClient.Close();
-        CancellationTokenSource.Dispose();
-        GC.SuppressFinalize(this);
+        if (_isDisposed == false)
+        {
+            _isDisposed = true;
+            _tcpClient.Close();
+            CancellationTokenSource.Dispose();
+            GC.SuppressFinalize(this);
+        }
     }
 }
 
