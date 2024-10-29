@@ -79,6 +79,7 @@ public partial class GameOverMenu : UserControl
             GameOverReason.Checkmate => "Checkmate",
             GameOverReason.Stalemate => "Stalemate",
             GameOverReason.InsufficientMaterial => "Insufficient Material",
+            GameOverReason.Disconnect => "A Communication Error Occurred",
             _ => ""
         };
     }
