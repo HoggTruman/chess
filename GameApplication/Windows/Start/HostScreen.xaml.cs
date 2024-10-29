@@ -127,7 +127,7 @@ public partial class HostScreen : UserControl
             HostButton.Visibility = Visibility.Visible;        
 
             StatusTextBlock.Text = "";
-            RoomCodeTextBlock.Text = RoomNotHostedText;
+            RoomCodeTextBox.Text = RoomNotHostedText;
 
             _colorButtonsEnabled = true;
             _gameClient.Dispose();
@@ -197,7 +197,7 @@ public partial class HostScreen : UserControl
         CancelButton.Visibility = Visibility.Visible;
 
         StatusTextBlock.Text = WaitingForOpponentText;
-        RoomCodeTextBlock.Text = roomId.ToString();
+        RoomCodeTextBox.Text = roomId.ToString();
 
         try
         {
@@ -217,7 +217,7 @@ public partial class HostScreen : UserControl
                 _gameClient = null;   
             }
          
-            RoomCodeTextBlock.Text = RoomNotHostedText;
+            RoomCodeTextBox.Text = RoomNotHostedText;
 
             _colorButtonsEnabled = true;
             HostButton.Visibility = Visibility.Visible;

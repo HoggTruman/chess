@@ -89,13 +89,20 @@
                        FontSize="22"
                        Style="{StaticResource TextStyle}"/>
 
-            <TextBlock x:Name="RoomCodeTextBlock"
-                       Text="(No Room Hosted)"
-                       Grid.ColumnSpan="1"
-                       Grid.Row="4"
-                       Grid.Column="1"
-                       FontSize="22"
-                       Style="{StaticResource TextStyle}"/>
+            <TextBox x:Name="RoomCodeTextBox"
+                     Text="(No Room Hosted)"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     IsReadOnly="True"
+                     TextWrapping="Wrap" 
+                     Grid.ColumnSpan="1"
+                     Grid.Row="4"
+                     Grid.Column="1"
+                     FontSize="22"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Center"
+                     FontFamily="Arial"
+                     Foreground="{StaticResource TextColor}"/>
 
             <Button x:Name="CancelButton"
                     Content="Cancel Host"
