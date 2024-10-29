@@ -72,7 +72,7 @@
                 Width="100"
                 Height="30"
                 Style="{StaticResource ButtonStyle}"
-                Click="SearchForGame_Click"/>
+                Click="StartLocal_Click"/>
 
 
             <Button Content="Exit"

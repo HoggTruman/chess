@@ -22,16 +22,11 @@ public partial class StartScreen : UserControl
 
     private void StartGame(PieceColor playerColor)
     {
-        Board board = new();
-        board.Initialize();
-        GameManager gameManager = new(board); 
-
+        GameManager gameManager = new(); 
         GameWindow gameWindow = new(gameManager, playerColor);
         gameWindow.Show();
-
         window.Close();
     }
-
 
 
 
@@ -39,7 +34,6 @@ public partial class StartScreen : UserControl
 
     private void HostGame_Click(object sender, RoutedEventArgs e)
     {
-        // Host chooses color
         HostScreen hostScreen = new(window);
         window.Content = hostScreen;
     }
@@ -47,15 +41,14 @@ public partial class StartScreen : UserControl
 
     private void JoinGame_Click(object sender, RoutedEventArgs e)
     {
-        // Color obtained from server based on host's choice
         JoinScreen joinScreen = new(window);
         window.Content = joinScreen;
     }
 
 
-    private void SearchForGame_Click(object sender, RoutedEventArgs e)
+    private void StartLocal_Click(object sender, RoutedEventArgs e)
     {
-        StartGame(PieceColor.White); // color should be randomly decided by server
+        StartGame(PieceColor.White);
     }
 
 
