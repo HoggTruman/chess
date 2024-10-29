@@ -95,8 +95,10 @@ public partial class GameWindow : Window
 
         if (_gameClient != null)
         {
+            _frozenBoard = playerColor == PieceColor.Black;
             _gameClient.MoveReceived += HandleMove;
             _gameClient.RoomClosed += pieceColor => HandleGameOver(pieceColor, GameOverReason.Disconnect);
+            ListenForServerMessages();
         }        
 
         InitializeGrids();
@@ -114,7 +116,7 @@ public partial class GameWindow : Window
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void BoardGrid_MouseDown(object sender, MouseButtonEventArgs e)
+    private async void BoardGrid_MouseDown(object sender, MouseButtonEventArgs e)
     {
         if (_frozenBoard)
         {
@@ -144,20 +146,15 @@ public partial class GameWindow : Window
         {
             if (move.MoveType == MoveType.Promotion)
             {
-                _frozenBoard = true;
-                PromotionMenu promotionMenu = new(_gameManager.ActivePlayerColor);
-                MenuContainer.Content = promotionMenu;
-                promotionMenu.PieceClicked += pieceType =>
-                {
-                    _frozenBoard = false;
-                    move = new PromotionMove(move.From, move.To, pieceType);
-                    MenuContainer.Content = null;
-                    HandleMove(move);
-                };
+                HandlePromotionMove(move);
             }
             else
             {
-                HandleMove(move);                
+                HandleMove(move);
+                if (IsOnlineGame())
+                {
+                    await TrySendMoveToServer(move);                    
+                }                
             }
         }
         else
@@ -203,28 +200,40 @@ public partial class GameWindow : Window
             HighlightSquare(king.Square, CheckBrush);
         }
 
+        if (IsOnlineGame())
+        {
+            _frozenBoard = _playerColor != _gameManager.ActivePlayerColor;
+        }
+
         if (_gameManager.GameIsOver())
         {
             var (winnerColor, reason) = _gameManager.GetGameResult();
             HandleGameOver(winnerColor, reason);
         }
+    }    
 
-        // Online Handling
-        if (_gameClient != null)
+
+    /// <summary>
+    /// Creates a menu on screen for the player to select the piece to promote to.
+    /// Updates the board based on the player's chocie.
+    /// </summary>
+    /// <param name="move"></param>
+    private void HandlePromotionMove(IMove move)
+    {
+        _frozenBoard = true;
+        PromotionMenu promotionMenu = new(_gameManager.ActivePlayerColor);
+        MenuContainer.Content = promotionMenu;
+        promotionMenu.PieceClicked += async pieceType =>
         {
-            _frozenBoard = _playerColor != _gameManager.ActivePlayerColor;
-            try
+            _frozenBoard = false;
+            move = new PromotionMove(move.From, move.To, pieceType);
+            MenuContainer.Content = null;
+            HandleMove(move);
+            if (IsOnlineGame())
             {
-                _gameClient.SendMove(move).Wait();
+                await TrySendMoveToServer(move);
             }
-            catch (IOException)
-            {
-                if (_gameManager.GameIsOver() == false)
-                {
-                    HandleGameOver(PieceColor.None, GameOverReason.Disconnect);                
-                }                
-            }
-        }        
+        };
     }
 
 
@@ -236,15 +245,82 @@ public partial class GameWindow : Window
         _frozenBoard = true;
         ClearHighlights();
 
+        _gameClient?.Dispose();
+
         GameOverMenu gameOverMenu = new(winnerColor, reason, _playerColor);
         MenuContainer.Content = gameOverMenu;
 
         gameOverMenu.ExitClicked += () =>
-        {           
-            Close();
+        {        
             StartWindow startWindow = new();
-            startWindow.Show();            
+            startWindow.Show();     
+            Close();                   
         };
+    }
+
+    #endregion
+
+
+
+    #region Online Methods
+
+    /// <summary>
+    /// Attempts to send a move to the server.
+    /// The game is ended as a draw if connection is lost to the server.
+    /// </summary>
+    /// <param name="move"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    private async Task TrySendMoveToServer(IMove move)
+    {
+        if (_gameClient == null)
+        {
+            throw new Exception("Attempting to send a move to the server in an offline game");
+        }
+
+        try
+        {
+            await _gameClient.SendMove(move);
+        }
+        catch (IOException)
+        {
+            if (MenuContainer.Content is not GameOverMenu)
+            {
+                MenuContainer.Content = null; // Remove promotion menu
+                HandleGameOver(PieceColor.None, GameOverReason.Disconnect);                
+            }                
+        }
+    }
+
+
+    /// <summary>
+    /// Listens for messages from the server.
+    /// The game is ended as a draw if connection is lost to the server.
+    /// </summary>
+    private async void ListenForServerMessages()
+    {
+        try
+        {
+            if (_gameClient == null)
+            {
+                throw new Exception();
+            }
+
+            while (_gameManager.GameIsOver() == false &&
+                   _gameClient.Connected == true)
+            {
+                var message = await _gameClient.ReadServerMessage();
+                _gameClient.HandleServerMessage(message);
+            }            
+        }
+        catch (Exception ex) when (_gameClient == null || ex is IOException)
+        {
+            if (MenuContainer.Content is not GameOverMenu)
+            {
+                MenuContainer.Content = null; // Remove promotion menu
+                HandleGameOver(PieceColor.None, GameOverReason.Disconnect);                
+            }                
+        }
     }
 
     #endregion
@@ -359,6 +435,16 @@ public partial class GameWindow : Window
         }
 
         return (row, col);
+    }
+
+
+    /// <summary>
+    /// Determines if the current game is local or online.
+    /// </summary>
+    /// <returns>true for an online game. false for a local game.</returns>
+    private bool IsOnlineGame()
+    {
+        return _gameClient != null;
     }
 
     #endregion
