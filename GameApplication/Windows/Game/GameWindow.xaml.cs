@@ -57,7 +57,7 @@ public partial class GameWindow : Window
     /// <summary>
     /// A Dictionary with To square as key, and the corresponding IMove as the value.
     /// </summary>
-    private Dictionary<(int row, int col), IMove> _highlightedMoves = [];
+    private Dictionary<(int row, int col), IMove> _selectedPieceMoveOptions = [];
 
     /// <summary>
     /// A bool to dictate whether the player's clicks should interact with the board at all.
@@ -137,12 +137,12 @@ public partial class GameWindow : Window
 
                 foreach (var move in moveOptions)
                 {
-                    _highlightedMoves[move.To] = move;
+                    _selectedPieceMoveOptions[move.To] = move;
                     HighlightSquare(move.To, HighlightBrush);
                 }
             }
         }
-        else if (_highlightedMoves.TryGetValue(square, out IMove? move))
+        else if (_selectedPieceMoveOptions.TryGetValue(square, out IMove? move))
         {
             if (move.MoveType == MoveType.Promotion)
             {
@@ -162,7 +162,7 @@ public partial class GameWindow : Window
         {
             // A non-highlighted square is clicked while a piece is selected
             _selectedSquare = null;
-            _highlightedMoves = [];
+            _selectedPieceMoveOptions = [];
             ClearHighlights();
             if (_gameManager.ActivePlayerUnderCheck)
             {
@@ -191,7 +191,7 @@ public partial class GameWindow : Window
 
         // Remove current highlights and selection
         _selectedSquare = null;
-        _highlightedMoves = [];
+        _selectedPieceMoveOptions = [];
         ClearHighlights();        
 
         // Highlight the next player's king square if under check
