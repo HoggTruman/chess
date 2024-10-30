@@ -20,7 +20,7 @@ public class GameClient : IDisposable
 
     private readonly TcpClient _tcpClient;
     private NetworkStream _stream;
-    private readonly byte[] _buffer = new byte[16];
+    private readonly byte[] _buffer = new byte[32];
     private bool _isDisposed = false;
 
     #endregion
@@ -96,10 +96,15 @@ public class GameClient : IDisposable
     public async Task<byte[]> ReadServerMessage()
     {
         // get message length
-        await _stream.ReadAsync(_buffer, 0, 1, Token);
-        byte messageLength = _buffer[0];
+        int bytesRead = await _stream.ReadAsync(_buffer, 0, 1, Token);        
+
+        if (bytesRead == 0)
+        {
+            return [];
+        }
         
         // read message
+        byte messageLength = _buffer[0];
         byte[] message = new byte[messageLength];
         message[0] = messageLength;
         await _stream.ReadAsync(message, 1, messageLength - 1, Token);

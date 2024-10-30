@@ -312,7 +312,10 @@ public partial class GameWindow : Window
                    _gameClient.Connected == true)
             {
                 var message = await _gameClient.ReadServerMessage();
-                _gameClient.HandleServerMessage(message);
+                if (message.Length != 0)
+                {
+                    _gameClient.HandleServerMessage(message);
+                }                
             }            
         }
         catch (Exception ex) when (_gameClient == null || ex is IOException)
