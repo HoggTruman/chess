@@ -103,7 +103,10 @@ public class GameServer
             try
             {
                 byte[] message = await ReadClientMessage(client.Stream, client.Token);
-                await HandleClientMessage(client, message);
+                if (message.Length != 0)
+                {
+                    await HandleClientMessage(client, message);
+                }                
             }
             catch (OperationCanceledException)
             {
@@ -141,10 +144,15 @@ public class GameServer
     {
         // get message length
         byte[] buffer = new byte[1];
-        await stream.ReadAsync(buffer, 0, 1, clientToken);
-        byte messageLength = buffer[0];
+        int bytesRead = await stream.ReadAsync(buffer, 0, 1, clientToken);
+        
+        if (bytesRead == 0)
+        {
+            return [];
+        }        
         
         // read message
+        byte messageLength = buffer[0];
         byte[] message = new byte[messageLength];
         message[0] = messageLength;
         await stream.ReadAsync(message, 1, messageLength - 1, clientToken);
