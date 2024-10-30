@@ -150,11 +150,12 @@ public partial class GameWindow : Window
             }
             else
             {
-                HandleMove(move);
                 if (IsOnlineGame())
                 {
+                    _frozenBoard = true;
                     await TrySendMoveToServer(move);                    
-                }                
+                }   
+                HandleMove(move);             
             }
         }
         else
@@ -228,11 +229,12 @@ public partial class GameWindow : Window
             _frozenBoard = false;
             move = new PromotionMove(move.From, move.To, pieceType);
             MenuContainer.Content = null;
-            HandleMove(move);
             if (IsOnlineGame())
             {
+                _frozenBoard = true;
                 await TrySendMoveToServer(move);
             }
+            HandleMove(move);
         };
     }
 
