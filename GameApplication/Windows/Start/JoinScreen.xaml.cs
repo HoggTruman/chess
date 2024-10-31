@@ -85,9 +85,8 @@ public partial class JoinScreen : UserControl
         try
         {
             await _gameClient.ConnectToServer();
+            _gameClient.StartListening();
             await _gameClient.SendJoinRoom(code);
-            var message = await _gameClient.ReadServerMessage();
-            _gameClient.HandleServerMessage(message);
         }
         catch (Exception ex) when (
             ex is IOException || 
@@ -97,18 +96,23 @@ public partial class JoinScreen : UserControl
             JoinStatusTextBox.Text = ServerErrorText;
             JoinButton.IsEnabled = true;
             CodeTextBox.IsEnabled = true;
+            await _gameClient.StopListening();
             _gameClient?.Dispose();
             _gameClient = null;
         }        
     }
 
 
-    private void Back_Click(object sender, RoutedEventArgs e)
+    private async void Back_Click(object sender, RoutedEventArgs e)
     {
-        _gameClient?.CancellationTokenSource.Cancel();
+        if (_gameClient != null)
+        {
+            await _gameClient.StopListening();
+            _gameClient?.Dispose();
+        }
+
         StartScreen startScreen = new(_window);
-        _window.Content = startScreen;
-        _gameClient?.Dispose(); // Could cause ObjectDisposedException  for the token in JoinGame_Click
+        _window.Content = startScreen;        
     }
 
     #endregion
@@ -117,23 +121,33 @@ public partial class JoinScreen : UserControl
 
     #region GameManager Event Handlers
 
-    private void OnRoomNotFound()
+    private async void OnRoomNotFound()
     {
+        if (_gameClient != null)
+        {
+            await _gameClient.StopListening();
+            _gameClient?.Dispose();
+            _gameClient = null;
+        }        
+
         JoinStatusTextBox.Text = RoomNotFoundText;
         JoinButton.IsEnabled = true;
         CodeTextBox.IsEnabled = true;
-        _gameClient?.Dispose();
-        _gameClient = null;
     }
 
 
-    private void OnRoomFull()
+    private async void OnRoomFull()
     {
+        if (_gameClient != null)
+        {
+            await _gameClient.StopListening();
+            _gameClient?.Dispose();
+            _gameClient = null;
+        }  
+
         JoinStatusTextBox.Text = RoomFullText;
         JoinButton.IsEnabled = true;
         CodeTextBox.IsEnabled = true;
-        _gameClient?.Dispose();
-        _gameClient = null;
     }
 
 
