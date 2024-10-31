@@ -95,12 +95,7 @@ public partial class HostScreen : UserControl
             ex is OperationCanceledException ||
             ex is SocketException)
         {
-            StatusTextBlock.Text = ServerErrorText;
-            _colorButtonsEnabled = true;
-            await _gameClient.StopListening();
-            _gameClient.Dispose();
-            _gameClient = null;
-            HostButton.IsEnabled = true;
+            OnRoomClosed(PieceColor.None);
         }
     }
 
@@ -140,6 +135,28 @@ public partial class HostScreen : UserControl
     }
 
 
+    private void Back_Click(object sender, RoutedEventArgs e)
+    {
+        if (_gameClient?.Connected == true)
+        {
+            try
+            {
+                _gameClient.SendCancelHost().Wait();
+            }
+            catch (Exception ex) when (ex is IOException || ex is OperationCanceledException)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            _gameClient.StopListening().Wait();
+            _gameClient.Dispose();
+        }
+        
+        StartScreen startScreen = new(_window);
+        _window.Content = startScreen;
+    }
+
+
     private void WhiteOption_Click(object sender, RoutedEventArgs e)
     {
         if (_colorButtonsEnabled)
@@ -159,29 +176,7 @@ public partial class HostScreen : UserControl
             BlackOptionHighlight.Background = HighlightBrush;
             WhiteOptionHighlight.Background = null;
         }
-    }
-
-
-    private async void Back_Click(object sender, RoutedEventArgs e)
-    {
-        if (_gameClient?.Connected == true)
-        {
-            try
-            {
-                _gameClient.SendCancelHost().Wait();
-            }
-            catch (Exception ex) when (ex is IOException || ex is OperationCanceledException)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            await _gameClient.StopListening();
-            _gameClient.Dispose();
-        }
-        
-        StartScreen startScreen = new(_window);
-        _window.Content = startScreen;
-    }
+    }    
 
     #endregion
 
@@ -239,6 +234,7 @@ public partial class HostScreen : UserControl
         _colorButtonsEnabled = true;
         HostButton.Visibility = Visibility.Visible;
         CancelButton.Visibility = Visibility.Hidden;
+        HostButton.IsEnabled = true;
     }
 
     #endregion
