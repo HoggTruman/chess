@@ -103,13 +103,15 @@ public class GameClient : IDisposable
         try
         {
             while (_tcpClient.Connected &&
-                    Token.IsCancellationRequested == false)
+                   Token.IsCancellationRequested == false)
             {
                 var message = await ReadServerMessage();
-                if (message.Length != 0)
+                if (message.Length == 0)
                 {
-                    HandleServerMessage(message);
-                }            
+                    RoomClosed?.Invoke(PieceColor.None);
+                    return;
+                }
+                HandleServerMessage(message);
             }
         }
         catch (OperationCanceledException)
@@ -125,13 +127,12 @@ public class GameClient : IDisposable
 
     public async Task StopListening()
     {
-        if (_listeningTask == null)
-        {
-            throw new InvalidOperationException("GameClient is not listening.");
-        }
-
         CancellationTokenSource.Cancel();
-        await _listeningTask;
+
+        if (_listeningTask != null)
+        {            
+            await _listeningTask;
+        }                
 
         // handle disposal here, make this a "Close" method??
     }

@@ -98,7 +98,6 @@ public partial class GameWindow : Window
             _frozenBoard = playerColor == PieceColor.Black;
             _gameClient.MoveReceived += HandleMove;
             _gameClient.RoomClosed += pieceColor => HandleGameOver(pieceColor, GameOverReason.Disconnect);
-            _gameClient.StartListening();
         }        
 
         InitializeGrids();

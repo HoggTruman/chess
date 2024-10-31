@@ -81,13 +81,14 @@ public partial class HostScreen : UserControl
         _gameClient = new GameClient();
         _gameClient.RoomHosted += OnRoomHosted;
         _gameClient.StartGame += OnStartGame;
+        _gameClient.RoomClosed += OnRoomClosed;
 
         try
         {
             await _gameClient.ConnectToServer();
+            _gameClient.StartListening();
             await _gameClient.SendHostRoom(_hostColor);
-            var serverMessage = await _gameClient.ReadServerMessage();
-            _gameClient.HandleServerMessage(serverMessage);
+            
         }
         catch (Exception ex) when (
             ex is IOException || 
@@ -96,6 +97,7 @@ public partial class HostScreen : UserControl
         {
             StatusTextBlock.Text = ServerErrorText;
             _colorButtonsEnabled = true;
+            await _gameClient.StopListening();
             _gameClient.Dispose();
             _gameClient = null;
             HostButton.IsEnabled = true;
@@ -130,7 +132,8 @@ public partial class HostScreen : UserControl
             RoomCodeTextBox.Text = RoomNotHostedText;
 
             _colorButtonsEnabled = true;
-            _gameClient.Dispose();
+            await _gameClient.StopListening();
+            _gameClient.Dispose();            
             _gameClient = null;
             CancelButton.IsEnabled = true;
         }
@@ -159,7 +162,7 @@ public partial class HostScreen : UserControl
     }
 
 
-    private void Back_Click(object sender, RoutedEventArgs e)
+    private async void Back_Click(object sender, RoutedEventArgs e)
     {
         if (_gameClient?.Connected == true)
         {
@@ -172,6 +175,7 @@ public partial class HostScreen : UserControl
                 Console.WriteLine(ex.Message);
             }
 
+            await _gameClient.StopListening();
             _gameClient.Dispose();
         }
         
@@ -185,7 +189,7 @@ public partial class HostScreen : UserControl
 
     #region GameManager Event Handlers
 
-    private async void OnRoomHosted(int roomId)
+    private void OnRoomHosted(int roomId)
     {
         if (_gameClient == null)
         {
@@ -197,32 +201,7 @@ public partial class HostScreen : UserControl
         CancelButton.Visibility = Visibility.Visible;
 
         StatusTextBlock.Text = WaitingForOpponentText;
-        RoomCodeTextBox.Text = roomId.ToString();
-
-        try
-        {
-            var serverMessage = await _gameClient.ReadServerMessage();
-            _gameClient.HandleServerMessage(serverMessage);
-        }
-        catch (Exception ex) when (ex is IOException || ex is OperationCanceledException)
-        {
-            if (ex is IOException)
-            {
-                StatusTextBlock.Text = ServerErrorText;
-            }
-
-            if (_gameClient != null)
-            {
-                _gameClient.Dispose();
-                _gameClient = null;   
-            }
-         
-            RoomCodeTextBox.Text = RoomNotHostedText;
-
-            _colorButtonsEnabled = true;
-            HostButton.Visibility = Visibility.Visible;
-            CancelButton.Visibility = Visibility.Hidden;
-        }        
+        RoomCodeTextBox.Text = roomId.ToString();    
     }
 
 
@@ -235,12 +214,31 @@ public partial class HostScreen : UserControl
 
         _gameClient.RoomHosted -= OnRoomHosted;
         _gameClient.StartGame -= OnStartGame;
+        _gameClient.RoomClosed -= OnRoomClosed;
 
         GameManager gameManager = new();
         GameWindow gameWindow = new(gameManager, playerColor, _gameClient);
 
         gameWindow.Show();
         _window.Close();
+    }
+
+
+    private async void OnRoomClosed(PieceColor pieceColor)
+    {
+        if (_gameClient != null)
+        {
+            await _gameClient.StopListening();
+            _gameClient.Dispose();
+            _gameClient = null;   
+        }
+
+        StatusTextBlock.Text = ServerErrorText;
+        RoomCodeTextBox.Text = RoomNotHostedText;
+
+        _colorButtonsEnabled = true;
+        HostButton.Visibility = Visibility.Visible;
+        CancelButton.Visibility = Visibility.Hidden;
     }
 
     #endregion
