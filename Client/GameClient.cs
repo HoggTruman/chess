@@ -1,4 +1,5 @@
-﻿using GameLogic.Enums;
+﻿using GameLogic;
+using GameLogic.Enums;
 using GameLogic.Interfaces;
 using NetworkShared;
 using NetworkShared.Enums;
@@ -22,6 +23,7 @@ public class GameClient : IDisposable
     private NetworkStream _stream;
     private readonly byte[] _buffer = new byte[32];
     private bool _isDisposed = false;
+    private Task? _listeningTask;
 
     #endregion
 
@@ -85,6 +87,56 @@ public class GameClient : IDisposable
     }
 
 
+    public void StartListening()
+    {
+        if (_listeningTask != null)
+        {
+            throw new InvalidOperationException("GameClient is already listening.");
+        }
+
+        _listeningTask = Listen();
+    }
+
+
+    private async Task Listen()
+    {
+        try
+        {
+            while (_tcpClient.Connected &&
+                    Token.IsCancellationRequested == false)
+            {
+                var message = await ReadServerMessage();
+                if (message.Length != 0)
+                {
+                    HandleServerMessage(message);
+                }            
+            }
+        }
+        catch (OperationCanceledException)
+        {
+
+        }
+        catch (IOException)
+        {
+            RoomClosed?.Invoke(PieceColor.None);
+        }
+    }
+
+
+    public async Task StopListening()
+    {
+        if (_listeningTask == null)
+        {
+            throw new InvalidOperationException("GameClient is not listening.");
+        }
+
+        CancellationTokenSource.Cancel();
+        await _listeningTask;
+
+        // handle disposal here, make this a "Close" method??
+    }
+
+
     /// <summary>
     /// Reads a message from the server.
     /// </summary>
@@ -93,6 +145,7 @@ public class GameClient : IDisposable
     /// The value of its result is the message read as a byte array.
     /// </returns>
     /// <exception cref="IOException"></exception>
+    /// <exception cref="OperationCanceledException"></exception>
     public async Task<byte[]> ReadServerMessage()
     {
         // get message length

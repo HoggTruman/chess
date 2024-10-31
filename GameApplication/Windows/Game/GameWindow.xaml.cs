@@ -98,7 +98,7 @@ public partial class GameWindow : Window
             _frozenBoard = playerColor == PieceColor.Black;
             _gameClient.MoveReceived += HandleMove;
             _gameClient.RoomClosed += pieceColor => HandleGameOver(pieceColor, GameOverReason.Disconnect);
-            ListenForServerMessages();
+            _gameClient.StartListening();
         }        
 
         InitializeGrids();
@@ -242,12 +242,22 @@ public partial class GameWindow : Window
     /// <summary>
     /// Updates the GameWindow when the game is over.
     /// </summary>
-    private void HandleGameOver(PieceColor winnerColor, GameOverReason reason)
+    private async void HandleGameOver(PieceColor winnerColor, GameOverReason reason)
     {
+        if (MenuContainer.Content is GameOverMenu)
+        {
+            return;
+        }
+
         _frozenBoard = true;
+        MenuContainer.Content = null; // Remove promotion menu        
         ClearHighlights();
 
-        _gameClient?.Dispose();
+        if (_gameClient != null)
+        {
+            await _gameClient.StopListening();
+            _gameClient?.Dispose();
+        }
 
         GameOverMenu gameOverMenu = new(winnerColor, reason, _playerColor);
         MenuContainer.Content = gameOverMenu;
@@ -286,45 +296,7 @@ public partial class GameWindow : Window
         }
         catch (IOException)
         {
-            if (MenuContainer.Content is not GameOverMenu)
-            {
-                MenuContainer.Content = null; // Remove promotion menu
-                HandleGameOver(PieceColor.None, GameOverReason.Disconnect);                
-            }                
-        }
-    }
-
-
-    /// <summary>
-    /// Listens for messages from the server.
-    /// The game is ended as a draw if connection is lost to the server.
-    /// </summary>
-    private async void ListenForServerMessages()
-    {
-        try
-        {
-            if (_gameClient == null)
-            {
-                throw new Exception();
-            }
-
-            while (_gameManager.GameIsOver() == false &&
-                   _gameClient.Connected == true)
-            {
-                var message = await _gameClient.ReadServerMessage();
-                if (message.Length != 0)
-                {
-                    _gameClient.HandleServerMessage(message);
-                }                
-            }            
-        }
-        catch (Exception ex) when (_gameClient == null || ex is IOException)
-        {
-            if (MenuContainer.Content is not GameOverMenu)
-            {
-                MenuContainer.Content = null; // Remove promotion menu
-                HandleGameOver(PieceColor.None, GameOverReason.Disconnect);                
-            }                
+            HandleGameOver(PieceColor.None, GameOverReason.Disconnect);      
         }
     }
 
