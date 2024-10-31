@@ -55,6 +55,10 @@ public class GameServer
             {
                 Console.WriteLine($"[{DateTime.Now}] SocketException: {ex}");
             }
+            catch (OperationCanceledException)
+            {
+                
+            }
         }
     }
 
@@ -71,6 +75,8 @@ public class GameServer
             // prevent attempting to shutdown twice
             return;
         }
+
+        Console.WriteLine($"[{DateTime.Now}] Server shutting down");
 
         // Stops the server accepting new clients
         _cancellationTokenSource.Cancel();        
