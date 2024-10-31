@@ -253,11 +253,32 @@ public class GameClient : IDisposable
     /// </summary>
     /// <param name="move">The IMove the player is making.</param>
     /// <returns></returns>
-    /// <exception cref="IOException"></exception>
     public async Task SendMove(IMove move)
-    {
+    {        
         byte[] message = ClientMoveMessage.Encode(move);
-        await _stream.WriteAsync(message, Token);
+        await SendMessage(message);
+    }
+
+
+    private async Task SendMessage(byte[] message)
+    {
+        if (_stream == null)
+        {
+            throw new InvalidOperationException("No NetworkSteam to write to. Call ConnectToServer first.");
+        }
+
+        try
+        {
+            await _stream.WriteAsync(message, Token);
+        }
+        catch (IOException)
+        {
+            RoomClosed?.Invoke(PieceColor.None);      
+        }
+        catch (OperationCanceledException)
+        {
+
+        }
     }
 
     #endregion

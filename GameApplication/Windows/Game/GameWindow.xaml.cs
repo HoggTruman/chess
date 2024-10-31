@@ -149,10 +149,10 @@ public partial class GameWindow : Window
             }
             else
             {
-                if (IsOnlineGame())
+                if (_gameClient != null)
                 {
                     _frozenBoard = true;
-                    await TrySendMoveToServer(move);                    
+                    await _gameClient.SendMove(move);                    
                 }   
                 HandleMove(move);             
             }
@@ -200,7 +200,7 @@ public partial class GameWindow : Window
             HighlightSquare(king.Square, CheckBrush);
         }
 
-        if (IsOnlineGame())
+        if (_gameClient != null)
         {
             _frozenBoard = _playerColor != _gameManager.ActivePlayerColor;
         }
@@ -228,10 +228,10 @@ public partial class GameWindow : Window
             _frozenBoard = false;
             move = new PromotionMove(move.From, move.To, pieceType);
             MenuContainer.Content = null;
-            if (IsOnlineGame())
+            if (_gameClient != null)
             {
                 _frozenBoard = true;
-                await TrySendMoveToServer(move);
+                await _gameClient.SendMove(move);
             }
             HandleMove(move);
         };
@@ -255,7 +255,7 @@ public partial class GameWindow : Window
         if (_gameClient != null)
         {
             await _gameClient.StopListening();
-            _gameClient?.Dispose();
+            _gameClient.Dispose();
         }
 
         GameOverMenu gameOverMenu = new(winnerColor, reason, _playerColor);
@@ -267,36 +267,6 @@ public partial class GameWindow : Window
             startWindow.Show();     
             Close();                   
         };
-    }
-
-    #endregion
-
-
-
-    #region Online Methods
-
-    /// <summary>
-    /// Attempts to send a move to the server.
-    /// The game is ended as a draw if connection is lost to the server.
-    /// </summary>
-    /// <param name="move"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
-    private async Task TrySendMoveToServer(IMove move)
-    {
-        if (_gameClient == null)
-        {
-            throw new Exception("Attempting to send a move to the server in an offline game");
-        }
-
-        try
-        {
-            await _gameClient.SendMove(move);
-        }
-        catch (IOException)
-        {
-            HandleGameOver(PieceColor.None, GameOverReason.Disconnect);      
-        }
     }
 
     #endregion
@@ -411,16 +381,6 @@ public partial class GameWindow : Window
         }
 
         return (row, col);
-    }
-
-
-    /// <summary>
-    /// Determines if the current game is local or online.
-    /// </summary>
-    /// <returns>true for an online game. false for a local game.</returns>
-    private bool IsOnlineGame()
-    {
-        return _gameClient != null;
     }
 
     #endregion
