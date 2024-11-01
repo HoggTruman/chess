@@ -2,8 +2,6 @@
 using GameApplication.Windows.Game;
 using GameLogic;
 using GameLogic.Enums;
-using System.IO;
-using System.Net.Sockets;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -40,7 +38,7 @@ public partial class JoinScreen : UserControl
 
     private const string AttemptingToJoinText = "Attempting to join room...";
 
-    private const string ServerErrorText = "An error occured while communicating with the server...";
+    private const string CommunicationErrorText = "An error occured while communicating with the server...";
 
     #endregion
 
@@ -65,11 +63,6 @@ public partial class JoinScreen : UserControl
         JoinButton.IsEnabled = false;
         CodeTextBox.IsEnabled = false;
 
-        _gameClient = new GameClient();
-        _gameClient.RoomNotFound += OnRoomNotFound;
-        _gameClient.RoomFull += OnRoomFull;
-        _gameClient.StartGame += OnStartGame;
-
         string stringCode = CodeTextBox.Text;
         if (ValidateCode(stringCode) == false)
         {
@@ -82,24 +75,18 @@ public partial class JoinScreen : UserControl
         JoinStatusTextBox.Text = AttemptingToJoinText;
         int code = int.Parse(stringCode);
 
-        try
+        _gameClient = new GameClient();
+        _gameClient.RoomNotFound += OnRoomNotFound;
+        _gameClient.RoomFull += OnRoomFull;
+        _gameClient.StartGame += OnStartGame;
+        _gameClient.CommunicationError += OnCommunicationError;
+
+        bool connected = await _gameClient.ConnectToServer();
+        if (connected)
         {
-            await _gameClient.ConnectToServer();
             _gameClient.StartListening();
             await _gameClient.SendJoinRoom(code);
         }
-        catch (Exception ex) when (
-            ex is IOException || 
-            ex is OperationCanceledException ||
-            ex is SocketException)
-        {
-            JoinStatusTextBox.Text = ServerErrorText;
-            JoinButton.IsEnabled = true;
-            CodeTextBox.IsEnabled = true;
-            await _gameClient.StopListening();
-            _gameClient?.Dispose();
-            _gameClient = null;
-        }        
     }
 
 
@@ -108,7 +95,7 @@ public partial class JoinScreen : UserControl
         if (_gameClient != null)
         {
             await _gameClient.StopListening();
-            _gameClient?.Dispose();
+            _gameClient.Dispose();
         }
 
         StartScreen startScreen = new(_window);
@@ -126,7 +113,7 @@ public partial class JoinScreen : UserControl
         if (_gameClient != null)
         {
             await _gameClient.StopListening();
-            _gameClient?.Dispose();
+            _gameClient.Dispose();
             _gameClient = null;
         }        
 
@@ -141,7 +128,7 @@ public partial class JoinScreen : UserControl
         if (_gameClient != null)
         {
             await _gameClient.StopListening();
-            _gameClient?.Dispose();
+            _gameClient.Dispose();
             _gameClient = null;
         }  
 
@@ -153,7 +140,12 @@ public partial class JoinScreen : UserControl
 
     private void OnStartGame(PieceColor playerColor)
     {
-        _gameClient!.RoomNotFound -= OnRoomNotFound;
+        if (_gameClient == null)
+        {
+            return;
+        }
+
+        _gameClient.RoomNotFound -= OnRoomNotFound;
         _gameClient.RoomFull -= OnRoomFull;
         _gameClient.StartGame -= OnStartGame;
 
@@ -162,6 +154,21 @@ public partial class JoinScreen : UserControl
 
         gameWindow.Show();
         _window.Close();
+    }
+
+
+    private async void OnCommunicationError()
+    {
+        if (_gameClient != null)
+        {
+            await _gameClient.StopListening();
+            _gameClient.Dispose();
+            _gameClient = null;
+        }        
+
+        JoinStatusTextBox.Text = CommunicationErrorText;
+        JoinButton.IsEnabled = true;
+        CodeTextBox.IsEnabled = true;
     }
 
     #endregion

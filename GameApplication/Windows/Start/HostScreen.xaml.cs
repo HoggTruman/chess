@@ -2,8 +2,6 @@
 using GameApplication.Windows.Game;
 using GameLogic;
 using GameLogic.Enums;
-using System.IO;
-using System.Net.Sockets;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -82,20 +80,14 @@ public partial class HostScreen : UserControl
         _gameClient.RoomHosted += OnRoomHosted;
         _gameClient.StartGame += OnStartGame;
         _gameClient.RoomClosed += OnRoomClosed;
+        _gameClient.CommunicationError += OnCommunicationError;
 
-        try
+
+        bool connected = await _gameClient.ConnectToServer();
+        if (connected)
         {
-            await _gameClient.ConnectToServer();
             _gameClient.StartListening();
             await _gameClient.SendHostRoom(_hostColor);
-            
-        }
-        catch (Exception ex) when (
-            ex is IOException || 
-            ex is OperationCanceledException ||
-            ex is SocketException)
-        {
-            OnRoomClosed(PieceColor.None);
         }
     }
 
@@ -109,46 +101,29 @@ public partial class HostScreen : UserControl
 
         CancelButton.IsEnabled = false;
 
-        try
-        {
-            await _gameClient.SendCancelHost();
-            _gameClient.CancellationTokenSource.Cancel();
-        }
-        catch (Exception ex) when (ex is IOException || ex is OperationCanceledException)
-        {
+        await _gameClient.SendCancelHost();
+        await _gameClient.StopListening();
+        _gameClient.Dispose();            
+        _gameClient = null;
 
-        }
-        finally
-        {
-            CancelButton.Visibility = Visibility.Hidden;
-            HostButton.Visibility = Visibility.Visible;        
+        CancelButton.Visibility = Visibility.Hidden;
+        HostButton.Visibility = Visibility.Visible;    
 
-            StatusTextBlock.Text = "";
-            RoomCodeTextBox.Text = RoomNotHostedText;
+        StatusTextBlock.Text = "";
+        RoomCodeTextBox.Text = RoomNotHostedText;
 
-            _colorButtonsEnabled = true;
-            await _gameClient.StopListening();
-            _gameClient.Dispose();            
-            _gameClient = null;
-            CancelButton.IsEnabled = true;
-        }
+        _colorButtonsEnabled = true;
+        CancelButton.IsEnabled = true;
     }
 
 
-    private void Back_Click(object sender, RoutedEventArgs e)
+    private async void Back_Click(object sender, RoutedEventArgs e)
     {
-        if (_gameClient?.Connected == true)
+        if (_gameClient != null &&
+            _gameClient.Connected)
         {
-            try
-            {
-                _gameClient.SendCancelHost().Wait();
-            }
-            catch (Exception ex) when (ex is IOException || ex is OperationCanceledException)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            _gameClient.StopListening().Wait();
+            _gameClient.SendCancelHost().Wait();
+            await _gameClient.StopListening();
             _gameClient.Dispose();
         }
         
@@ -210,6 +185,7 @@ public partial class HostScreen : UserControl
         _gameClient.RoomHosted -= OnRoomHosted;
         _gameClient.StartGame -= OnStartGame;
         _gameClient.RoomClosed -= OnRoomClosed;
+        _gameClient.CommunicationError -= OnCommunicationError;
 
         GameManager gameManager = new();
         GameWindow gameWindow = new(gameManager, playerColor, _gameClient);
@@ -219,7 +195,13 @@ public partial class HostScreen : UserControl
     }
 
 
-    private async void OnRoomClosed(PieceColor pieceColor)
+    private void OnRoomClosed(PieceColor pieceColor)
+    {
+        OnCommunicationError();
+    }
+
+
+    private async void OnCommunicationError()
     {
         if (_gameClient != null)
         {
@@ -228,12 +210,11 @@ public partial class HostScreen : UserControl
             _gameClient = null;   
         }
 
-        StatusTextBlock.Text = ServerErrorText;
-        RoomCodeTextBox.Text = RoomNotHostedText;
-
-        _colorButtonsEnabled = true;
         HostButton.Visibility = Visibility.Visible;
         CancelButton.Visibility = Visibility.Hidden;
+        StatusTextBlock.Text = ServerErrorText;
+        RoomCodeTextBox.Text = RoomNotHostedText;
+        _colorButtonsEnabled = true;        
         HostButton.IsEnabled = true;
     }
 

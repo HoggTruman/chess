@@ -58,6 +58,8 @@ public class GameClient : IDisposable
 
     public event Action<IMove>? MoveReceived;
 
+    public event Action? CommunicationError;
+
     #endregion
 
 
@@ -74,16 +76,31 @@ public class GameClient : IDisposable
     /// This method must be called before attempting to interact with the server.
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="SocketException"></exception>
-    public async Task ConnectToServer()
+    public async Task<bool> ConnectToServer()
     {
         var ipEndpoint = new IPEndPoint(IPAddress.Parse(ServerInfo.IpAddress), ServerInfo.Port);
-        await _tcpClient.ConnectAsync(ipEndpoint, Token);
+        try
+        {
+            await _tcpClient.ConnectAsync(ipEndpoint, Token);
+        }
+        catch (SocketException)
+        {
+            CommunicationError?.Invoke();
+            return false;
+        }
+        catch (OperationCanceledException)
+        {
+            return false;
+        }
+        
 
         if (_tcpClient.Connected)
         {
             _stream = _tcpClient.GetStream();
+            return true;
         }
+
+        return false;
     }
 
 
@@ -102,7 +119,7 @@ public class GameClient : IDisposable
     {
         try
         {
-            while (_tcpClient.Connected &&
+            while (_stream != null &&
                    Token.IsCancellationRequested == false)
             {
                 var message = await ReadServerMessage();
@@ -120,7 +137,7 @@ public class GameClient : IDisposable
         }
         catch (IOException)
         {
-            RoomClosed?.Invoke(PieceColor.None);
+            CommunicationError?.Invoke();
         }
     }
 
@@ -132,7 +149,8 @@ public class GameClient : IDisposable
         if (_listeningTask != null)
         {            
             await _listeningTask;
-        }                
+            _listeningTask = null;
+        }
 
         // handle disposal here, make this a "Close" method??
     }
@@ -208,6 +226,7 @@ public class GameClient : IDisposable
     }
 
 
+
     #region Send Message To Server Methods
 
     /// <summary>
@@ -215,11 +234,10 @@ public class GameClient : IDisposable
     /// </summary>
     /// <param name="hostColor">The PieceColor of the host.</param>
     /// <returns></returns>
-    /// <exception cref="IOException"></exception>
     public async Task SendHostRoom(PieceColor hostColor)
     {
         byte[] message = HostRoomMessage.Encode(hostColor);
-        await _stream.WriteAsync(message, Token);
+        await SendMessage(message);
     }
 
 
@@ -228,11 +246,10 @@ public class GameClient : IDisposable
     /// </summary>
     /// <param name="roomId">The ID of the room to join.</param>
     /// <returns></returns>
-    /// <exception cref="IOException"></exception>
     public async Task SendJoinRoom(int roomId)
     {
         byte[] message = JoinRoomMessage.Encode(roomId);
-        await _stream.WriteAsync(message, Token);
+        await SendMessage(message);
     }
 
 
@@ -240,11 +257,10 @@ public class GameClient : IDisposable
     /// Sends a message to the server to cancel hosting a room.
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="IOException"></exception>
     public async Task SendCancelHost()
     {
         byte[] message = CancelHostMessage.Encode();
-        await _stream.WriteAsync(message, Token);
+        await SendMessage(message);
     }
 
 
@@ -273,7 +289,7 @@ public class GameClient : IDisposable
         }
         catch (IOException)
         {
-            RoomClosed?.Invoke(PieceColor.None);      
+            CommunicationError?.Invoke();      
         }
         catch (OperationCanceledException)
         {
