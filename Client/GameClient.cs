@@ -19,7 +19,7 @@ public class GameClient : IDisposable
     #region Fields
 
     private readonly TcpClient _tcpClient;
-    private NetworkStream _stream;
+    private NetworkStream? _stream;
     private readonly byte[] _buffer = new byte[32];
     private bool _isDisposed = false;
     private Task? _listeningTask;
@@ -160,6 +160,11 @@ public class GameClient : IDisposable
     /// <exception cref="OperationCanceledException"></exception>
     public async Task<byte[]> ReadServerMessage()
     {
+        if (_stream == null)
+        {
+            throw new InvalidOperationException("No NetworkSteam to write to. Call ConnectToServer first.");
+        }
+
         // get message length
         int bytesRead = await _stream.ReadAsync(_buffer, 0, 1, Token);        
 
