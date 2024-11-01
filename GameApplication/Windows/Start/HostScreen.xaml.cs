@@ -86,7 +86,6 @@ public partial class HostScreen : UserControl
         bool connected = await _gameClient.ConnectToServer();
         if (connected)
         {
-            _gameClient.StartListening();
             await _gameClient.SendHostRoom(_hostColor);
         }
     }

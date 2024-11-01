@@ -84,7 +84,6 @@ public partial class JoinScreen : UserControl
         bool connected = await _gameClient.ConnectToServer();
         if (connected)
         {
-            _gameClient.StartListening();
             await _gameClient.SendJoinRoom(code);
         }
     }

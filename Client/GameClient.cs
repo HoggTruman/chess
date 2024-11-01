@@ -1,5 +1,4 @@
-﻿using GameLogic;
-using GameLogic.Enums;
+﻿using GameLogic.Enums;
 using GameLogic.Interfaces;
 using NetworkShared;
 using NetworkShared.Enums;
@@ -78,6 +77,11 @@ public class GameClient : IDisposable
     /// <returns></returns>
     public async Task<bool> ConnectToServer()
     {
+        if (Connected)
+        {
+            throw new InvalidOperationException("Already connected to server.");
+        }
+
         var ipEndpoint = new IPEndPoint(IPAddress.Parse(ServerInfo.IpAddress), ServerInfo.Port);
         try
         {
@@ -91,27 +95,16 @@ public class GameClient : IDisposable
         catch (OperationCanceledException)
         {
             return false;
-        }
-        
+        }        
 
         if (_tcpClient.Connected)
         {
             _stream = _tcpClient.GetStream();
+            _listeningTask = Listen();
             return true;
         }
 
         return false;
-    }
-
-
-    public void StartListening()
-    {
-        if (_listeningTask != null)
-        {
-            throw new InvalidOperationException("GameClient is already listening.");
-        }
-
-        _listeningTask = Listen();
     }
 
 
