@@ -25,8 +25,6 @@ public class BoardTests
         testBoard.State.Should().BeEquivalentTo(emptyBoardState);
         testBoard.Pieces[PieceColor.White].Should().BeEmpty();
         testBoard.Pieces[PieceColor.Black].Should().BeEmpty();
-        testBoard.Kings[PieceColor.White].Should().BeNull();
-        testBoard.Kings[PieceColor.Black].Should().BeNull();
     }
 
     #endregion
@@ -308,8 +306,8 @@ public class BoardTests
         var whitePiecesBefore = board.Pieces[PieceColor.White].ToList();
         var blackPiecesBefore = board.Pieces[PieceColor.Black].ToList();
 
-        var whiteKingBefore = board.Kings[PieceColor.White];
-        var blackKingBefore = board.Kings[PieceColor.Black];
+        var whiteKingBefore = board.GetKing(PieceColor.White);
+        var blackKingBefore = board.GetKing(PieceColor.Black);
 
         var stateBefore = BoardHelpers.CopyState(board.State);
 
@@ -325,8 +323,8 @@ public class BoardTests
         board.Pieces[PieceColor.White].Should().BeEquivalentTo(whitePiecesBefore);
         board.Pieces[PieceColor.Black].Should().BeEquivalentTo(blackPiecesBefore);
 
-        board.Kings[PieceColor.White].Should().Be(whiteKingBefore);
-        board.Kings[PieceColor.Black].Should().Be(blackKingBefore);
+        board.GetKing(PieceColor.White).Should().Be(whiteKingBefore);
+        board.GetKing(PieceColor.Black).Should().Be(blackKingBefore);
 
         board.State.Should().BeEquivalentTo(stateBefore, options =>
             options.WithStrictOrdering());
@@ -360,8 +358,8 @@ public class BoardTests
         var whitePiecesBefore = board.Pieces[PieceColor.White].ToList();
         var blackPiecesBefore = board.Pieces[PieceColor.Black].ToList();
 
-        var whiteKingBefore = board.Kings[PieceColor.White];
-        var blackKingBefore = board.Kings[PieceColor.Black];
+        var whiteKingBefore = board.GetKing(PieceColor.White);
+        var blackKingBefore = board.GetKing(PieceColor.Black);
 
         var stateBefore = BoardHelpers.CopyState(board.State);
 
@@ -377,8 +375,8 @@ public class BoardTests
         board.Pieces[PieceColor.White].Should().BeEquivalentTo(whitePiecesBefore);
         board.Pieces[PieceColor.Black].Should().BeEquivalentTo(blackPiecesBefore);
 
-        board.Kings[PieceColor.White].Should().Be(whiteKingBefore);
-        board.Kings[PieceColor.Black].Should().Be(blackKingBefore);
+        board.GetKing(PieceColor.White).Should().Be(whiteKingBefore);
+        board.GetKing(PieceColor.Black).Should().Be(blackKingBefore);
 
         board.State.Should().BeEquivalentTo(stateBefore, options =>
             options.WithStrictOrdering());

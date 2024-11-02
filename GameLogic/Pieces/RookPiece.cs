@@ -47,7 +47,7 @@ public class RookPiece : Piece
     public bool CanCastle()
     {
         // Ensure there is a king to castle with
-        var king = _board.Kings[Color];
+        var king = _board.GetKing(Color);
 
         if (king == null)
             return false;

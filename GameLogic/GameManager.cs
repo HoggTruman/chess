@@ -2,6 +2,7 @@ using GameLogic.Enums;
 using GameLogic.Helpers;
 using GameLogic.Interfaces;
 using GameLogic.Moves;
+using GameLogic.Pieces;
 
 namespace GameLogic;
 
@@ -29,6 +30,14 @@ public class GameManager
     /// </summary>
     public bool ActivePlayerUnderCheck { get; private set; }
 
+    /// <summary>
+    /// The KingPiece of the active player.
+    /// </summary>
+    public KingPiece ActivePlayerKing
+    {
+        get => Board.GetKing(ActivePlayerColor);
+    }
+
     #endregion
 
 
@@ -49,7 +58,7 @@ public class GameManager
         }
         
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
-        ActivePlayerUnderCheck = Board.Kings[ActivePlayerColor].IsChecked();
+        ActivePlayerUnderCheck = Board.GetKing(ActivePlayerColor).IsChecked();
     }
 
     #endregion
@@ -67,7 +76,7 @@ public class GameManager
         Board.Initialize();
         ActivePlayerColor = PieceColor.White;
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
-        ActivePlayerUnderCheck = Board.Kings[ActivePlayerColor].IsChecked();
+        ActivePlayerUnderCheck = Board.GetKing(ActivePlayerColor).IsChecked();
     }
 
 
@@ -129,7 +138,7 @@ public class GameManager
     {
         ActivePlayerColor = ColorHelpers.Opposite(ActivePlayerColor);
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
-        ActivePlayerUnderCheck = Board.Kings[ActivePlayerColor].IsChecked();
+        ActivePlayerUnderCheck = Board.GetKing(ActivePlayerColor).IsChecked();
     }
 
 

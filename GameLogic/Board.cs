@@ -21,11 +21,21 @@ public class Board
 
 
 
+    #region fields
+
+    private readonly Dictionary<PieceColor, KingPiece?> _kingPieces = new()
+    {
+        [PieceColor.White] = null,
+        [PieceColor.Black] = null
+    };
+
+    #endregion
+
+
+
     #region Properties
 
     public IPiece?[,] State { get; set; }
-
-    public Dictionary<PieceColor, KingPiece> Kings { get; }
 
     public Dictionary<PieceColor, List<IPiece>> Pieces { get; }
 
@@ -43,11 +53,6 @@ public class Board
     public Board()
     {
         State = new IPiece?[BoardSize, BoardSize];
-        Kings = new()
-        {
-            [PieceColor.White] = null,
-            [PieceColor.Black] = null
-        };
         Pieces = new()
         {
             [PieceColor.White] = [],
@@ -146,12 +151,12 @@ public class Board
         // Handle king case
         if (piece is KingPiece)
         {
-            if (Kings[color] != null)
+            if (_kingPieces[color] != null)
             {   
                 throw new ArgumentException($"{color} King already exists on the board");
             }
 
-            Kings[color] = (piece as KingPiece)!;
+            _kingPieces[color] = (piece as KingPiece)!;
         }
         
         // Update the board state with the piece
@@ -180,6 +185,18 @@ public class Board
 
 
     /// <summary>
+    /// Gets the KingPiece of specificied color.
+    /// </summary>
+    /// <param name="color">The PieceColor of the king.</param>
+    /// <returns>A KingPiece.</returns>
+    /// <exception cref="Exception"></exception>
+    public KingPiece GetKing(PieceColor color)
+    {
+        return _kingPieces[color] ?? throw new Exception($"Board does not contain a {color} king");
+    }
+
+
+    /// <summary>
     /// Determines if a player will leave themself in check by moving the piece at "from" to "to".
     /// For En Passant, pass in the captured pawn's square as the "epCaptured" parameter.
     /// Castling does its own verification and is not passed through this method.
@@ -200,7 +217,7 @@ public class Board
         }
             
         // Return false when no king.
-        if (Kings[movingPiece.Color] == null)
+        if (_kingPieces[movingPiece.Color] == null)
         {
             return false;
         }
@@ -226,7 +243,7 @@ public class Board
         }
 
         // Record the result
-        bool result = Kings[movingPiece.Color].IsChecked();
+        bool result = GetKing(movingPiece.Color).IsChecked();
 
         // Roll back pieces
         MovePiece(to, from);

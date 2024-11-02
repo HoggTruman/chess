@@ -165,7 +165,7 @@ public partial class GameWindow : Window
             ClearHighlights();
             if (_gameManager.ActivePlayerUnderCheck)
             {
-                var king = _gameManager.Board.Kings[_gameManager.ActivePlayerColor];
+                var king = _gameManager.ActivePlayerKing;
                 HighlightSquare(king.Square, CheckBrush);
             }
         }      
@@ -196,7 +196,7 @@ public partial class GameWindow : Window
         // Highlight the next player's king square if under check
         if (_gameManager.ActivePlayerUnderCheck)
         {
-            var king = _gameManager.Board.Kings[_gameManager.ActivePlayerColor];
+            var king = _gameManager.ActivePlayerKing;
             HighlightSquare(king.Square, CheckBrush);
         }
 
