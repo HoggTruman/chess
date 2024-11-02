@@ -30,7 +30,7 @@ public class GameServer
     public void Start()
     {
         _tcpListener.Start();
-        Console.WriteLine("Server is listening for connections...");
+        Logger.LogListening();
         _ = AcceptClients();
     }
 
@@ -45,7 +45,7 @@ public class GameServer
 
                 if (tcpClient.Connected)
                 {
-                    Console.WriteLine($"[{DateTime.Now}] Client connected with IP {tcpClient.Client.RemoteEndPoint}");
+                    Logger.LogConnectedClient(tcpClient);
                     Client client = new(tcpClient, new CancellationTokenSource());
                     _clientTasks[client] = Task.Run(() => StartClientCommunications(client));
                     Clients[client.Id] = client;                
@@ -53,7 +53,7 @@ public class GameServer
             }
             catch (SocketException ex)
             {
-                Console.WriteLine($"[{DateTime.Now}] SocketException: {ex}");
+                Logger.LogException(ex);
             }
             catch (OperationCanceledException)
             {
@@ -61,7 +61,7 @@ public class GameServer
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[{DateTime.Now}] {ex}");
+                Logger.LogException(ex);
             }
         }
     }
@@ -80,7 +80,7 @@ public class GameServer
             return;
         }
 
-        Console.WriteLine($"[{DateTime.Now}] Server shutting down");
+        Logger.LogShuttingDown();
 
         // Stops the server accepting new clients
         _cancellationTokenSource.Cancel();        
@@ -124,14 +124,14 @@ public class GameServer
             }
             catch (IOException)
             {
-                Console.WriteLine($"[{DateTime.Now}] Lost connection to client with IP {client.TcpClient.Client.RemoteEndPoint}");
+                Logger.LogLostConnectionToClient(client);
                 Room room = Rooms[client.RoomId];
                 PieceColor winnerColor = room.GetOpponentColor(client);
                 await CloseRoom(client.RoomId, winnerColor); 
             }
         }        
         
-        Console.WriteLine($"[{DateTime.Now}] Disconnected client with IP {client.TcpClient.Client.RemoteEndPoint}");
+        Logger.LogDisconnectedClient(client);
         Clients.Remove(client.Id);
         _clientTasks.Remove(client);        
         client.TcpClient.Close();
@@ -244,7 +244,7 @@ public class GameServer
             }
             catch (IOException)
             {
-                Console.WriteLine($"[{DateTime.Now}] Lost connection to client with IP {client.TcpClient.Client.RemoteEndPoint}");
+                Logger.LogLostConnectionToClient(client);
             }
         }
     }
@@ -309,7 +309,7 @@ public class GameServer
     /// <param name="client">The Client object of the client to disconnect.</param>
     public async void HandleUnknownMessageType(Client client)
     {
-        Console.WriteLine($"Invalid Message received from client with IP {client.TcpClient.Client.RemoteEndPoint}");
+        Logger.LogInvalidMessageReceived(client);
 
         if (Rooms.TryGetValue(client.RoomId, out Room? room) &&
             room != null)
@@ -343,7 +343,7 @@ public class GameServer
         }
         catch (IOException)
         {
-            Console.WriteLine($"[{DateTime.Now}] Lost connection to client with IP {client.TcpClient.Client.RemoteEndPoint}");
+            Logger.LogLostConnectionToClient(client);
             await CloseRoom(client.RoomId, PieceColor.None);            
         }        
     }
@@ -373,7 +373,7 @@ public class GameServer
             }
             catch (IOException)
             {
-                Console.WriteLine($"[{DateTime.Now}] Lost connection to client with IP {client.TcpClient.Client.RemoteEndPoint}");
+                Logger.LogLostConnectionToClient(client);
                 await CloseRoom(client.RoomId, PieceColor.None);
             }
 
@@ -386,7 +386,7 @@ public class GameServer
             }
             catch (IOException)
             {
-                Console.WriteLine($"[{DateTime.Now}] Lost connection to client with IP {host.TcpClient.Client.RemoteEndPoint}");
+                Logger.LogLostConnectionToClient(host);
             }
         }
         else if (response == ServerMessage.RoomNotFound)
@@ -399,7 +399,7 @@ public class GameServer
             }
             catch (IOException)
             {
-                Console.WriteLine($"[{DateTime.Now}] Lost connection to client with IP {client.TcpClient.Client.RemoteEndPoint}");
+                Logger.LogLostConnectionToClient(client);
             }
         }
         else if (response == ServerMessage.RoomFull)
@@ -410,9 +410,9 @@ public class GameServer
                 await client.Stream.WriteAsync(joinerMessage, client.Token);
                 client.CancellationTokenSource.Cancel();
             }
-            catch
+            catch (IOException)
             {
-                Console.WriteLine($"[{DateTime.Now}] Lost connection to client with IP {client.TcpClient.Client.RemoteEndPoint}");
+                Logger.LogLostConnectionToClient(client);
             }            
         }
     }
