@@ -24,9 +24,9 @@ public sealed class ServerClientTests : IAsyncLifetime
     }
 
 
-    public async Task InitializeAsync()
+    public Task InitializeAsync()
     {
-        //await Task.Delay(1000);
+        return Task.CompletedTask;
     }
 
 
