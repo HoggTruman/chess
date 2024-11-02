@@ -172,8 +172,8 @@ public sealed class MoveTests : IAsyncLifetime
     [Fact(Timeout = 1000)]
     public async void RoomClosed_WhenGameOver()
     {
-        ///
-        ///
+        /// Completes a very short game to checkmate, to test that the room is closed
+        /// at the end of it.
 
         // Move pawn in front of king
         StandardMove whiteMove1 = new((6, 4), (4, 4));
