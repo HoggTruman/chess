@@ -97,6 +97,17 @@ public partial class JoinScreen : UserControl
         _window.Content = startScreen;        
     }
 
+
+    private void PasteButton_Click(object sender, RoutedEventArgs e)
+    {
+        string code = Clipboard.GetText();
+        if (CodeTextBox.IsEnabled &&
+            ValidateCode(code))
+        {
+            CodeTextBox.Text = code;
+        }
+    }
+
     #endregion
 
 
@@ -175,5 +186,6 @@ public partial class JoinScreen : UserControl
     }
 
     #endregion
+
 }
 

@@ -55,6 +55,16 @@
                      MaxLength="9"
                      MaxLines="1"/>
 
+            <Button x:Name="PasteButton"
+                    Content="Paste"
+                    Width="50"
+                    Height="30"
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Margin="80 0 0 0"
+                    Style="{StaticResource ButtonStyle}"
+                    Click="PasteButton_Click"/>
+
 
             <Button x:Name="JoinButton"
                 Content="Join Game"
