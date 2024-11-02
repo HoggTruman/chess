@@ -174,8 +174,7 @@ public partial class JoinScreen : UserControl
 
     private static bool IsValidCode(string code)
     {
-        return code.Length >= 1 &&
-               code.Length <= 9 &&
+        return code.Length == 9 &&
                code.All(char.IsDigit) &&
                code.StartsWith('0') == false;
     }
