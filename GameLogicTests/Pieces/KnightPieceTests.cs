@@ -88,6 +88,27 @@ public class KnightPieceTests
         // Assert
         result.Should().BeEquivalentTo(expected);
     }
+
+
+    [Fact]
+    public void GetReachableSquares_AtEdge_IncludesOnlyInBounds()
+    {
+        // Arrange
+        Board board = new();
+
+        var knight = board.AddNewPiece<KnightPiece>(0, 0, PieceColor.White);
+
+        List<(int row, int col)> expected = [
+            (1, 2),
+            (2, 1),
+        ];
+
+        // Act
+        var result = knight.GetReachableSquares();
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
     
     #endregion
 }

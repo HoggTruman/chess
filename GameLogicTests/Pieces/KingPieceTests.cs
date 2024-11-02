@@ -73,6 +73,28 @@ public class KingPieceTests
         result.Should().BeEquivalentTo(expected);
     }
 
+
+    [Fact]
+    public void GetReachableSquares_AtEdge_IncludesOnlyInBounds()
+    {
+        // Arrange
+        Board board = new();
+
+        var king = board.AddNewPiece<KingPiece>(0, 0, PieceColor.White);
+
+        List<(int row, int col)> expected = [
+            (1, 0),
+            (0, 1),
+            (1, 1)
+        ];
+
+        // Act
+        var result = king.GetReachableSquares();
+
+        // Assert
+        result.Should().BeEquivalentTo(expected);
+    }
+
     #endregion
 
 
