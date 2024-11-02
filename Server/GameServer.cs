@@ -31,7 +31,7 @@ public class GameServer
     {
         _tcpListener.Start();
         Console.WriteLine("Server is listening for connections...");
-        Task.Run(AcceptClients); // exceptions lost??
+        _ = AcceptClients();
     }
 
 
@@ -47,7 +47,7 @@ public class GameServer
                 {
                     Console.WriteLine($"[{DateTime.Now}] Client connected with IP {tcpClient.Client.RemoteEndPoint}");
                     Client client = new(tcpClient, new CancellationTokenSource());
-                    _clientTasks[client] = StartClientCommunications(client);
+                    _clientTasks[client] = Task.Run(() => StartClientCommunications(client));
                     Clients[client.Id] = client;                
                 }
             }
@@ -58,6 +58,10 @@ public class GameServer
             catch (OperationCanceledException)
             {
                 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[{DateTime.Now}] {ex}");
             }
         }
     }
