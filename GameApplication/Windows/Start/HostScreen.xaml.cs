@@ -46,7 +46,7 @@ public partial class HostScreen : UserControl
 
     #region Text
 
-    private const string RoomNotHostedText = "(No Room Hosted)";
+    private const string RoomNotHostedText = "(Not Hosted)";
 
     private const string WaitingForOpponentText = "Waiting for opponent...";
 
@@ -149,7 +149,16 @@ public partial class HostScreen : UserControl
             BlackOptionHighlight.Background = HighlightBrush;
             WhiteOptionHighlight.Background = null;
         }
-    }    
+    }
+
+
+    private void CopyButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (RoomCodeTextBox.Text != RoomNotHostedText)
+        {
+            Clipboard.SetText(RoomCodeTextBox.Text);
+        }        
+    }
 
     #endregion
 

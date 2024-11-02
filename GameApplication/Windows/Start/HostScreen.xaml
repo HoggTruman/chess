@@ -90,7 +90,7 @@
                        Style="{StaticResource TextStyle}"/>
 
             <TextBox x:Name="RoomCodeTextBox"
-                     Text="(No Room Hosted)"
+                     Text="(Not Hosted)"
                      Background="Transparent"
                      BorderThickness="0"
                      IsReadOnly="True"
@@ -101,8 +101,19 @@
                      FontSize="22"
                      VerticalAlignment="Center"
                      HorizontalAlignment="Center"
+                     Margin="0 0 30 0"
                      FontFamily="Arial"
                      Foreground="{StaticResource TextColor}"/>
+
+            <Button x:Name="CopyButton"
+                    Content="Copy"
+                    Grid.Column="1"
+                    Grid.Row="4"
+                    Width="50"
+                    Height="30"
+                    Margin="175 0 0 0"
+                    Style="{StaticResource ButtonStyle}"
+                    Click="CopyButton_Click"/>
 
             <Button x:Name="CancelButton"
                     Content="Cancel Host"
