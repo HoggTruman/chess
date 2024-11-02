@@ -241,7 +241,7 @@ public partial class GameWindow : Window
     /// <summary>
     /// Updates the GameWindow when the game is over.
     /// </summary>
-    private async void HandleGameOver(PieceColor winnerColor, GameOverReason reason)
+    private void HandleGameOver(PieceColor winnerColor, GameOverReason reason)
     {
         if (MenuContainer.Content is GameOverMenu)
         {
@@ -252,11 +252,7 @@ public partial class GameWindow : Window
         MenuContainer.Content = null; // Remove promotion menu        
         ClearHighlights();
 
-        if (_gameClient != null)
-        {
-            await _gameClient.StopListening();
-            _gameClient.Dispose();
-        }
+        _gameClient?.Close();
 
         GameOverMenu gameOverMenu = new(winnerColor, reason, _playerColor);
         MenuContainer.Content = gameOverMenu;

@@ -101,8 +101,7 @@ public partial class HostScreen : UserControl
         CancelButton.IsEnabled = false;
 
         await _gameClient.SendCancelHost();
-        await _gameClient.StopListening();
-        _gameClient.Dispose();            
+        _gameClient.Close();   
         _gameClient = null;
 
         CancelButton.Visibility = Visibility.Hidden;
@@ -116,14 +115,13 @@ public partial class HostScreen : UserControl
     }
 
 
-    private async void Back_Click(object sender, RoutedEventArgs e)
+    private void Back_Click(object sender, RoutedEventArgs e)
     {
         if (_gameClient != null &&
             _gameClient.Connected)
         {
             _gameClient.SendCancelHost().Wait();
-            await _gameClient.StopListening();
-            _gameClient.Dispose();
+            _gameClient.Close();
         }
         
         StartScreen startScreen = new(_window);
@@ -200,14 +198,10 @@ public partial class HostScreen : UserControl
     }
 
 
-    private async void OnCommunicationError()
+    private void OnCommunicationError()
     {
-        if (_gameClient != null)
-        {
-            await _gameClient.StopListening();
-            _gameClient.Dispose();
-            _gameClient = null;   
-        }
+        _gameClient?.Close();
+        _gameClient = null;
 
         HostButton.Visibility = Visibility.Visible;
         CancelButton.Visibility = Visibility.Hidden;

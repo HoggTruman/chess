@@ -22,7 +22,6 @@ public class GameClient : IDisposable
     private NetworkStream? _stream;
     private readonly byte[] _buffer = new byte[32];
     private bool _isDisposed = false;
-    private Task? _listeningTask;
 
     #endregion
 
@@ -36,7 +35,7 @@ public class GameClient : IDisposable
 
     public bool Connected
     {
-        get => _stream != null && _tcpClient.Connected && _isDisposed == false;
+        get => _tcpClient.Connected && _stream != null;
     }
 
     #endregion
@@ -46,17 +45,11 @@ public class GameClient : IDisposable
     #region Events
 
     public event Action<int>? RoomHosted;
-
     public event Action<PieceColor>? StartGame;
-
     public event Action? RoomNotFound;
-
     public event Action? RoomFull;
-
     public event Action<PieceColor>? RoomClosed;
-
     public event Action<IMove>? MoveReceived;
-
     public event Action? CommunicationError;
 
     #endregion
@@ -100,7 +93,7 @@ public class GameClient : IDisposable
         if (_tcpClient.Connected)
         {
             _stream = _tcpClient.GetStream();
-            _listeningTask = Listen();
+            Listen();
             return true;
         }
 
@@ -108,7 +101,10 @@ public class GameClient : IDisposable
     }
 
 
-    private async Task Listen()
+    /// <summary>
+    /// Starts listening for messages from the server.
+    /// </summary>
+    private async void Listen()
     {
         try
         {
@@ -126,7 +122,7 @@ public class GameClient : IDisposable
         }
         catch (OperationCanceledException)
         {
-
+            
         }
         catch (IOException)
         {
@@ -135,17 +131,18 @@ public class GameClient : IDisposable
     }
 
 
-    public async Task StopListening()
+    /// <summary>
+    /// Closes the connection and handles disposal of the GameClient.
+    /// </summary>
+    public void Close()
     {
-        CancellationTokenSource.Cancel();
-
-        if (_listeningTask != null)
-        {            
-            await _listeningTask;
-            _listeningTask = null;
+        if (_isDisposed)
+        {
+            return;
         }
 
-        // handle disposal here, make this a "Close" method??
+        CancellationTokenSource.Cancel();
+        Dispose();
     }
 
 
@@ -162,7 +159,7 @@ public class GameClient : IDisposable
     {
         if (_stream == null)
         {
-            throw new InvalidOperationException("No NetworkSteam to write to. Call ConnectToServer first.");
+            throw new InvalidOperationException("No NetworkStream to write to. Call ConnectToServer first.");
         }
 
         // get message length
