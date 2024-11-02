@@ -1,5 +1,6 @@
 using FluentAssertions;
 using GameLogic;
+using GameLogic.Enums;
 using GameLogic.Helpers;
 using GameLogic.Interfaces;
 using GameLogic.Pieces;
@@ -15,7 +16,7 @@ public class BoardHelperTests
     {
         // Arrange
         Board board = new();
-        QueenPiece testPiece = board.AddNewPiece<QueenPiece>(3, 3);
+        QueenPiece testPiece = board.AddNewPiece<QueenPiece>(3, 3, PieceColor.White);
         IPiece?[,] originalState = board.State;
 
         // Act

@@ -93,8 +93,8 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, PieceColor.White);
 
         // Act
         var result = rook.CanCastle();
@@ -112,10 +112,10 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, PieceColor.White);
 
-        var blockingPiece = board.AddNewPiece<QueenPiece>(StartSquares.WhiteKing.row, blockedCol);
+        var blockingPiece = board.AddNewPiece<QueenPiece>(StartSquares.WhiteKing.row, blockedCol, PieceColor.White);
 
         // Act
         var result = rook.CanCastle();
@@ -178,8 +178,8 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing.row - 1, StartSquares.WhiteKing.col);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing.row - 1, StartSquares.WhiteKing.col, PieceColor.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, PieceColor.White);
 
         StandardMove kingMove = new(king.Square, StartSquares.WhiteKing);
         board.StandardMove(kingMove);
@@ -198,8 +198,8 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK.row - 1, StartSquares.WhiteRookK.col);
+        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
+        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK.row - 1, StartSquares.WhiteRookK.col, PieceColor.White);
 
         StandardMove rookMove = new(rook.Square, StartSquares.WhiteRookK);
         board.StandardMove(rookMove);

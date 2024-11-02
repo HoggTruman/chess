@@ -129,7 +129,7 @@ public class Board
     /// <param name="color">The Color of the new piece.</param>
     /// <returns>The new piece of type <typeparamref name="T"/></returns>
     /// <exception cref="ArgumentException"></exception>
-    public T AddNewPiece<T>(int row, int col, PieceColor color=PieceColor.White) where T : Piece
+    public T AddNewPiece<T>(int row, int col, PieceColor color) where T : Piece
     {
         // Ensure row and col are in-bounds
         if (row < MinIndex || row > MaxIndex ||
@@ -178,7 +178,7 @@ public class Board
     /// <param name="square">The (row, column) square to place the new piece at.</param>
     /// <param name="color">The Color of the new piece.</param>
     /// <returns>The new piece of type <typeparamref name="T"/></returns>
-    public T AddNewPiece<T>((int row, int col) square, PieceColor color = PieceColor.White) where T : Piece
+    public T AddNewPiece<T>((int row, int col) square, PieceColor color) where T : Piece
     {
         return AddNewPiece<T>(square.row, square.col, color);
     }

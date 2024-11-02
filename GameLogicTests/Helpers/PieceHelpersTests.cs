@@ -1,5 +1,6 @@
 using FluentAssertions;
 using GameLogic;
+using GameLogic.Enums;
 using GameLogic.Helpers;
 using GameLogic.Pieces;
 
@@ -50,10 +51,10 @@ public class PieceHelpersTests
 		int testRow = 4;
 		int testCol = 4;
 
-		var queen1 = board.AddNewPiece<QueenPiece>(testRow, 2);
-		var queen2 = board.AddNewPiece<QueenPiece>(testRow, 6);
-		var queen3 = board.AddNewPiece<QueenPiece>(2, testCol);
-		var queen4 = board.AddNewPiece<QueenPiece>(6, testCol);
+		var queen1 = board.AddNewPiece<QueenPiece>(testRow, 2, PieceColor.White);
+		var queen2 = board.AddNewPiece<QueenPiece>(testRow, 6, PieceColor.White);
+		var queen3 = board.AddNewPiece<QueenPiece>(2, testCol, PieceColor.White);
+		var queen4 = board.AddNewPiece<QueenPiece>(6, testCol, PieceColor.White);
 
 		List<(int row, int col)> expected = [
 			new(testRow, 3),
@@ -148,10 +149,10 @@ public class PieceHelpersTests
 		int testRow = 3;
 		int testCol = 4;
 		
-		var queen1 = board.AddNewPiece<QueenPiece>(testRow, testCol - 1);
-		var queen2 = board.AddNewPiece<QueenPiece>(testRow, testCol + 1);
-		var queen3 = board.AddNewPiece<QueenPiece>(testRow - 1, testCol);
-		var queen4 = board.AddNewPiece<QueenPiece>(testRow + 1, testCol);
+		var queen1 = board.AddNewPiece<QueenPiece>(testRow, testCol - 1, PieceColor.White);
+		var queen2 = board.AddNewPiece<QueenPiece>(testRow, testCol + 1, PieceColor.White);
+		var queen3 = board.AddNewPiece<QueenPiece>(testRow - 1, testCol, PieceColor.White);
+		var queen4 = board.AddNewPiece<QueenPiece>(testRow + 1, testCol, PieceColor.White);
 
 		List<(int row, int col)> expected = [
 			new(testRow, testCol - 1),
@@ -239,10 +240,10 @@ public class PieceHelpersTests
 		int testRow = 3;
 		int testCol = 4;
 
-		var queen1 = board.AddNewPiece<QueenPiece>(testRow - 1, testCol - 1);
-		var queen2 = board.AddNewPiece<QueenPiece>(testRow + 1, testCol + 1);
-		var queen3 = board.AddNewPiece<QueenPiece>(testRow - 1, testCol + 1);
-		var queen4 = board.AddNewPiece<QueenPiece>(testRow + 1, testCol - 1);
+		var queen1 = board.AddNewPiece<QueenPiece>(testRow - 1, testCol - 1, PieceColor.White);
+		var queen2 = board.AddNewPiece<QueenPiece>(testRow + 1, testCol + 1, PieceColor.White);
+		var queen3 = board.AddNewPiece<QueenPiece>(testRow - 1, testCol + 1, PieceColor.White);
+		var queen4 = board.AddNewPiece<QueenPiece>(testRow + 1, testCol - 1, PieceColor.White);
 
 		List<(int row, int col)> expected = [
 			new(testRow - 1, testCol - 1),
