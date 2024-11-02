@@ -64,7 +64,7 @@ public partial class JoinScreen : UserControl
         CodeTextBox.IsEnabled = false;
 
         string stringCode = CodeTextBox.Text;
-        if (ValidateCode(stringCode) == false)
+        if (IsValidCode(stringCode) == false)
         {
             JoinStatusTextBox.Text = InvalidCodeText;
             JoinButton.IsEnabled = true;
@@ -102,7 +102,7 @@ public partial class JoinScreen : UserControl
     {
         string code = Clipboard.GetText();
         if (CodeTextBox.IsEnabled &&
-            ValidateCode(code))
+            IsValidCode(code))
         {
             CodeTextBox.Text = code;
         }
@@ -172,17 +172,12 @@ public partial class JoinScreen : UserControl
 
     #region Other Methods
 
-    private static bool ValidateCode(string code)
+    private static bool IsValidCode(string code)
     {
-        if (code.Length < 1 ||
-            code.Length > 9 ||
-            code.All(char.IsDigit) == false ||
-            code.StartsWith('0'))
-        {
-            return false;
-        }
-
-        return true;
+        return code.Length >= 1 &&
+               code.Length <= 9 &&
+               code.All(char.IsDigit) &&
+               code.StartsWith('0') == false;
     }
 
     #endregion
