@@ -93,7 +93,6 @@ public class GameClient : IDisposable
         if (_tcpClient.Connected)
         {
             _stream = _tcpClient.GetStream();
-            Listen();
             return true;
         }
 
@@ -104,7 +103,7 @@ public class GameClient : IDisposable
     /// <summary>
     /// Starts listening for messages from the server.
     /// </summary>
-    private async void Listen()
+    public async Task StartListening()
     {
         try
         {
