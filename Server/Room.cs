@@ -2,23 +2,33 @@
 using GameLogic.Enums;
 using GameLogic.Helpers;
 using GameLogic.Interfaces;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 
 namespace Server;
-    
+
 public class Room
 {
     #region fields
 
-    private static int _roomCount;
+    private readonly GameManager _gameManager;
 
-    private GameManager _gameManager;
-
-    private List<Client> _players = [];
-
-    private Dictionary<Client, PieceColor> _playerColors = [];
+    private readonly static Random _random = new();
+    private readonly static ConcurrentDictionary<int, byte> _activeIds = [];
+    
+    private readonly List<Client> _players = [];
+    private readonly Dictionary<Client, PieceColor> _playerColors = [];
 
     private bool _isLocked;
+
+    #endregion
+
+
+
+    #region Constants
+
+    private const int MinRoomId = 100000000;
+    private const int MaxRoomId = 999999999;
 
     #endregion
 
@@ -174,9 +184,37 @@ public class Room
     }
 
 
-    private int GenerateRoomId()
+    /// <summary>
+    /// Allows the room's Id to be reused.
+    /// </summary>
+    public void Close()
     {
-        return ++_roomCount;
+        _activeIds.Remove(Id, out _);
     }
+
+
+    private static int GenerateRoomId()
+    {
+        if (_activeIds.Count == MaxRoomId - MinRoomId + 1)
+        {
+            throw new Exception("Room capacity reached.");
+        }
+
+        int id = _random.Next(MinRoomId, MaxRoomId);
+        while (_activeIds.ContainsKey(id))
+        {
+            id++;
+
+            if (id > MaxRoomId)
+            {
+                id = MinRoomId;
+            }
+        }
+
+        _activeIds[id] = 0;
+
+        return id;
+    }
+
 }
 

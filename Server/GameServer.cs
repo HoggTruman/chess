@@ -225,6 +225,7 @@ public class GameServer
     private async Task CloseRoom(int roomId, PieceColor winnerColor)
     {
         Room room = Rooms[roomId];
+        room.Close();
         Rooms.Remove(roomId);
 
         foreach(Client client in room.Players)
