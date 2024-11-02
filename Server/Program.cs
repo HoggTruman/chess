@@ -14,5 +14,6 @@ server.Start();
 
 Console.WriteLine("Press key to shut down");
 Console.ReadKey();
+Console.WriteLine();
 await server.ShutDown();
 
