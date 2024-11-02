@@ -29,14 +29,10 @@ public class GameClient : IDisposable
 
     #region Properties
 
-    public CancellationTokenSource CancellationTokenSource { get; } = new();
-    
+    public CancellationTokenSource CancellationTokenSource { get; } = new();    
     public CancellationToken Token { get; }
 
-    public bool Connected
-    {
-        get => _tcpClient.Connected && _stream != null;
-    }
+    public bool Connected { get; private set; }
 
     #endregion
 
@@ -79,24 +75,22 @@ public class GameClient : IDisposable
         try
         {
             await _tcpClient.ConnectAsync(ipEndpoint, Token);
+            if (_tcpClient.Connected)
+            {
+                _stream = _tcpClient.GetStream();
+                Connected = true;
+            }
         }
         catch (SocketException)
         {
             CommunicationError?.Invoke();
-            return false;
         }
         catch (OperationCanceledException)
         {
-            return false;
-        }        
-
-        if (_tcpClient.Connected)
-        {
-            _stream = _tcpClient.GetStream();
-            return true;
+            
         }
 
-        return false;
+        return Connected;
     }
 
 
