@@ -57,6 +57,7 @@ public class Room
 
 
 
+    #region Constructors
 
     public Room(Client hostClient, PieceColor hostColor)
     {
@@ -67,12 +68,11 @@ public class Room
         _playerColors[hostClient] = hostColor;
     }
 
+    #endregion
 
-    public void StartNewGame()
-    {
-        _gameManager.StartNewGame();
-    }
+    
 
+    #region Public Methods
 
     /// <summary>
     /// Attempts to add a Client to the room.
@@ -116,6 +116,12 @@ public class Room
     }
 
 
+    /// <summary>
+    /// Gets the PieceColor of the client's opponent.
+    /// </summary>
+    /// <param name="client"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public PieceColor GetOpponentColor(Client client)
     {
         if (_playerColors.TryGetValue(client, out PieceColor playerColor))
@@ -192,6 +198,11 @@ public class Room
         _activeIds.Remove(Id, out _);
     }
 
+    #endregion
+
+
+
+    #region Private Methods
 
     private static int GenerateRoomId()
     {
@@ -215,6 +226,8 @@ public class Room
 
         return id;
     }
+
+    #endregion
 
 }
 
