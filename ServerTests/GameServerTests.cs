@@ -1,11 +1,31 @@
 using FluentAssertions;
+using NetworkShared;
 using Server;
+using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
 namespace ServerTests;
 
 public class GameServerTests
 {
+    private readonly TcpListener _tcpListener;
 
+    public GameServerTests()
+    {
+        IPEndPoint ipEndPoint = new(IPAddress.Parse(ServerInfo.IpAddress), ServerInfo.Port);
+        _tcpListener = new(ipEndPoint);
+    }
+
+    
+
+    [Fact]
+    public async void ServerStartsAndShutsDown()
+    {
+        // Arrange 
+        GameServer server = new(_tcpListener);
+
+        // Act
+        server.Start();
+        await server.ShutDown();
+    }
 }
