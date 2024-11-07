@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerTests", "ServerTests\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerClientIntegrationTests", "ServerClientIntegrationTests\ServerClientIntegrationTests.csproj", "{B6F826E8-F593-4437-91BB-783607D2FE56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkSharedTests", "NetworkSharedTests\NetworkSharedTests.csproj", "{60980647-DF29-471E-A14C-73EB21BDC34E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetworkSharedTests", "NetworkSharedTests\NetworkSharedTests.csproj", "{60980647-DF29-471E-A14C-73EB21BDC34E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientTests", "ClientTests\ClientTests.csproj", "{89F628A9-8E3D-40FA-BF49-8F6527DF90E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{60980647-DF29-471E-A14C-73EB21BDC34E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60980647-DF29-471E-A14C-73EB21BDC34E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60980647-DF29-471E-A14C-73EB21BDC34E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89F628A9-8E3D-40FA-BF49-8F6527DF90E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89F628A9-8E3D-40FA-BF49-8F6527DF90E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89F628A9-8E3D-40FA-BF49-8F6527DF90E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89F628A9-8E3D-40FA-BF49-8F6527DF90E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
