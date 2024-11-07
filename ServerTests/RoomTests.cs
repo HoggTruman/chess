@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using GameLogic.Enums;
+using GameLogic.Moves;
 using Moq;
 using Server;
 using Server.Interfaces;
@@ -170,21 +171,60 @@ public class RoomTests
         Room room = new(hostClient, PieceColor.White);
         room.TryJoin(joinerClient);
 
-        // Move 
+        StandardMove move = new((6, 1), (5, 1));
+
+        // Act
+        bool result = room.TryMove(hostClient, move);
+
+        // Assert
+        result.Should().BeTrue();
     }
 
 
-    [Fact]
-    public void TryMove_WithInvalidMove_ReturnsFalse()
+    [Theory]
+    [InlineData(6, 1, 3, 1)]
+    [InlineData(4, 4, 4, 3)]
+    [InlineData(1, 1, 2, 1)]
+    public void TryMove_WithInvalidMove_ReturnsFalse(int fromRow, int fromCol, int toRow, int toCol)
     {
+        // Arrange
+        var mockHost = new Mock<IClient>();
+        var hostClient = mockHost.Object;
+        var mockJoiner = new Mock<IClient>();
+        var joinerClient = mockJoiner.Object;
 
+        Room room = new(hostClient, PieceColor.White);
+        room.TryJoin(joinerClient);
+
+        StandardMove move = new((fromRow, fromCol), (toRow, toCol));
+
+        // Act
+        bool result = room.TryMove(hostClient, move);
+
+        // Assert
+        result.Should().BeFalse();
     }
 
 
     [Fact]
     public void TryMove_WhenNotPlayersTurn_ReturnsFalse()
     {
+        // Arrange
+        var mockHost = new Mock<IClient>();
+        var hostClient = mockHost.Object;
+        var mockJoiner = new Mock<IClient>();
+        var joinerClient = mockJoiner.Object;
 
+        Room room = new(hostClient, PieceColor.Black);
+        room.TryJoin(joinerClient);
+
+        StandardMove move = new((1, 1), (2, 1));
+
+        // Act
+        bool result = room.TryMove(hostClient, move);
+
+        // Assert
+        result.Should().BeFalse();
     }
 
     #endregion
