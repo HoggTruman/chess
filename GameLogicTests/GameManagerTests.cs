@@ -285,10 +285,7 @@ public class GameManagerTests
         // to those that hold the player's pieces on the board
 
         // Arrange
-        Board board = new();
-        board.Initialize();
-
-        GameManager gameManager = new(board);
+        GameManager gameManager = new();
 
         // Act
         var result = gameManager.GetPlayerMoves(playerColor);
@@ -310,6 +307,44 @@ public class GameManagerTests
                 }
             }
         }
+    }
+
+    #endregion
+
+
+
+    #region IsValidMove Tests
+
+    [Fact]
+    public void IsValidMove_WithValidMove_ReturnsTrue()
+    {
+        // Arrange
+        GameManager gameManager = new();
+        StandardMove move = new((6, 1), (5, 1));
+
+        // Act
+        bool result = gameManager.IsValidMove(move);
+
+        //Assert
+        Assert.True(result);
+    }
+
+
+    [Theory]
+    [InlineData(6, 1, 3, 1)]
+    [InlineData(4, 4, 4, 3)]
+    [InlineData(1, 1, 2, 1)]
+    public void IsValidMove_WithInvalidMove_ReturnsFalse(int fromRow, int fromCol, int toRow, int toCol)
+    {
+        // Arrange
+        GameManager gameManager = new();
+        StandardMove move = new((fromRow, fromCol), (toRow, toCol));
+
+        // Act
+        bool result = gameManager.IsValidMove(move);
+
+        //Assert
+        Assert.False(result);
     }
 
     #endregion
