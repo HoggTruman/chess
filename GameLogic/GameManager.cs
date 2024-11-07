@@ -106,6 +106,24 @@ public class GameManager
 
 
     /// <summary>
+    /// Checks if a move is valid.
+    /// </summary>
+    /// <param name="move">An IMove to test.</param>
+    /// <returns>true for a valid move. Otherwise, false</returns>
+    public bool IsValidMove(IMove move)
+    {
+        var validMoves = ActivePlayerMoves[move.From.row, move.From.col];
+
+        if (validMoves == null)
+        {
+            return false;
+        }
+
+        return validMoves.Any(x => x.IsEquivalentTo(move));
+    }
+
+
+    /// <summary>
     /// Updates the board based on the provided move.
     /// </summary>
     /// <param name="move">A move to carry out</param>

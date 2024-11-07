@@ -142,31 +142,15 @@ public class Room
     /// <returns>true if the move is valid. Otherwise, false.</returns>
     public bool TryMove(IClient client, IMove playerMove)
     {
-        if (_gameManager.ActivePlayerColor != _playerColors[client])
+        if (_gameManager.ActivePlayerColor != _playerColors[client] ||
+            _gameManager.IsValidMove(playerMove) == false)
         {
-            // Return false if it is not the client's turn to move.
             return false;
         }
 
-        var validMoves = _gameManager.ActivePlayerMoves[playerMove.From.row, playerMove.From.col];
-
-        if (validMoves == null)
-        {
-            // Return false if the from square does not contain one of the client's pieces. 
-            return false;
-        }
-
-        foreach (IMove move in validMoves)
-        {
-            if (playerMove.IsEquivalentTo(move))
-            {
-                _gameManager.HandleMove(move);
-                _gameManager.SwitchTurn();
-                return true;
-            }
-        }
-
-        return false;
+        _gameManager.HandleMove(playerMove);
+        _gameManager.SwitchTurn();
+        return true;
     }
 
 
