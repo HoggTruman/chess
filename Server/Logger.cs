@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using Server.Interfaces;
+using System.Net.Sockets;
 
 namespace Server;
 
@@ -32,17 +33,17 @@ public static class Logger
         Log($"Connected client with IP {tcpClient.Client.RemoteEndPoint}");
     }
 
-    public static void LogLostConnectionToClient(Client client)
+    public static void LogLostConnectionToClient(IClient client)
     {
         Log($"Lost connection to client with IP {client.TcpClient.Client.RemoteEndPoint}");
     }
 
-    public static void LogDisconnectedClient(Client client)
+    public static void LogDisconnectedClient(IClient client)
     {
         Log($"Disconnected client with IP {client.TcpClient.Client.RemoteEndPoint}");
     }
 
-    public static void LogInvalidMessageReceived(Client client)
+    public static void LogInvalidMessageReceived(IClient client)
     {
         Log($"Invalid Message received from client with IP {client.TcpClient.Client.RemoteEndPoint}");
     }

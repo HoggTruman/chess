@@ -1,8 +1,9 @@
-﻿using System.Net.Sockets;
+﻿using Server.Interfaces;
+using System.Net.Sockets;
 
 namespace Server;
 
-public class Client
+public class Client : IClient
 {
     private static int _count = 0;    
 

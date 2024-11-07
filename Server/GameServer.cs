@@ -4,6 +4,7 @@ using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Client;
 using NetworkShared.Messages.Server;
+using Server.Interfaces;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
 
@@ -11,9 +12,9 @@ namespace Server;
 
 public class GameServer
 {
-    public Dictionary<int, Client> Clients = [];
+    public Dictionary<int, IClient> Clients = [];
     public Dictionary<int, Room> Rooms = [];
-    private readonly Dictionary<Client, Task> _clientTasks = [];
+    private readonly Dictionary<IClient, Task> _clientTasks = [];
 
     private readonly TcpListener _tcpListener;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
@@ -85,7 +86,7 @@ public class GameServer
         // Stops the server accepting new clients
         _cancellationTokenSource.Cancel();        
 
-        foreach (Client client in Clients.Values)
+        foreach (IClient client in Clients.Values)
         {
             try
             {
@@ -105,7 +106,7 @@ public class GameServer
     }
 
 
-    private async Task StartClientCommunications(Client client)
+    private async Task StartClientCommunications(IClient client)
     {
         while (client.TcpClient.Connected &&
                client.Token.IsCancellationRequested == false)
@@ -178,7 +179,7 @@ public class GameServer
     /// <param name="inMsg">The message received from the client.</param>
     /// <returns></returns>
     /// <exception cref="OperationCanceledException"></exception>
-    private async Task HandleClientMessage(Client client, byte[] inMsg)
+    private async Task HandleClientMessage(IClient client, byte[] inMsg)
     {
         client.Token.ThrowIfCancellationRequested();
 
@@ -228,7 +229,7 @@ public class GameServer
         room.Close();
         Rooms.Remove(roomId);
 
-        foreach(Client client in room.Players)
+        foreach(IClient client in room.Players)
         {
             try
             {
@@ -259,7 +260,7 @@ public class GameServer
     /// </summary>
     /// <param name="client">The Client object of the hosting player.</param>
     /// <param name="hostColor">The PieceColor of the hosting player.</param>
-    public void HandleHostRoom(Client client, PieceColor hostColor)
+    public void HandleHostRoom(IClient client, PieceColor hostColor)
     {
         Room room = new(client, hostColor);
         Rooms[room.Id] = room;        
@@ -273,7 +274,7 @@ public class GameServer
     /// <param name="client">The Client object for the joining player.</param>
     /// <param name="roomId">The Id of the room to join.</param>
     /// <returns>A ServerMessage enum corresponding to the response.</returns>
-    public ServerMessage HandleJoinRoom(Client client, int roomId)
+    public ServerMessage HandleJoinRoom(IClient client, int roomId)
     {
         if (Rooms.TryGetValue(roomId, out Room? room) == false ||
             room == null)
@@ -297,7 +298,7 @@ public class GameServer
     /// <param name="client">The Client object for the moving player.</param>
     /// <param name="move">The IMove to attempt.</param>
     /// <returns>true if the move is valid and applied successfully. Otherwise, false.</returns>
-    public bool HandleMove(Client client, IMove move)
+    public bool HandleMove(IClient client, IMove move)
     {
         Room room = Rooms[client.RoomId];
         return room.TryMove(client, move);        
@@ -308,7 +309,7 @@ public class GameServer
     /// Disconnects the client and shuts down their room when an unrecognised message is received.
     /// </summary>
     /// <param name="client">The Client object of the client to disconnect.</param>
-    public async void HandleUnknownMessageType(Client client)
+    public async void HandleUnknownMessageType(IClient client)
     {
         Logger.LogInvalidMessageReceived(client);
 
@@ -335,7 +336,7 @@ public class GameServer
     /// </summary>
     /// <param name="client"></param>
     /// <returns></returns>
-    private async Task RespondHostRoom(Client client)
+    private async Task RespondHostRoom(IClient client)
     {
         byte[] outMsg = RoomHostedMessage.Encode(client.RoomId);
         try
@@ -358,7 +359,7 @@ public class GameServer
     /// <param name="response"></param>
     /// <returns></returns>
     /// <exception cref="OperationCanceledException"></exception>
-    private async Task RespondJoinRoom(Client client, ServerMessage response)
+    private async Task RespondJoinRoom(IClient client, ServerMessage response)
     {
         client.Token.ThrowIfCancellationRequested();
 
@@ -379,7 +380,7 @@ public class GameServer
             }
 
             // Try send message to host
-            Client host = room.Host;
+            IClient host = room.Host;
             byte[] hostMessage = StartGameMessage.Encode(room.PlayerColors[host]);
             try
             {                
@@ -428,12 +429,12 @@ public class GameServer
     /// <param name="move">The move to relay to the opponent.</param>
     /// <returns></returns>
     /// <exception cref="OperationCanceledException"></exception>
-    private async Task RespondMove(Client client, bool isValidMove, IMove move)
+    private async Task RespondMove(IClient client, bool isValidMove, IMove move)
     {
         client.Token.ThrowIfCancellationRequested();
 
         Room room = Rooms[client.RoomId];
-        Client opponent = room.GetOpponent(client);
+        IClient opponent = room.GetOpponent(client);
 
         if (isValidMove)
         {

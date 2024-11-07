@@ -2,6 +2,7 @@
 using GameLogic.Enums;
 using GameLogic.Helpers;
 using GameLogic.Interfaces;
+using Server.Interfaces;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 
@@ -16,8 +17,8 @@ public class Room
     private readonly static Random _random = new();
     private readonly static ConcurrentDictionary<int, byte> _activeIds = [];
     
-    private readonly List<Client> _players = [];
-    private readonly Dictionary<Client, PieceColor> _playerColors = [];
+    private readonly List<IClient> _players = [];
+    private readonly Dictionary<IClient, PieceColor> _playerColors = [];
 
     private bool _isLocked;
 
@@ -38,17 +39,17 @@ public class Room
 
     public int Id { get; }
 
-    public ReadOnlyCollection<Client> Players
+    public ReadOnlyCollection<IClient> Players
     {
         get => _players.AsReadOnly();
     }
 
-    public ReadOnlyDictionary<Client, PieceColor> PlayerColors
+    public ReadOnlyDictionary<IClient, PieceColor> PlayerColors
     {
         get => _playerColors.AsReadOnly();
     }
 
-    public Client Host
+    public IClient Host
     {
         get => _players[0];
     }
@@ -59,7 +60,7 @@ public class Room
 
     #region Constructors
 
-    public Room(Client hostClient, PieceColor hostColor)
+    public Room(IClient hostClient, PieceColor hostColor)
     {
         Id = GenerateRoomId();
         _gameManager = new GameManager();
@@ -79,7 +80,7 @@ public class Room
     /// </summary>
     /// <param name="joiningClient"></param>
     /// <returns>true if successful. Otherwise, false</returns>
-    public bool TryJoin(Client joiningClient)
+    public bool TryJoin(IClient joiningClient)
     {
         if (_isLocked || Players.Count != 1)
         {
@@ -102,9 +103,9 @@ public class Room
     /// <param name="client">The Client object of the player</param>
     /// <returns></returns>
     /// <exception cref="Exception">The Room does not contain an opponent</exception>
-    public Client GetOpponent(Client client)
+    public IClient GetOpponent(IClient client)
     {
-        foreach (Client player in Players)
+        foreach (IClient player in Players)
         {
             if (client != player)
             {
@@ -122,7 +123,7 @@ public class Room
     /// <param name="client"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public PieceColor GetOpponentColor(Client client)
+    public PieceColor GetOpponentColor(IClient client)
     {
         if (_playerColors.TryGetValue(client, out PieceColor playerColor))
         {
@@ -139,7 +140,7 @@ public class Room
     /// <param name="client">The Client object of the player attempting to move.</param>
     /// <param name="playerMove">The IMove to attempt.</param>
     /// <returns>true if the move is valid. Otherwise, false.</returns>
-    public bool TryMove(Client client, IMove playerMove)
+    public bool TryMove(IClient client, IMove playerMove)
     {
         if (_gameManager.ActivePlayerColor != _playerColors[client])
         {
