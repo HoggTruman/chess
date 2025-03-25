@@ -43,5 +43,5 @@ public static class StartSquares
     public static readonly Square BlackPawnE = new() { Row = 1, Col = 4};
     public static readonly Square BlackPawnF = new() { Row = 1, Col = 5};
     public static readonly Square BlackPawnG = new() { Row = 1, Col = 6};
-    public static readonly Square BlackPawnH = new() { Row = 1, Col = s7};
+    public static readonly Square BlackPawnH = new() { Row = 1, Col = 7};
 }
