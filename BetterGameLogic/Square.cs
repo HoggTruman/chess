@@ -1,6 +1,6 @@
 ﻿namespace BetterGameLogic;
 
-public readonly struct Square
+public readonly record struct Square
 {
     public Square(int row, int col)
     {
