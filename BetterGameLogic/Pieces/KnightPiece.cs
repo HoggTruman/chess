@@ -1,9 +1,7 @@
-using BetterGameLogic;
 using BetterGameLogic.Constants;
 using BetterGameLogic.Enums;
-using BetterGameLogic.Pieces;
 
-namespace GameLogic.Pieces;
+namespace BetterGameLogic.Pieces;
 
 public class KnightPiece : Piece
 {
