@@ -15,6 +15,12 @@ public class RookPiece : Piece
 
     }
 
+    public RookPiece(Board board, Square square, PieceColor color) 
+        : this(board, square.Row, square.Col, color)
+    {
+        
+    }
+
 
     public override List<Square> GetTargetedSquares()
     {
@@ -39,7 +45,7 @@ public class RookPiece : Piece
     public bool CanCastle()
     {
         // Ensure there is a king to castle with
-        var king = _board.KingPieces[Color];
+        var king = _board.GetKing(Color);
 
         if (king == null ||
             HasMoved() || 
