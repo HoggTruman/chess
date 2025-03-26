@@ -1,10 +1,8 @@
-using BetterGameLogic;
 using BetterGameLogic.Constants;
 using BetterGameLogic.Enums;
 using BetterGameLogic.Helpers;
-using BetterGameLogic.Pieces;
 
-namespace GameLogic.Pieces;
+namespace BetterGameLogic.Pieces;
 
 public class QueenPiece : Piece
 {
@@ -15,6 +13,12 @@ public class QueenPiece : Piece
         : base(board, row, col, color)
     {
 
+    }
+
+    public QueenPiece(Board board, Square square, PieceColor color) 
+        : this(board, square.Row, square.Col, color)
+    {
+        
     }
     
 

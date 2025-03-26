@@ -14,6 +14,12 @@ public class KnightPiece : Piece
 
     }
 
+    public KnightPiece(Board board, Square square, PieceColor color) 
+        : this(board, square.Row, square.Col, color)
+    {
+        
+    }
+
 
     public override List<Square> GetTargetedSquares()
     {

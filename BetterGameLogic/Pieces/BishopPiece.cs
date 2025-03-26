@@ -15,6 +15,12 @@ public class BishopPiece : Piece
     
     }
 
+    public BishopPiece(Board board, Square square, PieceColor color) 
+        : this(board, square.Row, square.Col, color)
+    {
+        
+    }
+
 
     public override List<Square> GetTargetedSquares()
     {
