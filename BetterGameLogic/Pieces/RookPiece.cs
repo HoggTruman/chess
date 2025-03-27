@@ -9,14 +9,14 @@ public class RookPiece : Piece
     public override PieceType PieceType => PieceType.Rook;
     public override int Value => PieceValues.Rook;
 
-    public RookPiece(Board board, int row, int col, PieceColor color)
-        : base(board, row, col, color)
+    public RookPiece(Board board, int row, int col, PieceColor color, Square? startSquare = null)
+        : base(board, row, col, color, startSquare)
     {
 
     }
 
-    public RookPiece(Board board, Square square, PieceColor color) 
-        : this(board, square.Row, square.Col, color)
+    public RookPiece(Board board, Square square, PieceColor color, Square? startSquare = null) 
+        : base(board, square.Row, square.Col, color, startSquare)
     {
         
     }

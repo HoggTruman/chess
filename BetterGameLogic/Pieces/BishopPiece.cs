@@ -9,14 +9,14 @@ public class BishopPiece : Piece
     public override PieceType PieceType => PieceType.Bishop;
     public override int Value => PieceValues.Bishop;
 
-    public BishopPiece(Board board, int row, int col, PieceColor color) 
-        : base(board, row, col, color)
+    public BishopPiece(Board board, int row, int col, PieceColor color, Square? startSquare = null) 
+        : base(board, row, col, color, startSquare)
     {
     
     }
 
-    public BishopPiece(Board board, Square square, PieceColor color) 
-        : this(board, square.Row, square.Col, color)
+    public BishopPiece(Board board, Square square, PieceColor color, Square? startSquare = null) 
+        : base(board, square.Row, square.Col, color, startSquare)
     {
         
     }

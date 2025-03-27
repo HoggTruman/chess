@@ -9,14 +9,14 @@ public class QueenPiece : Piece
     public override PieceType PieceType => PieceType.Queen;
     public override int Value => PieceValues.Queen;
 
-    public QueenPiece(Board board, int row, int col, PieceColor color)
-        : base(board, row, col, color)
+    public QueenPiece(Board board, int row, int col, PieceColor color, Square? startSquare = null)
+        : base(board, row, col, color, startSquare)
     {
 
     }
 
-    public QueenPiece(Board board, Square square, PieceColor color) 
-        : this(board, square.Row, square.Col, color)
+    public QueenPiece(Board board, Square square, PieceColor color, Square? startSquare = null) 
+        : base(board, square.Row, square.Col, color, startSquare)
     {
         
     }

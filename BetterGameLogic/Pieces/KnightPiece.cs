@@ -8,14 +8,14 @@ public class KnightPiece : Piece
     public override PieceType PieceType => PieceType.Knight;
     public override int Value => PieceValues.Knight;
 
-    public KnightPiece(Board board, int row, int col, PieceColor color)
-        : base(board, row, col, color)
+    public KnightPiece(Board board, int row, int col, PieceColor color, Square? startSquare = null)
+        : base(board, row, col, color, startSquare)
     {
 
     }
 
-    public KnightPiece(Board board, Square square, PieceColor color) 
-        : this(board, square.Row, square.Col, color)
+    public KnightPiece(Board board, Square square, PieceColor color, Square? startSquare = null) 
+        : base(board, square.Row, square.Col, color, startSquare)
     {
         
     }
