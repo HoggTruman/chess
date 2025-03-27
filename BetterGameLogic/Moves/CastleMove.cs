@@ -1,4 +1,5 @@
 using BetterGameLogic.Enums;
+using BetterGameLogic.Pieces;
 
 namespace BetterGameLogic.Moves;
 
@@ -41,12 +42,34 @@ public class CastleMove : IMove
 
     public void Apply(Board board)
     {
-        throw new NotImplementedException();
+        if (board.At(From) == null || board.At(RookFrom) == null)
+        {
+            throw new InvalidOperationException("The From / RookFrom square is empty");
+        }
+
+        board.MovePiece(From, To);
+        board.MovePiece(RookFrom, RookTo);
     }
 
-    public void Undo(Board board)
+    public void Undo(Board board, IPiece? capturedPiece)
     {
-        throw new NotImplementedException();
+        if (capturedPiece != null)
+        {
+            throw new ArgumentException("A CastleMove should not capture any pieces");
+        }
+
+        if (board.At(To) == null || board.At(RookTo) == null)
+        {
+            throw new InvalidOperationException("The To / KingTo square is empty");
+        }
+
+        board.MovePiece(To, From);
+        board.MovePiece(RookTo, RookFrom);
+    }
+
+    public bool LeavesPlayerInCheck(Board board)
+    {
+        return false;
     }
 
     public bool MovesSquare(Square square)
@@ -67,5 +90,5 @@ public class CastleMove : IMove
                castleMove.To == To &&
                castleMove.RookFrom == RookFrom &&
                castleMove.RookTo == RookTo;
-    }
+    }    
 }

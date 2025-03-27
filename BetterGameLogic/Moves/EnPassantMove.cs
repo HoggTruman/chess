@@ -1,4 +1,5 @@
 using BetterGameLogic.Enums;
+using BetterGameLogic.Pieces;
 
 namespace BetterGameLogic.Moves;
 
@@ -16,14 +17,48 @@ public class EnPassantMove : SinglePieceMove
         Captured = captured;
     }
 
+
     public override void Apply(Board board)
     {
-        throw new NotImplementedException();
+        if (board.At(From) == null)
+        {
+            throw new InvalidOperationException("The From square is empty");
+        }
+
+        board.RemoveAt(Captured);
+        board.MovePiece(From, To);
     }
 
-    public override void Undo(Board board)
+    public override void Undo(Board board, IPiece? capturedPiece)
     {
-        throw new NotImplementedException();
+        if (capturedPiece == null)
+        {
+            throw new ArgumentException("capturedPiece can not be null for an EnPassantMove");
+        }
+
+        if (board.At(To) == null)
+        {
+            throw new InvalidOperationException("The To square is empty");
+        }
+
+        board.MovePiece(To, From);
+        board.AddPiece(capturedPiece);        
+    }
+
+    public override bool LeavesPlayerInCheck(Board board)
+    {
+        IPiece? movingPiece = board.At(From);
+
+        if (movingPiece == null)
+        {
+            throw new InvalidOperationException("There is no piece on the From square.");
+        }
+        
+        IPiece? captured = board.At(Captured);
+        Apply(board);
+        bool result = board.GetKing(movingPiece.Color).IsUnderCheck();
+        Undo(board, captured);
+        return result;
     }
 
     public override bool IsEquivalentTo(IMove move)

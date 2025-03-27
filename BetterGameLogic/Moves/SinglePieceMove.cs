@@ -1,4 +1,5 @@
 using BetterGameLogic.Enums;
+using BetterGameLogic.Pieces;
 
 namespace BetterGameLogic.Moves;
 
@@ -20,7 +21,23 @@ public abstract class SinglePieceMove : IMove
 
     public abstract void Apply(Board board);    
 
-    public abstract void Undo(Board board);
+    public abstract void Undo(Board board, IPiece? capturedPiece);
+
+    public virtual bool LeavesPlayerInCheck(Board board)
+    {
+        IPiece? movingPiece = board.At(From);
+
+        if (movingPiece == null)
+        {
+            throw new InvalidOperationException("There is no piece on the From square.");
+        }
+        
+        IPiece? captured = board.At(To);
+        Apply(board);
+        bool result = board.GetKing(movingPiece.Color).IsUnderCheck();
+        Undo(board, captured);
+        return result;
+    }
 
 
     public bool MovesSquare(Square square)

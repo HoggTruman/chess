@@ -1,4 +1,5 @@
 using BetterGameLogic.Enums;
+using BetterGameLogic.Pieces;
 
 namespace BetterGameLogic.Moves;
 
@@ -25,12 +26,41 @@ public class PromotionMove : SinglePieceMove
 
     public override void Apply(Board board)
     {
-        throw new NotImplementedException();
+        IPiece? pawn = board.At(From);
+        if (pawn == null)
+        {
+            throw new InvalidOperationException("The From square is empty");
+        }
+        
+        board.RemoveAt(To);
+
+        IPiece promotedPiece;
+        if (PromotedTo == PieceType.Queen) promotedPiece = new QueenPiece(board, To, pawn.Color, pawn.StartSquare);
+        else if (PromotedTo == PieceType.Rook) promotedPiece = new RookPiece(board, To, pawn.Color, pawn.StartSquare);
+        else if (PromotedTo == PieceType.Knight) promotedPiece = new KnightPiece(board, To, pawn.Color, pawn.StartSquare);
+        else if (PromotedTo == PieceType.Bishop) promotedPiece = new BishopPiece(board, To, pawn.Color, pawn.StartSquare);
+        else throw new ArgumentException(@$"{PromotedTo} is not a valid promotion option.");
+        
+        board.RemoveAt(From);
+        board.AddPiece(promotedPiece);
     }
 
-    public override void Undo(Board board)
+    public override void Undo(Board board, IPiece? capturedPiece)
     {
-        throw new NotImplementedException();
+        IPiece? promotedPiece = board.At(To);
+        if (promotedPiece == null)
+        {
+            throw new InvalidOperationException("The To square is empty");
+        }
+
+        PawnPiece pawn = new(board, From, promotedPiece.Color, promotedPiece.StartSquare);
+        board.AddPiece(pawn);
+        board.RemoveAt(To);
+
+        if (capturedPiece != null)
+        {
+            board.AddPiece(capturedPiece);
+        }    
     }
 
 

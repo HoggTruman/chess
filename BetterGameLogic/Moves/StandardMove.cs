@@ -1,4 +1,5 @@
 using BetterGameLogic.Enums;
+using BetterGameLogic.Pieces;
 
 namespace BetterGameLogic.Moves;
 
@@ -18,12 +19,28 @@ public class StandardMove : SinglePieceMove
 
     public override void Apply(Board board)
     {
-        throw new NotImplementedException();
+        if (board.At(From) == null)
+        {
+            throw new InvalidOperationException("The From square is empty");
+        }
+
+        board.RemoveAt(To);
+        board.MovePiece(From, To);
     }
 
-    public override void Undo(Board board)
+    public override void Undo(Board board, IPiece? capturedPiece)
     {
-        throw new NotImplementedException();
+        if (board.At(To) == null)
+        {
+            throw new InvalidOperationException("The To square is empty");
+        }
+
+        board.MovePiece(To, From);
+
+        if (capturedPiece != null)
+        {
+            board.AddPiece(capturedPiece);
+        }        
     }
 
     public override bool IsEquivalentTo(IMove move)
