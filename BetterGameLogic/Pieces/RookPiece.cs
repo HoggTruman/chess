@@ -29,10 +29,8 @@ public class RookPiece : Piece
 
     public override List<Square> GetReachableSquares()
     {
-        var squares = PieceHelpers.GetTargetedRowColSquares(Row, Col, _board);
-
-        // Remove squares with a piece of the same color
-        squares = squares.Where(s => _board.State[s.Row, s.Col]?.Color != Color).ToList();
+        var squares = PieceHelpers.GetTargetedRowColSquares(Row, Col, _board)
+            .Where(s => !_board.IsOccupiedByColor(s, Color)).ToList();
 
         return squares;
     }

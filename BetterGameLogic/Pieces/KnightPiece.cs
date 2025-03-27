@@ -32,19 +32,17 @@ public class KnightPiece : Piece
 
     public override List<Square> GetReachableSquares()
     {
-        // Get all squares in range (including those out of bounds)
-        var squares = GetAllTargetedSquares();
-        squares = squares.Where(Board.IsInBounds);
-
-        // Remove squares with a piece of the same color
-        squares = squares.Where(s => 
-            _board.State[s.Row, s.Col] == null ||
-            _board.State[s.Row, s.Col]!.Color != Color);
+        var squares = GetAllTargetedSquares()
+            .Where(Board.IsInBounds)
+            .Where(s => !_board.IsOccupiedByColor(s, Color));
 
         return squares.ToList();
     }
 
-
+    /// <summary>
+    /// Retrieves all targeted squares including those out of bounds
+    /// </summary>
+    /// <returns></returns>
     private IEnumerable<Square> GetAllTargetedSquares()
     {
         return [

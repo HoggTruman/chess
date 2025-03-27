@@ -34,13 +34,9 @@ public class QueenPiece : Piece
 
     public override List<Square> GetReachableSquares()
     {
-        List<Square> reachableSquares = [];
-        reachableSquares.AddRange(PieceHelpers.GetTargetedRowColSquares(Row, Col, _board));
-        reachableSquares.AddRange(PieceHelpers.GetTargetedDiagonalSquares(Row, Col, _board));
-
-        // Remove squares with a piece of the same color as the moving piece
-        reachableSquares = reachableSquares
-            .Where(s => _board.State[s.Row, s.Col]?.Color != Color)
+        var reachableSquares = PieceHelpers.GetTargetedRowColSquares(Row, Col, _board)
+            .Concat(PieceHelpers.GetTargetedDiagonalSquares(Row, Col, _board))
+            .Where(s => !_board.IsOccupiedByColor(s, Color))
             .ToList();
 
         return reachableSquares;

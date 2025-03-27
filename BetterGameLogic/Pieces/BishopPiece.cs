@@ -29,14 +29,8 @@ public class BishopPiece : Piece
 
     public override List<Square> GetReachableSquares()
     {
-        // Get targeted squares
-        var squares = PieceHelpers.GetTargetedDiagonalSquares(Row, Col, _board);
-
-        // Remove squares with a piece of the same color
-        squares = squares
-            .Where(s => 
-                _board.State[s.Row, s.Col] == null || 
-                _board.State[s.Row, s.Col]!.Color != Color)
+        var squares = PieceHelpers.GetTargetedDiagonalSquares(Row, Col, _board)
+            .Where(s => !_board.IsOccupiedByColor(s, Color))
             .ToList();
 
         return squares;
