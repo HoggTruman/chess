@@ -9,36 +9,12 @@ namespace BetterGameLogic.Moves;
 public record EnPassantMove : Move
 {
     public override MoveType MoveType => MoveType.EnPassant;
-    public Square Captured { get; }
+    public override Square Captured => new(From.Row, To.Col);
 
-    public EnPassantMove(Square from, Square to, Square captured) 
+    public EnPassantMove(Square from, Square to) 
         :base(from, to)
     {
-        Captured = captured;
-    }
-
-
-    public override void Apply(Board board)
-    {
-        IPiece? capturedPiece = board.At(Captured);
-        ApplyWithoutUpdatingHistory(board);
-        board.History.AddEntry(this, capturedPiece);
-    }    
-
-    public override bool LeavesPlayerInCheck(Board board)
-    {
-        IPiece? movingPiece = board.At(From);
-
-        if (movingPiece == null)
-        {
-            throw new InvalidOperationException("There is no piece on the From square.");
-        }
         
-        IPiece? captured = board.At(Captured);
-        ApplyWithoutUpdatingHistory(board);
-        bool result = board.GetKing(movingPiece.Color).IsUnderCheck();
-        UndoWithoutUpdatingHistory(board, captured);
-        return result;
     }
 
 

@@ -121,11 +121,11 @@ public class PawnPiece : Piece
         }
 
         // Add En Passant move if available
-        var enPassantSquares = GetEnPassantSquares();
+        var enPassantSquare = GetEnPassantSquare();
 
-        if (enPassantSquares != null)
+        if (enPassantSquare != null)
         {
-            EnPassantMove enPassantMove = new(Square, enPassantSquares.Value.To, enPassantSquares.Value.Captured);
+            EnPassantMove enPassantMove = new(Square, enPassantSquare.Value);
 
             if (!enPassantMove.LeavesPlayerInCheck(_board))
             {
@@ -138,10 +138,10 @@ public class PawnPiece : Piece
 
 
     /// <summary>
-    /// Returns a tuple of "To" and "Captured" squares if En Passant is possible. Otherwise, returns null
+    /// Returns the "To" square if En Passant is possible. Otherwise, returns null
     /// </summary>
     /// <returns></returns>
-    public (Square To, Square Captured)? GetEnPassantSquares()
+    public Square? GetEnPassantSquare()
     {
         // 1) Checks that there is a last move and that it is a standard move
         // 2) Checks that the last moving piece was a pawn
@@ -156,8 +156,7 @@ public class PawnPiece : Piece
             (Col == lastMove.To.Col - 1 || Col == lastMove.To.Col + 1))
         {
             Square to = new(Row + _fwd, lastMove.To.Col);
-            Square captured = lastMove.To;
-            return (to, captured);
+            return to;
         }
 
         return null;

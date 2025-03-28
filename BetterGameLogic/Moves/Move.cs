@@ -9,6 +9,7 @@ public abstract record Move : IMove
     public abstract MoveType MoveType { get; }
     public Square From { get; }
     public Square To { get; }
+    public virtual Square Captured => To;
 
     public Move(Square from, Square to)
     {
@@ -20,7 +21,7 @@ public abstract record Move : IMove
 
     public virtual void Apply(Board board)
     {
-        IPiece? capturedPiece = board.At(To);
+        IPiece? capturedPiece = board.At(Captured);
         ApplyWithoutUpdatingHistory(board);
         board.History.AddEntry(this, capturedPiece);
     }
@@ -34,10 +35,10 @@ public abstract record Move : IMove
             throw new InvalidOperationException("There is no piece on the From square.");
         }
         
-        IPiece? captured = board.At(To);
+        IPiece? capturedPiece = board.At(Captured);
         ApplyWithoutUpdatingHistory(board);
         bool result = board.GetKing(movingPiece.Color).IsUnderCheck();
-        UndoWithoutUpdatingHistory(board, captured);
+        UndoWithoutUpdatingHistory(board, capturedPiece);
         return result;
     }
 

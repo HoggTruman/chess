@@ -7,6 +7,7 @@ public interface IMove
     MoveType MoveType { get; }
     Square From { get; }
     Square To { get; }
+    Square Captured { get; }
 
     void Apply(Board board);
     bool LeavesPlayerInCheck(Board board);
