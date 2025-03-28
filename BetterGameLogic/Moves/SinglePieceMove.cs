@@ -18,10 +18,9 @@ public abstract class SinglePieceMove : IMove
         To = to;
     }
 
+    
 
-    public abstract void Apply(Board board);    
-
-    public abstract void Undo(Board board, IPiece? capturedPiece);
+    public abstract void Apply(Board board);
 
     public virtual bool LeavesPlayerInCheck(Board board)
     {
@@ -33,9 +32,9 @@ public abstract class SinglePieceMove : IMove
         }
         
         IPiece? captured = board.At(To);
-        Apply(board);
+        ApplyWithoutUpdatingHistory(board);
         bool result = board.GetKing(movingPiece.Color).IsUnderCheck();
-        Undo(board, captured);
+        UndoWithoutUpdatingHistory(board, captured);
         return result;
     }
 
@@ -45,5 +44,9 @@ public abstract class SinglePieceMove : IMove
         return square == From;
     }
 
-    public abstract bool IsEquivalentTo(IMove move);    
+    public abstract bool IsEquivalentTo(IMove move);
+
+    protected abstract void ApplyWithoutUpdatingHistory(Board board);
+
+    protected abstract void UndoWithoutUpdatingHistory(Board board, IPiece? capturedPiece);
 }

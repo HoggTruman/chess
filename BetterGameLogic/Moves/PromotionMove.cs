@@ -26,6 +26,28 @@ public class PromotionMove : SinglePieceMove
 
     public override void Apply(Board board)
     {
+        IPiece? capturedPiece = board.At(To);
+        ApplyWithoutUpdatingHistory(board);
+        board.History.AddEntry(this, capturedPiece);
+    }
+
+    public override bool IsEquivalentTo(IMove move)
+    {
+        if (move.MoveType != MoveType)
+        {
+            return false;
+        }
+
+        PromotionMove promotionMove = (PromotionMove)move;
+
+        return promotionMove.From == From &&
+               promotionMove.To == To &&
+               promotionMove.PromotedTo == PromotedTo;
+    }
+
+
+    protected override void ApplyWithoutUpdatingHistory(Board board)
+    {
         IPiece? pawn = board.At(From);
         if (pawn == null)
         {
@@ -45,7 +67,7 @@ public class PromotionMove : SinglePieceMove
         board.AddPiece(promotedPiece);
     }
 
-    public override void Undo(Board board, IPiece? capturedPiece)
+    protected override void UndoWithoutUpdatingHistory(Board board, IPiece? capturedPiece)
     {
         IPiece? promotedPiece = board.At(To);
         if (promotedPiece == null)
@@ -62,19 +84,4 @@ public class PromotionMove : SinglePieceMove
             board.AddPiece(capturedPiece);
         }    
     }
-
-
-    public override bool IsEquivalentTo(IMove move)
-    {
-        if (move.MoveType != MoveType)
-        {
-            return false;
-        }
-
-        PromotionMove promotionMove = (PromotionMove)move;
-
-        return promotionMove.From == From &&
-               promotionMove.To == To &&
-               promotionMove.PromotedTo == PromotedTo;
-    }    
 }
