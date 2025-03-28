@@ -6,7 +6,7 @@ namespace BetterGameLogic.Moves;
 /// <summary>
 /// An En Passant move. Contains the captured Pawn's square
 /// </summary>
-public record EnPassantMove : SinglePieceMove
+public record EnPassantMove : Move
 {
     public override MoveType MoveType => MoveType.EnPassant;
     public Square Captured { get; }

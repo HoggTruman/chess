@@ -7,7 +7,7 @@ namespace BetterGameLogic.Moves;
 /// <summary>
 /// A standard move, i.e. Not a Castle, Pawn Promotion or En Passant
 /// </summary>
-public record StandardMove : SinglePieceMove
+public record StandardMove : Move
 {
     public override MoveType MoveType => MoveType.Standard;
 
@@ -15,15 +15,6 @@ public record StandardMove : SinglePieceMove
         :base(from, to)
     {
 
-    }
-
-    
-
-    public override void Apply(Board board)
-    {
-        IPiece? capturedPiece = board.At(To);
-        ApplyWithoutUpdatingHistory(board);
-        board.History.AddEntry(this, capturedPiece);
     }
     
 

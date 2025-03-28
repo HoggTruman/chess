@@ -3,16 +3,14 @@ using BetterGameLogic.Pieces;
 
 namespace BetterGameLogic.Moves;
 
-/// <summary>
-/// An abstract class for moves that only move a single piece (any move other than castling)
-/// </summary>
-public abstract record SinglePieceMove : IMove
+
+public abstract record Move : IMove
 {
     public abstract MoveType MoveType { get; }
     public Square From { get; }
     public Square To { get; }
 
-    public SinglePieceMove(Square from, Square to)
+    public Move(Square from, Square to)
     {
         From = from;
         To = to;
@@ -20,7 +18,12 @@ public abstract record SinglePieceMove : IMove
 
     
 
-    public abstract void Apply(Board board);
+    public virtual void Apply(Board board)
+    {
+        IPiece? capturedPiece = board.At(To);
+        ApplyWithoutUpdatingHistory(board);
+        board.History.AddEntry(this, capturedPiece);
+    }
 
     public virtual bool LeavesPlayerInCheck(Board board)
     {
@@ -38,7 +41,7 @@ public abstract record SinglePieceMove : IMove
         return result;
     }
 
-    public bool MovesSquare(Square square)
+    public virtual bool MovesSquare(Square square)
     {
         return square == From;
     }

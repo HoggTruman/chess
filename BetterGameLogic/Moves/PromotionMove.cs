@@ -6,7 +6,7 @@ namespace BetterGameLogic.Moves;
 /// <summary>
 /// A Pawn Promotion move. Contains the PieceType promoted to 
 /// </summary>
-public record PromotionMove : SinglePieceMove
+public record PromotionMove : Move
 {
     public override MoveType MoveType => MoveType.Promotion;
 
@@ -21,14 +21,6 @@ public record PromotionMove : SinglePieceMove
         :base(from, to)
     {
         PromotedTo = promotedTo;
-    }
-
-
-    public override void Apply(Board board)
-    {
-        IPiece? capturedPiece = board.At(To);
-        ApplyWithoutUpdatingHistory(board);
-        board.History.AddEntry(this, capturedPiece);
     }
 
 

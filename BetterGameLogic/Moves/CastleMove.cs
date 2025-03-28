@@ -6,43 +6,40 @@ namespace BetterGameLogic.Moves;
 /// <summary>
 /// A Castle move. Describes movement of the King and Rook
 /// </summary>
-public record CastleMove : IMove
+public record CastleMove : Move
 {
-    public MoveType MoveType { get; } = MoveType.Castle;
+    public override MoveType MoveType => MoveType.Castle;
 
-    public Square From { get; }
-    public Square To { get; }
     public Square RookFrom { get; }
     public Square RookTo { get; }
 
 
     public CastleMove(Square from, Square to, Square rookFrom, Square rookTo) 
+        :base(from, to)
     {
-        From = from;
-        To = to;
         RookFrom = rookFrom;
         RookTo = rookTo;
     }
 
 
-    public void Apply(Board board)
+    public override void Apply(Board board)
     {
         ApplyWithoutUpdatingHistory(board);
         board.History.AddEntry(this, null);
     }    
 
-    public bool LeavesPlayerInCheck(Board board)
+    public override bool LeavesPlayerInCheck(Board board)
     {
         return false;
     }
 
-    public bool MovesSquare(Square square)
+    public override bool MovesSquare(Square square)
     {
         return square == From || square == RookFrom;
     }
 
 
-    protected void ApplyWithoutUpdatingHistory(Board board)
+    protected override void ApplyWithoutUpdatingHistory(Board board)
     {
         if (board.At(From) == null || board.At(RookFrom) == null)
         {
@@ -53,7 +50,7 @@ public record CastleMove : IMove
         board.MovePiece(RookFrom, RookTo);
     }
 
-    protected void UndoWithoutUpdatingHistory(Board board, IPiece? capturedPiece)
+    protected override void UndoWithoutUpdatingHistory(Board board, IPiece? capturedPiece)
     {
         if (capturedPiece != null)
         {
