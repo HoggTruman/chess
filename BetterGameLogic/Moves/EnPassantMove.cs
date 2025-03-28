@@ -6,7 +6,7 @@ namespace BetterGameLogic.Moves;
 /// <summary>
 /// An En Passant move. Contains the captured Pawn's square
 /// </summary>
-public class EnPassantMove : SinglePieceMove
+public record EnPassantMove : SinglePieceMove
 {
     public override MoveType MoveType => MoveType.EnPassant;
     public Square Captured { get; }
@@ -39,20 +39,6 @@ public class EnPassantMove : SinglePieceMove
         bool result = board.GetKing(movingPiece.Color).IsUnderCheck();
         UndoWithoutUpdatingHistory(board, captured);
         return result;
-    }
-
-    public override bool IsEquivalentTo(IMove move)
-    {
-        if (move.MoveType != MoveType)
-        {
-            return false;
-        }
-
-        EnPassantMove enPassantMove = (EnPassantMove)move;
-
-        return enPassantMove.From == From &&
-               enPassantMove.To == To &&
-               enPassantMove.Captured == Captured;
     }
 
 

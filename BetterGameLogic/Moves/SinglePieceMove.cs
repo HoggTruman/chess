@@ -6,7 +6,7 @@ namespace BetterGameLogic.Moves;
 /// <summary>
 /// An abstract class for moves that only move a single piece (any move other than castling)
 /// </summary>
-public abstract class SinglePieceMove : IMove
+public abstract record SinglePieceMove : IMove
 {
     public abstract MoveType MoveType { get; }
     public Square From { get; }
@@ -38,13 +38,11 @@ public abstract class SinglePieceMove : IMove
         return result;
     }
 
-
     public bool MovesSquare(Square square)
     {
         return square == From;
     }
 
-    public abstract bool IsEquivalentTo(IMove move);
 
     protected abstract void ApplyWithoutUpdatingHistory(Board board);
 

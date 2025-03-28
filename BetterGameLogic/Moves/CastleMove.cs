@@ -6,7 +6,7 @@ namespace BetterGameLogic.Moves;
 /// <summary>
 /// A Castle move. Describes movement of the King and Rook
 /// </summary>
-public class CastleMove : IMove
+public record CastleMove : IMove
 {
     public MoveType MoveType { get; } = MoveType.Castle;
 
@@ -39,21 +39,6 @@ public class CastleMove : IMove
     public bool MovesSquare(Square square)
     {
         return square == From || square == RookFrom;
-    }
-
-    public bool IsEquivalentTo(IMove move)
-    {
-        if (move.MoveType != MoveType)
-        {
-            return false;
-        }
-
-        CastleMove castleMove = (CastleMove)move;
-
-        return castleMove.From == From &&
-               castleMove.To == To &&
-               castleMove.RookFrom == RookFrom &&
-               castleMove.RookTo == RookTo;
     }
 
 

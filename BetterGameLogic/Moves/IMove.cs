@@ -10,7 +10,5 @@ public interface IMove
 
     void Apply(Board board);
     bool LeavesPlayerInCheck(Board board);
-
     bool MovesSquare(Square square);
-    bool IsEquivalentTo(IMove move);
 }

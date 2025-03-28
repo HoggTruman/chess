@@ -7,7 +7,7 @@ namespace BetterGameLogic.Moves;
 /// <summary>
 /// A standard move, i.e. Not a Castle, Pawn Promotion or En Passant
 /// </summary>
-public class StandardMove : SinglePieceMove
+public record StandardMove : SinglePieceMove
 {
     public override MoveType MoveType => MoveType.Standard;
 
@@ -26,19 +26,6 @@ public class StandardMove : SinglePieceMove
         board.History.AddEntry(this, capturedPiece);
     }
     
-
-    public override bool IsEquivalentTo(IMove move)
-    {
-        if (move.MoveType != MoveType)
-        {
-            return false;
-        }
-
-        StandardMove standardMove = (StandardMove)move;
-
-        return standardMove.From == From &&
-               standardMove.To == To;
-    }
 
     protected override void ApplyWithoutUpdatingHistory(Board board)
     {
