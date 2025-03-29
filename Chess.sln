@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientTests", "ClientTests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterGameLogic", "BetterGameLogic\BetterGameLogic.csproj", "{3757812D-8CC8-461A-A8A5-115E4A25A4BC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterGameLogicTests", "BetterGameLogicTests\BetterGameLogicTests.csproj", "{376DD21C-B4A0-49EB-A3F2-64E45EAD8FA6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{3757812D-8CC8-461A-A8A5-115E4A25A4BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3757812D-8CC8-461A-A8A5-115E4A25A4BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3757812D-8CC8-461A-A8A5-115E4A25A4BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{376DD21C-B4A0-49EB-A3F2-64E45EAD8FA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{376DD21C-B4A0-49EB-A3F2-64E45EAD8FA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{376DD21C-B4A0-49EB-A3F2-64E45EAD8FA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{376DD21C-B4A0-49EB-A3F2-64E45EAD8FA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
