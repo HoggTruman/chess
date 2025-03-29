@@ -28,7 +28,7 @@ public abstract class Piece : IPiece
     {
         _board = board;
         Row = row;
-        Row = col;
+        Col = col;
         StartSquare = startSquare == null? new(row, col): startSquare.Value; // useful for promotion
         Color = color;
     } 
