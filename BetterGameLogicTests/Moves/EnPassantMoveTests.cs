@@ -10,6 +10,40 @@ namespace BetterGameLogicTests.Moves;
 
 public class EnPassantMoveTests
 {
+    #region Apply Tests
+
+    [Fact]
+    public void Apply_UpdatesBoardAndPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        Square from = new(4, 4);
+        Square to = new(5, 3);
+        Square captured = new(4, 3);
+
+        var movingPawn = new PawnPiece(board, from, PieceColor.White);
+        var capturedPawn = new PawnPiece(board, captured, PieceColor.Black);
+        board.AddPiece(movingPawn);
+        board.AddPiece(capturedPawn);
+
+        EnPassantMove move = new(from, to);
+
+        // Act
+        move.Apply(board);
+
+        // Assert
+        movingPawn.Square.Should().Be(to);
+        board.At(from).Should().BeNull();
+        board.At(to).Should().Be(movingPawn);
+        board.At(captured).Should().BeNull();
+        board.Pieces[capturedPawn.Color].Should().BeEmpty();
+    }
+
+    #endregion
+
+
+
     #region LeavesPlayerInCheck Tests
 
     [Theory]
