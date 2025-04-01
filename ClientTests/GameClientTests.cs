@@ -1,8 +1,7 @@
 using Client;
 using FluentAssertions;
-using GameLogic.Enums;
-using GameLogic.Interfaces;
-using GameLogic.Moves;
+using BetterGameLogic.Enums;
+using BetterGameLogic.Moves;
 using NetworkShared.Messages.Server;
 
 namespace ClientTests;
@@ -12,7 +11,7 @@ public class GameClientTests
     #region ConnectToServer Tests
 
     [Fact]
-    public async void ConnectToServer_WhenServerNotRunning_InvokesCommunicationError()
+    public async Task ConnectToServer_WhenServerNotRunning_InvokesCommunicationError()
     {
         // Arrange
         bool communicationErrorInvoked = false;
@@ -136,7 +135,7 @@ public class GameClientTests
         gameClient.MoveReceived += move => receivedMove = move;
 
 
-        StandardMove serverMove = new((4, 4), (5, 4));
+        StandardMove serverMove = new(new(4, 4), new(5, 4));
         byte[] message = ServerMoveMessage.Encode(serverMove);
 
         // Act
@@ -144,7 +143,7 @@ public class GameClientTests
 
         // Assert
         Assert.NotNull(receivedMove);
-        receivedMove.IsEquivalentTo(serverMove).Should().BeTrue();
+        ((Move)receivedMove == serverMove).Should().BeTrue();
     }
 
     #endregion
