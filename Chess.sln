@@ -12,6 +12,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csproj", "{50FA3F4F-095E-40A7-9E05-75CED110EAEB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "Client\Client.csproj", "{663318B4-EE9C-4DE9-9FE9-8C15B4E0FDBB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3757812D-8CC8-461A-A8A5-115E4A25A4BC} = {3757812D-8CC8-461A-A8A5-115E4A25A4BC}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetworkShared", "NetworkShared\NetworkShared.csproj", "{8AF32961-3D72-406B-B2F9-F2EC1587F38D}"
 EndProject
