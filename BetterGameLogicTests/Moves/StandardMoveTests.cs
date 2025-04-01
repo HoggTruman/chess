@@ -10,6 +10,60 @@ namespace BetterGameLogicTests.Moves;
 
 public class StandardMoveTests
 {
+    #region Apply Tests
+
+    [Fact]
+    public void StandardMove_WithoutCapture_UpdatesBoardAndPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        Square from = new(1, 1);
+        Square to = new(2, 2);
+        StandardMove move = new(from, to);
+
+        var movingPiece = new QueenPiece(board, from, PieceColor.White);
+        board.AddPiece(movingPiece);        
+
+        // Act
+        move.Apply(board);
+
+        // Assert
+        movingPiece.Square.Should().Be(to);
+        board.At(from).Should().BeNull();
+        board.At(to).Should().Be(movingPiece);
+    }
+
+
+    [Fact]
+    public void StandardMove_WithCapture_UpdatesBoardAndPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        Square from = new(1, 1);
+        Square to = new(2, 2);
+
+        var movingPiece = new QueenPiece(board, from, PieceColor.White);
+        var capturedPiece = new QueenPiece(board, to, PieceColor.Black);
+        board.AddPiece(movingPiece);
+        board.AddPiece(capturedPiece);
+
+        StandardMove move = new(from, to);
+
+        // Act
+        move.Apply(board);
+
+        // Assert
+        movingPiece.Square.Should().Be(to);
+        board.At(from).Should().BeNull();
+        board.At(to).Should().Be(movingPiece);
+        board.Pieces[capturedPiece.Color].Should().BeEmpty();
+    }
+
+    #endregion
+
+
     #region LeavesPlayerInCheck Tests
 
     [Fact]
