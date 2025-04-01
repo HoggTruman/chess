@@ -1,6 +1,5 @@
-﻿using GameLogic.Enums;
-using GameLogic.Interfaces;
-using GameLogic.Moves;
+﻿using BetterGameLogic.Enums;
+using BetterGameLogic.Moves;
 
 namespace NetworkShared.Messages.Shared;
 
@@ -108,27 +107,26 @@ public abstract class MoveMessage
     private static CastleMove DecodeCastleMove(byte[] msg)
     {
         return new CastleMove(
-            from: (msg[3], msg[4]),
-            to: (msg[5], msg[6]),
-            rookFrom: (msg[7], msg[8]),
-            rookTo: (msg[9], msg[10]));
+            from: new(msg[3], msg[4]),
+            to: new(msg[5], msg[6]),
+            rookFrom: new(msg[7], msg[8]),
+            rookTo: new(msg[9], msg[10]));
     }
 
 
     private static EnPassantMove DecodeEnPassantMove(byte[] msg)
     {
         return new EnPassantMove(
-            from: (msg[3], msg[4]),
-            to: (msg[5], msg[6]),
-            captured: (msg[7], msg[8]));
+            from: new(msg[3], msg[4]),
+            to: new(msg[5], msg[6]));
     }
 
 
     private static PromotionMove DecodePromotionMove(byte[] msg)
     {
         return new PromotionMove(
-            from: (msg[3], msg[4]),
-            to: (msg[5], msg[6]),
+            from: new(msg[3], msg[4]),
+            to: new(msg[5], msg[6]),
             promotedTo: (PieceType)msg[7]);
     }
 
@@ -136,8 +134,8 @@ public abstract class MoveMessage
     private static StandardMove DecodeStandardMove(byte[] msg)
     {
         return new StandardMove(
-            from: (msg[3], msg[4]),
-            to: (msg[5], msg[6]));
+            from: new(msg[3], msg[4]),
+            to: new(msg[5], msg[6]));
     }
 
     #endregion
@@ -156,10 +154,10 @@ public abstract class MoveMessage
         return [
             0, // Code goes here
             (byte)move.MoveType,
-            (byte)move.From.row,
-            (byte)move.From.col,
-            (byte)move.To.row,
-            (byte)move.To.col
+            (byte)move.From.Row,
+            (byte)move.From.Col,
+            (byte)move.To.Row,
+            (byte)move.To.Col
         ];
     }
 
@@ -169,10 +167,10 @@ public abstract class MoveMessage
         return [
             CastleLength,
             .. BaseEncode(castleMove),
-            (byte)castleMove.RookFrom.row,
-            (byte)castleMove.RookFrom.col,
-            (byte)castleMove.RookTo.row,
-            (byte)castleMove.RookTo.col
+            (byte)castleMove.RookFrom.Row,
+            (byte)castleMove.RookFrom.Col,
+            (byte)castleMove.RookTo.Row,
+            (byte)castleMove.RookTo.Col
         ];
     }
 
@@ -182,8 +180,8 @@ public abstract class MoveMessage
         return [
             EnPassantLength,
             .. BaseEncode(enPassantMove),
-            (byte)enPassantMove.Captured.row,
-            (byte)enPassantMove.Captured.col,
+            (byte)enPassantMove.Captured.Row,
+            (byte)enPassantMove.Captured.Col,
         ];
     }
 

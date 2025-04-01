@@ -1,5 +1,4 @@
-﻿using GameLogic.Enums;
-using NetworkShared.Enums;
+﻿using NetworkShared.Enums;
 using System.Buffers.Binary;
 
 namespace NetworkShared.Messages.Client;

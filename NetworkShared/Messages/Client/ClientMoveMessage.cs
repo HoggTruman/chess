@@ -1,4 +1,4 @@
-﻿using GameLogic.Interfaces;
+﻿using BetterGameLogic.Moves;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Shared;
 
