@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
-using GameLogic.Enums;
-using GameLogic.Moves;
+using BetterGameLogic.Enums;
+using BetterGameLogic.Moves;
 using NetworkShared.Messages.Server;
 
 namespace NetworkSharedTests.Messages.Server;
@@ -22,10 +22,10 @@ public class ServerMoveMessageTests
     {
         // Arrange
         CastleMove move = new(
-            (fromRow, fromCol),
-            (toRow, toCol),
-            (rookFromRow, rookFromCol),
-            (rookToRow, rookToCol));
+            new(fromRow, fromCol),
+            new(toRow, toCol),
+            new(rookFromRow, rookFromCol),
+            new(rookToRow, rookToCol));
 
         // Act
         var encoded = ServerMoveMessage.Encode(move);
@@ -37,19 +37,17 @@ public class ServerMoveMessageTests
 
 
     [Theory]
-    [InlineData(0, 4, 5, 3, 4, 6)]
-    [InlineData(7, 3, 4, 5, 2, 1)]
-    [InlineData(0, 0, 3, 3, 1, 3)]
-    [InlineData(4, 1, 1, 1, 3, 5)]
+    [InlineData(0, 4, 5, 3)]
+    [InlineData(7, 3, 4, 5)]
+    [InlineData(0, 0, 3, 3)]
+    [InlineData(4, 1, 1, 1)]
     public void Encode_Decode_WithEnPassantMove_ReturnsOriginal(
-        int fromRow, int fromCol, int toRow, int toCol,
-        int capturedRow, int capturedCol)
+        int fromRow, int fromCol, int toRow, int toCol)
     {
         // Arrange
         EnPassantMove move = new(
-            (fromRow, fromCol),
-            (toRow, toCol),
-            (capturedRow, capturedCol)
+            new(fromRow, fromCol),
+            new(toRow, toCol)
         );
 
         // Act
@@ -72,8 +70,8 @@ public class ServerMoveMessageTests
     {
         // Arrange
         PromotionMove move = new(
-            (fromRow, fromCol),
-            (toRow, toCol),
+            new(fromRow, fromCol),
+            new(toRow, toCol),
             promotedTo
         );
 
@@ -96,8 +94,8 @@ public class ServerMoveMessageTests
     {
         // Arrange
         StandardMove move = new(
-            (fromRow, fromCol),
-            (toRow, toCol)
+            new(fromRow, fromCol),
+            new(toRow, toCol)
         );
 
         // Act

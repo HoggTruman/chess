@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GameLogic\GameLogic.csproj" />
+    <ProjectReference Include="..\BetterGameLogic\BetterGameLogic.csproj" />
     <ProjectReference Include="..\NetworkShared\NetworkShared.csproj" />
   </ItemGroup>
 
