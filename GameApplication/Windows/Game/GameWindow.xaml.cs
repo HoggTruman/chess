@@ -1,15 +1,15 @@
 ﻿using Client;
 using GameApplication.Windows.Start;
-using GameLogic;
-using GameLogic.Enums;
-using GameLogic.Helpers;
-using GameLogic.Interfaces;
-using GameLogic.Moves;
+using BetterGameLogic;
+using BetterGameLogic.Enums;
+using BetterGameLogic.Helpers;
+using BetterGameLogic.Moves;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using BetterGameLogic.Pieces;
 
 namespace GameApplication.Windows.Game;
 
@@ -51,12 +51,12 @@ public partial class GameWindow : Window
     /// <summary>
     /// The square of the currently selected Piece of the player.
     /// </summary>
-    private (int row, int col)? _selectedSquare; 
+    private Square? _selectedSquare; 
 
     /// <summary>
     /// A Dictionary with To square as key, and the corresponding IMove as the value.
     /// </summary>
-    private Dictionary<(int row, int col), IMove> _selectedPieceMoveOptions = [];
+    private Dictionary<Square, IMove> _selectedPieceMoveOptions = [];
 
     /// <summary>
     /// A bool to dictate whether the player's clicks should interact with the board at all.
@@ -123,11 +123,11 @@ public partial class GameWindow : Window
         }
 
         Point point = e.GetPosition(BoardGrid);
-        (int row, int col) square = PointToSquare(point);        
+        Square square = PointToSquare(point);        
 
         if (_selectedSquare == null)
         {
-            var moveOptions = _gameManager.ActivePlayerMoves[square.row, square.col];
+            var moveOptions = _gameManager.ActivePlayerMoves[square.Row, square.Col];
             
             if (moveOptions != null)
             {   
@@ -309,10 +309,10 @@ public partial class GameWindow : Window
                 if (_playerColor == PieceColor.Black)
                 {
                     // rotate board if player is black
-                    var (row, col) = BoardHelpers.RotateSquare180((r, c));
-                    _pieceImages[row, col].Source = Images.GetImageSource(piece);
+                    Square rotated = BoardHelpers.RotateSquare180(new(r, c));
+                    _pieceImages[rotated.Row, rotated.Col].Source = Images.GetImageSource(piece);
                 }
-                else 
+                else
                 {
                     _pieceImages[r, c].Source = Images.GetImageSource(piece);
                 }
@@ -341,16 +341,14 @@ public partial class GameWindow : Window
     /// </summary>
     /// <param name="square"></param>
     /// <param name="brush"></param>
-    private void HighlightSquare((int row, int col) square, SolidColorBrush brush)
+    private void HighlightSquare(Square square, SolidColorBrush brush)
     {
-        var (row, col) = square;
-
         if (_playerColor == PieceColor.Black)
         {
-            (row, col) = BoardHelpers.RotateSquare180(square);
+            square = BoardHelpers.RotateSquare180(square);
         }
 
-        _highlights[row, col].Fill = brush;
+        _highlights[square.Row, square.Col].Fill = brush;
     }    
 
     #endregion
@@ -364,19 +362,16 @@ public partial class GameWindow : Window
     /// </summary>
     /// <param name="point"></param>
     /// <returns></returns>
-    private (int row, int col) PointToSquare(Point point)
+    private Square PointToSquare(Point point)
     {
         double squareSize = BoardGrid.ActualWidth / Board.BoardSize;
         int row = (int)(point.Y / squareSize);
         int col = (int)(point.X / squareSize);
+        Square square = new(row, col);
 
-        // Adjust for Black player board rotation
-        if (_playerColor == PieceColor.Black)
-        {
-            (row, col) = BoardHelpers.RotateSquare180((row, col));
-        }
-
-        return (row, col);
+        return _playerColor == PieceColor.Black?
+            BoardHelpers.RotateSquare180(square):
+            square;
     }
 
     #endregion

@@ -1,4 +1,4 @@
-﻿using GameLogic.Enums;
+﻿using BetterGameLogic.Enums;
 using System.Windows;
 using System.Windows.Controls;
 

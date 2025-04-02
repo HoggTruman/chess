@@ -1,6 +1,6 @@
 ﻿using GameApplication.Windows.Game;
-using GameLogic;
-using GameLogic.Enums;
+using BetterGameLogic;
+using BetterGameLogic.Enums;
 using System.Windows;
 using System.Windows.Controls;
 

@@ -1,6 +1,4 @@
-﻿using GameLogic;
-using GameLogic.Enums;
-using System.Windows;
+﻿using System.Windows;
 
 
 namespace GameApplication.Windows.Start;
