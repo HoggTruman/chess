@@ -1,7 +1,7 @@
-﻿using GameLogic;
-using GameLogic.Enums;
-using GameLogic.Helpers;
-using GameLogic.Interfaces;
+﻿using BetterGameLogic;
+using BetterGameLogic.Enums;
+using BetterGameLogic.Helpers;
+using BetterGameLogic.Moves;
 using Server.Interfaces;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
