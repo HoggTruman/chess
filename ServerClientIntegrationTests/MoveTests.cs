@@ -1,7 +1,6 @@
-﻿using Client;
-using GameLogic.Enums;
-using GameLogic.Interfaces;
-using GameLogic.Moves;
+﻿using BetterGameLogic.Enums;
+using BetterGameLogic.Moves;
+using Client;
 using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Server;
@@ -75,22 +74,22 @@ public sealed class MoveTests : IAsyncLifetime
     public async void ValidMoves_ReceivedSuccessfully()
     {
         // Host send move (host is white so moves first)
-        StandardMove hostMove = new((6, 7), (4, 7));
+        StandardMove hostMove = new(new(6, 7), new(4, 7));
         await _hostClient.SendMove(hostMove);
 
         // Joiner receives move from server
         byte[] joinerReceivedMove = await _joiningClient.ReadServerMessage();
         IMove joinerDecodedMove = ServerMoveMessage.Decode(joinerReceivedMove);
-        Assert.True(joinerDecodedMove.IsEquivalentTo(hostMove));
+        Assert.True(hostMove.Equals(joinerDecodedMove));
 
         // Joiner sends move
-        StandardMove joinerMove = new((1, 0), (3, 0));
+        StandardMove joinerMove = new(new(1, 0), new(3, 0));
         await _joiningClient.SendMove(joinerMove);
 
         // Host receives move from server
         byte[] hostReceivedMove = await _hostClient.ReadServerMessage();
         IMove hostDecodedMove = ServerMoveMessage.Decode(hostReceivedMove);
-        Assert.True(hostDecodedMove.IsEquivalentTo(joinerMove));
+        Assert.True(joinerMove.Equals(hostDecodedMove));
     }
 
 
@@ -98,7 +97,7 @@ public sealed class MoveTests : IAsyncLifetime
     public async void SendValidMove_WhenNotPlayersTurn_ClosesRoom()
     {
         // Joiner sends move
-        StandardMove joinerMove = new((1, 0), (3, 0));
+        StandardMove joinerMove = new(new(1, 0), new(3, 0));
         await _joiningClient.SendMove(joinerMove);
 
         // Host reads message from server
@@ -123,7 +122,7 @@ public sealed class MoveTests : IAsyncLifetime
     public async void SendInvalidMove_WhenPlayersTurn_ClosesRoom()
     {
         // Host send move (host is white so moves first)
-        StandardMove invalidMove = new((6, 7), (3, 7)); // pawn moving forward 3 squares
+        StandardMove invalidMove = new(new(6, 7), new(3, 7)); // pawn moving forward 3 squares
         await _hostClient.SendMove(invalidMove);
 
         // Host reads message from server
@@ -148,7 +147,7 @@ public sealed class MoveTests : IAsyncLifetime
     public async void TryToMoveEnemyPiece_WhenPlayersTurn_ClosesRoom()
     {
         // Host send move (host is white so moves first)
-        StandardMove enemyPieceMove = new((1, 0), (3, 0)); // move enemy pawn forward two
+        StandardMove enemyPieceMove = new(new(1, 0), new(3, 0)); // move enemy pawn forward two
         await _hostClient.SendMove(enemyPieceMove);
 
         // Host reads message from server
@@ -176,37 +175,37 @@ public sealed class MoveTests : IAsyncLifetime
         /// at the end of it.
 
         // Move pawn in front of king
-        StandardMove whiteMove1 = new((6, 4), (4, 4));
+        StandardMove whiteMove1 = new(new(6, 4), new(4, 4));
         await _hostClient.SendMove(whiteMove1);
 
         // Joiner receives and moves edge pawn
         byte[] receivedWhiteMove1 = await _joiningClient.ReadServerMessage();
-        StandardMove blackMove1 = new((1, 0), (2, 0));
+        StandardMove blackMove1 = new(new(1, 0), new(2, 0));
         await _joiningClient.SendMove(blackMove1);
 
         // Host receives and moves bishop
         byte[] receivedBlackMove1 = await _hostClient.ReadServerMessage();
-        StandardMove whiteMove2 = new((7, 5), (4, 2));
+        StandardMove whiteMove2 = new(new(7, 5), new(4, 2));
         await _hostClient.SendMove(whiteMove2);
 
         // Joiner receives and moves edge pawn
         byte[] receivedWhiteMove2 = await _joiningClient.ReadServerMessage();
-        StandardMove blackMove2 = new((2, 0), (3, 0));
+        StandardMove blackMove2 = new(new(2, 0), new(3, 0));
         await _joiningClient.SendMove(blackMove2);
 
         // Host receives and moves queen
         byte[] receivedBlackMove2 = await _hostClient.ReadServerMessage();
-        StandardMove whiteMove3 = new((7, 3), (5, 5));
+        StandardMove whiteMove3 = new(new(7, 3), new(5, 5));
         await _hostClient.SendMove(whiteMove3);
 
         // Joiner receives and moves edge pawn
         byte[] receivedWhiteMove3 = await _joiningClient.ReadServerMessage();
-        StandardMove blackMove3 = new((3, 0), (4, 0));
+        StandardMove blackMove3 = new(new(3, 0), new(4, 0));
         await _joiningClient.SendMove(blackMove3);
 
         // Host receives and checkmates with queen
         byte[] receivedBlackMove3 = await _hostClient.ReadServerMessage();
-        StandardMove whiteMove4 = new((5, 5), (1, 5));
+        StandardMove whiteMove4 = new(new(5, 5), new(1, 5));
         await _hostClient.SendMove(whiteMove4);
 
         // Joiner receives

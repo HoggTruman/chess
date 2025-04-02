@@ -1,6 +1,6 @@
 using Client;
-using GameLogic.Enums;
-using GameLogic.Helpers;
+using BetterGameLogic.Enums;
+using BetterGameLogic.Helpers;
 using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Server;
@@ -208,5 +208,4 @@ public sealed class ServerClientTests : IAsyncLifetime
         Assert.NotEmpty(joinerResponse);
         Assert.Equal(ServerMessage.StartGame, joinerResponseCode);
     }
-
 }
