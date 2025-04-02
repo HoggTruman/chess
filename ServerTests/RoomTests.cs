@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
-using GameLogic.Enums;
-using GameLogic.Moves;
+using BetterGameLogic.Enums;
+using BetterGameLogic.Moves;
 using Moq;
 using Server;
 using Server.Interfaces;
@@ -171,7 +171,7 @@ public class RoomTests
         Room room = new(hostClient, PieceColor.White);
         room.TryJoin(joinerClient);
 
-        StandardMove move = new((6, 1), (5, 1));
+        StandardMove move = new(new(6, 1), new(5, 1));
 
         // Act
         bool result = room.TryMove(hostClient, move);
@@ -196,7 +196,7 @@ public class RoomTests
         Room room = new(hostClient, PieceColor.White);
         room.TryJoin(joinerClient);
 
-        StandardMove move = new((fromRow, fromCol), (toRow, toCol));
+        StandardMove move = new(new(fromRow, fromCol), new(toRow, toCol));
 
         // Act
         bool result = room.TryMove(hostClient, move);
@@ -218,7 +218,7 @@ public class RoomTests
         Room room = new(hostClient, PieceColor.Black);
         room.TryJoin(joinerClient);
 
-        StandardMove move = new((1, 1), (2, 1));
+        StandardMove move = new(new(1, 1), new(2, 1));
 
         // Act
         bool result = room.TryMove(hostClient, move);
