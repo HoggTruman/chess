@@ -33,8 +33,8 @@ public class GameManagerTests
     {
         // Arrange
         Board board = new();
-        board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
-        board.AddNewPiece<KingPiece>(StartSquares.BlackKing, PieceColor.Black);
+        board.AddPiece(new KingPiece(board, StartSquares.WhiteKing, PieceColor.White));
+        board.AddPiece(new KingPiece(board, StartSquares.BlackKing, PieceColor.Black));
 
         GameManager gameManager = new(board);
 
@@ -51,10 +51,10 @@ public class GameManagerTests
     {
         // Arrange
         Board board = new();
-        board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
-        board.AddNewPiece<KingPiece>(StartSquares.BlackKing, PieceColor.Black);
-        board.AddNewPiece<RookPiece>((7, 7), PieceColor.Black);
-        board.AddNewPiece<RookPiece>((6, 7), PieceColor.Black);
+        board.AddPiece(new KingPiece(board, StartSquares.WhiteKing, PieceColor.White));
+        board.AddPiece(new KingPiece(board, StartSquares.BlackKing, PieceColor.Black));
+        board.AddPiece(new RookPiece(board, new(7, 7), PieceColor.Black));
+        board.AddPiece(new RookPiece(board, new(6, 7), PieceColor.Black));
 
         GameManager gameManager = new(board);
 
@@ -71,10 +71,10 @@ public class GameManagerTests
     {
         // Arrange
         Board board = new();
-        board.AddNewPiece<KingPiece>((0, 0), PieceColor.White);
-        board.AddNewPiece<KingPiece>((7, 7), PieceColor.Black);
-        board.AddNewPiece<RookPiece>((1, 7), PieceColor.Black);
-        board.AddNewPiece<RookPiece>((7, 1), PieceColor.Black);
+        board.AddPiece(new KingPiece(board, new(0, 0), PieceColor.White));
+        board.AddPiece(new KingPiece(board, new(7, 7), PieceColor.Black));
+        board.AddPiece(new RookPiece(board, new(1, 7), PieceColor.Black));
+        board.AddPiece(new RookPiece(board, new(7, 1), PieceColor.Black));
 
         GameManager gameManager = new(board);
 
@@ -112,10 +112,10 @@ public class GameManagerTests
 
         // Arrange
         Board board = new();
-        board.AddNewPiece<KingPiece>((0, 0), PieceColor.Black);
-        board.AddNewPiece<KingPiece>((7, 7), PieceColor.White);
-        board.AddNewPiece<RookPiece>((0, 7), PieceColor.White);
-        board.AddNewPiece<RookPiece>((1, 7), PieceColor.White);
+        board.AddPiece(new KingPiece(board, new(0, 0), PieceColor.Black));
+        board.AddPiece(new KingPiece(board, new(7, 7), PieceColor.White));
+        board.AddPiece(new RookPiece(board, new(0, 7), PieceColor.White));
+        board.AddPiece(new RookPiece(board, new(1, 7), PieceColor.White));
 
         GameManager gameManager = new(board);
         gameManager.SwitchTurn();
@@ -136,10 +136,10 @@ public class GameManagerTests
 
         // Arrange
         Board board = new();
-        board.AddNewPiece<KingPiece>((0, 0), PieceColor.White);
-        board.AddNewPiece<KingPiece>((7, 7), PieceColor.Black);
-        board.AddNewPiece<RookPiece>((0, 7), PieceColor.Black);
-        board.AddNewPiece<RookPiece>((1, 7), PieceColor.Black);
+        board.AddPiece(new KingPiece(board, new(0, 0), PieceColor.White));
+        board.AddPiece(new KingPiece(board, new(7, 7), PieceColor.Black));
+        board.AddPiece(new RookPiece(board, new(0, 7), PieceColor.Black));
+        board.AddPiece(new RookPiece(board, new(1, 7), PieceColor.Black));
 
         GameManager gameManager = new(board);
 
@@ -159,10 +159,10 @@ public class GameManagerTests
 
         // Arrange
         Board board = new();
-        board.AddNewPiece<KingPiece>((0, 0), PieceColor.White);
-        board.AddNewPiece<KingPiece>((7, 7), PieceColor.Black);
-        board.AddNewPiece<RookPiece>((1, 7), PieceColor.Black);
-        board.AddNewPiece<RookPiece>((7, 1), PieceColor.Black);
+        board.AddPiece(new KingPiece(board, new(0, 0), PieceColor.White));
+        board.AddPiece(new KingPiece(board, new(7, 7), PieceColor.Black));
+        board.AddPiece(new RookPiece(board, new(1, 7), PieceColor.Black));
+        board.AddPiece(new RookPiece(board, new(7, 1), PieceColor.Black));
 
         GameManager gameManager = new(board);
 
@@ -182,10 +182,10 @@ public class GameManagerTests
 
         // Arrange
         Board board = new();
-        board.AddNewPiece<KingPiece>((0, 0), PieceColor.Black);
-        board.AddNewPiece<KingPiece>((7, 7), PieceColor.White);
-        board.AddNewPiece<RookPiece>((1, 7), PieceColor.White);
-        board.AddNewPiece<RookPiece>((7, 1), PieceColor.White);
+        board.AddPiece(new KingPiece(board, new(0, 0), PieceColor.Black));
+        board.AddPiece(new KingPiece(board, new(7, 7), PieceColor.White));
+        board.AddPiece(new RookPiece(board, new(1, 7), PieceColor.White));
+        board.AddPiece(new RookPiece(board, new(7, 1), PieceColor.White));
 
         GameManager gameManager = new(board);
         gameManager.SwitchTurn();
@@ -204,8 +204,8 @@ public class GameManagerTests
     {
         // Arrange
         Board board = new();
-        board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
-        board.AddNewPiece<KingPiece>(StartSquares.BlackKing, PieceColor.Black);
+        board.AddPiece(new KingPiece(board, StartSquares.WhiteKing, PieceColor.White));
+        board.AddPiece(new KingPiece(board, StartSquares.BlackKing, PieceColor.Black));
 
         GameManager gameManager = new(board);
 
@@ -223,8 +223,8 @@ public class GameManagerTests
     {
         // Arrange
         Board board = new();
-        board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
-        board.AddNewPiece<KingPiece>(StartSquares.BlackKing, PieceColor.Black);
+        board.AddPiece(new KingPiece(board, StartSquares.WhiteKing, PieceColor.White));
+        board.AddPiece(new KingPiece(board, StartSquares.BlackKing, PieceColor.Black));
 
         GameManager gameManager = new(board);
         gameManager.SwitchTurn();
@@ -247,19 +247,19 @@ public class GameManagerTests
 
         GameManager gameManager = new(board);
 
-        gameManager.HandleMove(new StandardMove((6, 4), (4, 4)));
+        gameManager.HandleMove(new StandardMove(new(6, 4), new(4, 4)));
         gameManager.SwitchTurn();
-        gameManager.HandleMove(new StandardMove((1, 0), (2, 0)));
+        gameManager.HandleMove(new StandardMove(new(1, 0), new(2, 0)));
         gameManager.SwitchTurn();
-        gameManager.HandleMove(new StandardMove((7, 5), (4, 2)));
+        gameManager.HandleMove(new StandardMove(new(7, 5), new(4, 2)));
         gameManager.SwitchTurn();
-        gameManager.HandleMove(new StandardMove((2, 0), (3, 0)));
+        gameManager.HandleMove(new StandardMove(new(2, 0), new(3, 0)));
         gameManager.SwitchTurn();
-        gameManager.HandleMove(new StandardMove((7, 3), (5, 5)));
+        gameManager.HandleMove(new StandardMove(new(7, 3), new(5, 5)));
         gameManager.SwitchTurn();
-        gameManager.HandleMove(new StandardMove((3, 0), (4, 0)));
+        gameManager.HandleMove(new StandardMove(new(3, 0), new(4, 0)));
         gameManager.SwitchTurn();
-        gameManager.HandleMove(new StandardMove((5, 5), (1, 5)));
+        gameManager.HandleMove(new StandardMove(new(5, 5), new(1, 5)));
         gameManager.SwitchTurn();
 
         // Act
@@ -291,9 +291,9 @@ public class GameManagerTests
         var result = gameManager.GetPlayerMoves(playerColor);
 
         // Assert
-        for (int r = 0; r < Board.BoardSize; r++)
+        for (int r = 0; r < Board.BoardSize; ++r)
         {
-            for (int c = 0; c < Board.BoardSize; c++)
+            for (int c = 0; c < Board.BoardSize; ++c)
             {
                 var piece = gameManager.Board.State[r, c];
                 if (piece == null ||
@@ -320,7 +320,7 @@ public class GameManagerTests
     {
         // Arrange
         GameManager gameManager = new();
-        StandardMove move = new((6, 1), (5, 1));
+        StandardMove move = new(new(6, 1), new(5, 1));
 
         // Act
         bool result = gameManager.IsValidMove(move);
@@ -338,7 +338,7 @@ public class GameManagerTests
     {
         // Arrange
         GameManager gameManager = new();
-        StandardMove move = new((fromRow, fromCol), (toRow, toCol));
+        StandardMove move = new(new(fromRow, fromCol), new(toRow, toCol));
 
         // Act
         bool result = gameManager.IsValidMove(move);

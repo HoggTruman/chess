@@ -1,81 +1,68 @@
 using GameLogic.Enums;
-using GameLogic.Interfaces;
+using GameLogic.Pieces;
 
 namespace GameLogic.Moves;
 
 /// <summary>
 /// A Castle move. Describes movement of the King and Rook
 /// </summary>
-public class CastleMove : IMove
+public record CastleMove : Move
 {
-    #region Properties
+    public override MoveType MoveType => MoveType.Castle;
 
-    public MoveType MoveType { get; } = MoveType.Castle;
-
-    /// <summary>
-    /// The square the king moves from.
-    /// </summary>
-    public (int row, int col) From { get; }
-
-    /// <summary>
-    /// The square the king moves to.
-    /// </summary>
-    public (int row, int col) To { get; }
-
-    /// <summary>
-    /// The square the rook moves from.
-    /// </summary>
-    public (int row, int col) RookFrom { get; }
-
-    /// <summary>
-    /// The square the rook moves to.
-    /// </summary>
-    public (int row, int col) RookTo { get; }
-
-    #endregion
+    public Square RookFrom { get; }
+    public Square RookTo { get; }
 
 
-
-    #region Constructor
-
-    public CastleMove(
-        (int row, int col) from,
-        (int row, int col) to,
-        (int row, int col) rookFrom,
-        (int row, int col) rookTo
-    ) 
+    public CastleMove(Square from, Square to, Square rookFrom, Square rookTo) 
+        :base(from, to)
     {
-        From = from;
-        To = to;
         RookFrom = rookFrom;
         RookTo = rookTo;
     }
 
-    #endregion
 
+    public override void Apply(Board board)
+    {
+        ApplyWithoutUpdatingHistory(board);
+        board.History.AddEntry(this, null);
+    }    
 
+    public override bool LeavesPlayerInCheck(Board board)
+    {
+        return false;
+    }
 
-    #region Methods
-
-    public bool MovesSquare((int row, int col) square)
+    public override bool MovesSquare(Square square)
     {
         return square == From || square == RookFrom;
     }
 
-    public bool IsEquivalentTo(IMove move)
+
+    protected override void ApplyWithoutUpdatingHistory(Board board)
     {
-        if (move.MoveType != MoveType)
+        if (board.At(From) == null || board.At(RookFrom) == null)
         {
-            return false;
+            throw new InvalidOperationException("The From / RookFrom square is empty");
         }
 
-        CastleMove castleMove = (CastleMove)move;
-
-        return castleMove.From == From &&
-               castleMove.To == To &&
-               castleMove.RookFrom == RookFrom &&
-               castleMove.RookTo == RookTo;
+        board.MovePiece(From, To);
+        board.MovePiece(RookFrom, RookTo);
     }
 
-    #endregion
+    protected override void UndoWithoutUpdatingHistory(Board board, IPiece? capturedPiece)
+    {
+        if (capturedPiece != null)
+        {
+            throw new ArgumentException("A CastleMove should not capture any pieces");
+        }
+
+        if (board.At(To) == null || board.At(RookTo) == null)
+        {
+            throw new InvalidOperationException("The To / KingTo square is empty");
+        }
+
+        board.MovePiece(To, From);
+        board.MovePiece(RookTo, RookFrom);
+    }
 }

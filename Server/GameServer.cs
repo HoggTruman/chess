@@ -1,5 +1,5 @@
-﻿using BetterGameLogic.Enums;
-using BetterGameLogic.Moves;
+﻿using GameLogic.Enums;
+using GameLogic.Moves;
 using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Client;

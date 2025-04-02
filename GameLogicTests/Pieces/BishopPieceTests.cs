@@ -1,7 +1,6 @@
 using FluentAssertions;
 using GameLogic;
 using GameLogic.Enums;
-using GameLogic.Interfaces;
 using GameLogic.Pieces;
 
 namespace GameLogicTests.Pieces;
@@ -15,22 +14,23 @@ public class BishopPieceTests
     {
         // Arrange
         Board board = new();
-        var bishop = board.AddNewPiece<BishopPiece>(4, 4, PieceColor.White);
+        var bishop = new BishopPiece(board, 4, 4, PieceColor.White);
+        var blockingPiece = new BishopPiece(board, 5, 5, PieceColor.White);
+        board.AddPiece(bishop);
+        board.AddPiece(blockingPiece);
 
-        var blockingPiece = board.AddNewPiece<BishopPiece>(5, 5, PieceColor.White);
-
-        List<(int row, int col)> expected = [
-            (0, 0),
-            (1, 1),
-            (2, 2),
-            (3, 3),
-            (5, 5),
-            (3, 5),
-            (2, 6),
-            (1, 7),
-            (5, 3),
-            (6, 2),
-            (7, 1)            
+        List<Square> expected = [
+            new(0, 0),
+            new(1, 1),
+            new(2, 2),
+            new(3, 3),
+            new(5, 5),
+            new(3, 5),
+            new(2, 6),
+            new(1, 7),
+            new(5, 3),
+            new(6, 2),
+            new(7, 1)            
         ];
 
         // Act
@@ -50,23 +50,26 @@ public class BishopPieceTests
     public void GetReachableSquares_ReturnsReachableSquares()
     {
         // Arrange
-        Board board = new();
-        var bishop = board.AddNewPiece<BishopPiece>(4, 4, PieceColor.White);
+        Board board = new();        
 
-        var blockingPiece = board.AddNewPiece<BishopPiece>(5, 5, PieceColor.White);
-        var nonblockingPiece = board.AddNewPiece<BishopPiece>(0, 0, PieceColor.Black);
+        var bishop = new BishopPiece(board, 4, 4, PieceColor.White);
+        var blockingPiece = new BishopPiece(board, 5, 5, PieceColor.White);
+        var nonBlockingPiece = new BishopPiece(board, 0, 0, PieceColor.Black);
+        board.AddPiece(bishop);
+        board.AddPiece(blockingPiece);
+        board.AddPiece(nonBlockingPiece);
 
-        List<(int row, int col)> expected = [
-            (0, 0),
-            (1, 1),
-            (2, 2),
-            (3, 3),
-            (3, 5),
-            (2, 6),
-            (1, 7),
-            (5, 3),
-            (6, 2),
-            (7, 1)            
+        List<Square> expected = [
+            new(0, 0),
+            new(1, 1),
+            new(2, 2),
+            new(3, 3),
+            new(3, 5),
+            new(2, 6),
+            new(1, 7),
+            new(5, 3),
+            new(6, 2),
+            new(7, 1)            
         ];
 
         // Act

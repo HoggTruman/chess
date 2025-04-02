@@ -1,4 +1,4 @@
-﻿namespace BetterGameLogic;
+﻿namespace GameLogic;
 
 public readonly record struct Square
 {

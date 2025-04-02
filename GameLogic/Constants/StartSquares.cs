@@ -1,4 +1,4 @@
-namespace GameLogic.Constants;
+﻿namespace GameLogic.Constants;
 
 /// <summary>
 /// A static class containing the starting squares for each piece. 
@@ -8,40 +8,40 @@ namespace GameLogic.Constants;
 public static class StartSquares
 {
     // White Pieces
-    public static (int row, int col) WhiteRookQ { get => (7, 0);}
-    public static (int row, int col) WhiteKnightQ { get => (7, 1);}
-    public static (int row, int col) WhiteBishopQ { get => (7, 2);}
-    public static (int row, int col) WhiteQueen { get => (7, 3);}
-    public static (int row, int col) WhiteKing { get => (7, 4);}
-    public static (int row, int col) WhiteBishopK { get => (7, 5);}
-    public static (int row, int col) WhiteKnightK { get => (7, 6);}
-    public static (int row, int col) WhiteRookK { get => (7, 7);}
+    public static readonly Square WhiteRookQ = new() { Row = 7, Col = 0 };
+    public static readonly Square WhiteKnightQ = new() { Row = 7, Col = 1 };
+    public static readonly Square WhiteBishopQ = new() { Row = 7, Col = 2};
+    public static readonly Square WhiteQueen = new() { Row = 7, Col = 3};
+    public static readonly Square WhiteKing = new() { Row = 7, Col = 4};
+    public static readonly Square WhiteBishopK = new() { Row = 7, Col = 5};
+    public static readonly Square WhiteKnightK = new() { Row = 7, Col = 6};
+    public static readonly Square WhiteRookK = new() { Row = 7, Col = 7};
 
-    public static (int row, int col) WhitePawnA { get => (6, 0);}
-    public static (int row, int col) WhitePawnB { get => (6, 1);}
-    public static (int row, int col) WhitePawnC { get => (6, 2);}
-    public static (int row, int col) WhitePawnD { get => (6, 3);}
-    public static (int row, int col) WhitePawnE { get => (6, 4);}
-    public static (int row, int col) WhitePawnF { get => (6, 5);}
-    public static (int row, int col) WhitePawnG { get => (6, 6);}
-    public static (int row, int col) WhitePawnH { get => (6, 7);}
+    public static readonly Square WhitePawnA = new() { Row = 6, Col = 0};
+    public static readonly Square WhitePawnB = new() { Row = 6, Col = 1};
+    public static readonly Square WhitePawnC = new() { Row = 6, Col = 2};
+    public static readonly Square WhitePawnD = new() { Row = 6, Col = 3};
+    public static readonly Square WhitePawnE = new() { Row = 6, Col = 4};
+    public static readonly Square WhitePawnF = new() { Row = 6, Col = 5};
+    public static readonly Square WhitePawnG = new() { Row = 6, Col = 6};
+    public static readonly Square WhitePawnH = new() { Row = 6, Col = 7};
 
     // Black Pieces
-    public static (int row, int col) BlackRookQ { get => (0, 0);}
-    public static (int row, int col) BlackKnightQ { get => (0, 1);}
-    public static (int row, int col) BlackBishopQ { get => (0, 2);}
-    public static (int row, int col) BlackQueen { get => (0, 3);}
-    public static (int row, int col) BlackKing { get => (0, 4);}
-    public static (int row, int col) BlackBishopK { get => (0, 5);}
-    public static (int row, int col) BlackKnightK { get => (0, 6);}
-    public static (int row, int col) BlackRookK { get => (0, 7);}
+    public static readonly Square BlackRookQ = new() { Row = 0, Col = 0};
+    public static readonly Square BlackKnightQ = new() { Row = 0, Col = 1};
+    public static readonly Square BlackBishopQ = new() { Row = 0, Col = 2};
+    public static readonly Square BlackQueen = new() { Row = 0, Col = 3};
+    public static readonly Square BlackKing = new() { Row = 0, Col = 4};
+    public static readonly Square BlackBishopK = new() { Row = 0, Col = 5};
+    public static readonly Square BlackKnightK = new() { Row = 0, Col = 6};
+    public static readonly Square BlackRookK = new() { Row = 0, Col = 7};
 
-    public static (int row, int col) BlackPawnA { get => (1, 0);}
-    public static (int row, int col) BlackPawnB { get => (1, 1);}
-    public static (int row, int col) BlackPawnC { get => (1, 2);}
-    public static (int row, int col) BlackPawnD { get => (1, 3);}
-    public static (int row, int col) BlackPawnE { get => (1, 4);}
-    public static (int row, int col) BlackPawnF { get => (1, 5);}
-    public static (int row, int col) BlackPawnG { get => (1, 6);}
-    public static (int row, int col) BlackPawnH { get => (1, 7);}
+    public static readonly Square BlackPawnA = new() { Row = 1, Col = 0};
+    public static readonly Square BlackPawnB = new() { Row = 1, Col = 1};
+    public static readonly Square BlackPawnC = new() { Row = 1, Col = 2};
+    public static readonly Square BlackPawnD = new() { Row = 1, Col = 3};
+    public static readonly Square BlackPawnE = new() { Row = 1, Col = 4};
+    public static readonly Square BlackPawnF = new() { Row = 1, Col = 5};
+    public static readonly Square BlackPawnG = new() { Row = 1, Col = 6};
+    public static readonly Square BlackPawnH = new() { Row = 1, Col = 7};
 }

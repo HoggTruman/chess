@@ -1,135 +1,44 @@
-﻿using GameLogic.Enums;
+﻿using GameLogic;
+using GameLogic.Enums;
 using GameLogic.Moves;
+using GameLogic.Pieces;
+using FluentAssertions;
 
 namespace GameLogicTests.Moves;
 
 public class CastleMoveTests
 {
-    [Theory]
-    [InlineData(0, 0, 0, 0, 0, 0, 0, 0)]
-    [InlineData(0, 1, 2, 3, 4, 5, 6, 7)]
-    [InlineData(2, 6, 2, 1, 0, 4, 3, 6)]
-    public void IsEquivalentTo_WhenEquivalent_ReturnsTrue(
-        int fromRow, int fromCol, int toRow, int toCol, int rookFromRow, int rookFromCol, int rookToRow, int rookToCol)
-    {
-        // Arrange 
-        CastleMove move1 = new(
-            (fromRow, fromCol),
-            (toRow, toCol),
-            (rookFromRow, rookFromCol),
-            (rookToRow, rookToCol));
-
-        CastleMove move2 = new(
-            (fromRow, fromCol),
-            (toRow, toCol),
-            (rookFromRow, rookFromCol),
-            (rookToRow, rookToCol));
-
-        // Act
-        bool move1Result = move1.IsEquivalentTo(move2);
-        bool move2Result = move2.IsEquivalentTo(move1);
-
-        // Assert
-        Assert.True(move1Result);
-        Assert.True(move2Result);
-    }
-
-
-    [Theory]
-    [InlineData(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1)]
-    [InlineData(4, 5, 4, 5, 4, 5, 4, 5, 5, 4, 5, 4, 5, 4, 5, 4)]
-    [InlineData(0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1, 0, 7)]
-    public void IsEquivalentTo_WhenNotEquivalent_ReturnsFalse(
-        int fromRow1, int fromCol1, int toRow1, int toCol1, int rookFromRow1, int rookFromCol1, int rookToRow1, int rookToCol1,
-        int fromRow2, int fromCol2, int toRow2, int toCol2, int rookFromRow2, int rookFromCol2, int rookToRow2, int rookToCol2)
-    {
-        // Arrange 
-        CastleMove move1 = new(
-            (fromRow1, fromCol1),
-            (toRow1, toCol1),
-            (rookFromRow1, rookFromCol1),
-            (rookToRow1, rookToCol1));
-
-        CastleMove move2 = new(
-            (fromRow2, fromCol2),
-            (toRow2, toCol2),
-            (rookFromRow2, rookFromCol2),
-            (rookToRow2, rookToCol2));
-
-        // Act
-        bool move1Result = move1.IsEquivalentTo(move2);
-        bool move2Result = move2.IsEquivalentTo(move1);
-
-        // Assert
-        Assert.False(move1Result);
-        Assert.False(move2Result);
-    }
-
+    #region Apply Tests
 
     [Fact]
-    public void IsEquivalentTo_EnPassantMove_ReturnsFalse()
+    public void Apply_UpdatesBoardAndPieces()
     {
         // Arrange 
-        CastleMove castleMove = new(
-            (0, 0),
-            (0, 0),
-            (0, 0),
-            (0, 0));
+        Board board = new();
 
-        EnPassantMove enPassantMove = new(
-            (0, 0),
-            (0, 0),
-            (0, 0));
+        Square kingFrom = new(0, 4);
+        Square kingTo = new(0, 6);
+        Square rookFrom = new(0, 7);
+        Square rookTo = new(0, 5);
 
-        // Act
-        bool result = castleMove.IsEquivalentTo(enPassantMove);
+        var king = new KingPiece(board, kingFrom, PieceColor.White);
+        var rook = new RookPiece(board, rookFrom, PieceColor.White);
+        board.AddPiece(king);
+        board.AddPiece(rook);
 
-        // Assert
-        Assert.False(result);
-    }
-
-
-    [Fact]
-    public void IsEquivalentTo_PromotionMove_ReturnsFalse()
-    {
-        // Arrange 
-        CastleMove castleMove = new(
-            (0, 0),
-            (0, 0),
-            (0, 0),
-            (0, 0));
-
-        PromotionMove promotionMove = new(
-            (0, 0),
-            (0, 0),
-            PieceType.Queen);
+        CastleMove move = new(kingFrom, kingTo, rookFrom, rookTo);
 
         // Act
-        bool result = castleMove.IsEquivalentTo(promotionMove);
+        move.Apply(board);
 
         // Assert
-        Assert.False(result);
+        king.Square.Should().Be(kingTo);
+        rook.Square.Should().Be(rookTo);
+        board.At(kingFrom).Should().BeNull();
+        board.At(kingTo).Should().Be(king);
+        board.At(rookFrom).Should().BeNull();
+        board.At(rookTo).Should().Be(rook);
     }
 
-
-    [Fact]
-    public void IsEquivalentTo_StandardMove_ReturnsFalse()
-    {
-        // Arrange 
-        CastleMove castleMove = new(
-            (0, 0),
-            (0, 0),
-            (0, 0),
-            (0, 0));
-
-        StandardMove standardMove = new(
-            (0, 0),
-            (0, 0));
-
-        // Act
-        bool result = castleMove.IsEquivalentTo(standardMove);
-
-        // Assert
-        Assert.False(result);
-    }
+    #endregion
 }

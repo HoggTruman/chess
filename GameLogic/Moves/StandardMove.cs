@@ -1,5 +1,5 @@
 using GameLogic.Enums;
-using GameLogic.Interfaces;
+using GameLogic.Pieces;
 
 namespace GameLogic.Moves;
 
@@ -7,27 +7,40 @@ namespace GameLogic.Moves;
 /// <summary>
 /// A standard move, i.e. Not a Castle, Pawn Promotion or En Passant
 /// </summary>
-public class StandardMove : SinglePieceMove
+public record StandardMove : Move
 {
-    public StandardMove(
-        (int row, int col) from, 
-        (int row, int col) to
-    ) 
-        :base(MoveType.Standard, from, to)
+    public override MoveType MoveType => MoveType.Standard;
+
+    public StandardMove(Square from, Square to) 
+        :base(from, to)
     {
 
     }
+    
 
-    public override bool IsEquivalentTo(IMove move)
+    protected override void ApplyWithoutUpdatingHistory(Board board)
     {
-        if (move.MoveType != MoveType)
+        if (board.At(From) == null)
         {
-            return false;
+            throw new InvalidOperationException("The From square is empty");
         }
 
-        StandardMove standardMove = (StandardMove)move;
+        board.RemoveAt(To);
+        board.MovePiece(From, To);
+    }
 
-        return standardMove.From == From &&
-               standardMove.To == To;
+    protected override void UndoWithoutUpdatingHistory(Board board, IPiece? capturedPiece)
+    {
+        if (board.At(To) == null)
+        {
+            throw new InvalidOperationException("The To square is empty");
+        }
+
+        board.MovePiece(To, From);
+
+        if (capturedPiece != null)
+        {
+            board.AddPiece(capturedPiece);
+        }        
     }
 }

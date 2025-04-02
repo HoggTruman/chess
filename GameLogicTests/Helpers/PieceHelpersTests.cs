@@ -18,7 +18,7 @@ public class PieceHelpersTests
 		int testRow = 3;
 		int testCol = 3;
 
-		List<(int row, int col)> expected = [
+		List<Square> expected = [
 			new(testRow, 0),
 			new(testRow, 1),
 			new(testRow, 2),
@@ -51,12 +51,12 @@ public class PieceHelpersTests
 		int testRow = 4;
 		int testCol = 4;
 
-		var queen1 = board.AddNewPiece<QueenPiece>(testRow, 2, PieceColor.White);
-		var queen2 = board.AddNewPiece<QueenPiece>(testRow, 6, PieceColor.White);
-		var queen3 = board.AddNewPiece<QueenPiece>(2, testCol, PieceColor.White);
-		var queen4 = board.AddNewPiece<QueenPiece>(6, testCol, PieceColor.White);
+		board.AddPiece(new QueenPiece(board, testRow, 2, PieceColor.White));
+		board.AddPiece(new QueenPiece(board, testRow, 6, PieceColor.White));
+		board.AddPiece(new QueenPiece(board, 2, testCol, PieceColor.White));
+		board.AddPiece(new QueenPiece(board, 6, testCol, PieceColor.White));
 
-		List<(int row, int col)> expected = [
+		List<Square> expected = [
 			new(testRow, 3),
 			new(testRow, 2),
 			new(testRow, 5),
@@ -83,7 +83,7 @@ public class PieceHelpersTests
 		int testRow = 0;
 		int testCol = 0;
 
-		List<(int row, int col)> expected = [
+		List<Square> expected = [
 			new(testRow, 1),
 			new(testRow, 2),
 			new(testRow, 3),
@@ -116,7 +116,7 @@ public class PieceHelpersTests
 		int testRow = 7;
 		int testCol = 7;
 
-		List<(int row, int col)> expected = [
+		List<Square> expected = [
 			new(testRow, 0),
 			new(testRow, 1),
 			new(testRow, 2),
@@ -149,12 +149,12 @@ public class PieceHelpersTests
 		int testRow = 3;
 		int testCol = 4;
 		
-		var queen1 = board.AddNewPiece<QueenPiece>(testRow, testCol - 1, PieceColor.White);
-		var queen2 = board.AddNewPiece<QueenPiece>(testRow, testCol + 1, PieceColor.White);
-		var queen3 = board.AddNewPiece<QueenPiece>(testRow - 1, testCol, PieceColor.White);
-		var queen4 = board.AddNewPiece<QueenPiece>(testRow + 1, testCol, PieceColor.White);
+		board.AddPiece(new QueenPiece(board, testRow, testCol - 1, PieceColor.White));
+		board.AddPiece(new QueenPiece(board, testRow, testCol + 1, PieceColor.White));
+		board.AddPiece(new QueenPiece(board, testRow - 1, testCol, PieceColor.White));
+		board.AddPiece(new QueenPiece(board, testRow + 1, testCol, PieceColor.White));
 
-		List<(int row, int col)> expected = [
+		List<Square> expected = [
 			new(testRow, testCol - 1),
 			new(testRow, testCol + 1),
 			new(testRow - 1, testCol),
@@ -182,7 +182,7 @@ public class PieceHelpersTests
 		int testRow = 3;
 		int testCol = 3;
 		
-		List<(int row, int col)> expected = [
+		List<Square> expected = [
 			new(0, 0),
 			new(1, 1),
 			new(2, 2),
@@ -214,7 +214,7 @@ public class PieceHelpersTests
 		int testRow = 0;
 		int testCol = 0;
 
-		List<(int row, int col)> expected = [
+		List<Square> expected = [
 			new(1, 1),
 			new(2, 2),
 			new(3, 3),
@@ -240,12 +240,12 @@ public class PieceHelpersTests
 		int testRow = 3;
 		int testCol = 4;
 
-		var queen1 = board.AddNewPiece<QueenPiece>(testRow - 1, testCol - 1, PieceColor.White);
-		var queen2 = board.AddNewPiece<QueenPiece>(testRow + 1, testCol + 1, PieceColor.White);
-		var queen3 = board.AddNewPiece<QueenPiece>(testRow - 1, testCol + 1, PieceColor.White);
-		var queen4 = board.AddNewPiece<QueenPiece>(testRow + 1, testCol - 1, PieceColor.White);
+		board.AddPiece(new QueenPiece(board, testRow - 1, testCol - 1, PieceColor.White));
+		board.AddPiece(new QueenPiece(board, testRow + 1, testCol + 1, PieceColor.White));
+		board.AddPiece(new QueenPiece(board, testRow - 1, testCol + 1, PieceColor.White));
+		board.AddPiece(new QueenPiece(board, testRow + 1, testCol - 1, PieceColor.White));
 
-		List<(int row, int col)> expected = [
+		List<Square> expected = [
 			new(testRow - 1, testCol - 1),
 			new(testRow + 1, testCol + 1),
 			new(testRow - 1, testCol + 1),
@@ -260,5 +260,4 @@ public class PieceHelpersTests
 	}
 
     #endregion
-
 }

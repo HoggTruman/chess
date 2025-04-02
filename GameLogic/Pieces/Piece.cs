@@ -1,90 +1,41 @@
 using GameLogic.Enums;
-using GameLogic.Interfaces;
 using GameLogic.Moves;
 
 namespace GameLogic.Pieces;
 
 public abstract class Piece : IPiece
 {
-    #region Fields
-
     protected readonly Board _board;
-    private int _row;
-    private int _col;
 
-    #endregion
-
-
-
-    #region Properties
-
-    public int Row
+    public int Row { get; set; }
+    public int Col { get; set; }
+    public Square Square
     {
-        get { return _row; }
-        set { _row = value; }
-    }
-
-    public int Col
-    {
-        get { return _col; }
-        set { _col = value; }
-    }
-
-    public (int row, int col) Square
-    {
-        get { return (_row, _col); }
+        get => new() { Row = Row, Col = Col };
         set
         {
-            _row = value.row;
-            _col = value.col;
+            Row = value.Row;
+            Col = value.Col;
         }
     }
-
-    public (int row, int col) StartSquare { get; }
-
+    public Square StartSquare { get; }
     public PieceColor Color { get; }
-
-    public PieceType PieceType { get; }
-
-    public int Value { get; }
-
-    #endregion
+    public abstract PieceType PieceType { get; }
+    public abstract int Value { get; }
 
 
-
-    #region Constructor
-
-    /// <summary>
-    /// Base constructor for the abstract Piece Class
-    /// </summary>
-    /// <param name="board">The Board object the piece will be placed on.</param>
-    /// <param name="row">Row index from 0 to 7.</param>
-    /// <param name="col">Column index from 0 to 7.</param>
-    /// <param name="color">The Color of the piece.</param>
-    /// <param name="pieceType">The type of a piece. (e.g. Pawn, King, ...)</param>
-    /// <param name="value">The point-value of a piece. e.g. 5 for a rook</param>
-    protected Piece(Board board, int row, int col, PieceColor color, PieceType pieceType, int value)
+    protected Piece(Board board, int row, int col, PieceColor color, Square? startSquare = null)
     {
         _board = board;
-        _row = row;
-        _col = col;
-        StartSquare = (row, col);
+        Row = row;
+        Col = col;
+        StartSquare = startSquare == null? new(row, col): startSquare.Value; // useful for promotion
         Color = color;
-        PieceType = pieceType;
-        Value = value;
-    }
+    } 
 
-    #endregion
+    public abstract List<Square> GetTargetedSquares();
 
-
-
-    #region Methods
-
-    public abstract List<(int row, int col)> GetTargetedSquares();
-
-
-    public abstract List<(int row, int col)> GetReachableSquares();
-
+    public abstract List<Square> GetReachableSquares();
 
     public virtual List<IMove> GetValidMoves()
     {
@@ -93,11 +44,10 @@ public abstract class Piece : IPiece
         // keep the squares which represent a valid move
         foreach (var toSquare in GetReachableSquares())
         {
-            if (_board.MoveLeavesPlayerInCheck(Square, toSquare) == false)
+            StandardMove move = new(Square, toSquare);
+            if (!move.LeavesPlayerInCheck(_board))
             {
-                validMoves.Add(
-                    new StandardMove(Square, toSquare)
-                );
+                validMoves.Add(move);
             }
         }
 
@@ -107,8 +57,6 @@ public abstract class Piece : IPiece
 
     public bool HasMoved()
     {
-        return _board.MoveHistory.Any(move => move.MovesSquare(StartSquare));
+        return _board.History.HasMoved(this);
     }
-
-    #endregion
 }

@@ -1,59 +1,46 @@
 using GameLogic.Constants;
 using GameLogic.Enums;
 using GameLogic.Helpers;
-using GameLogic.Interfaces;
 using GameLogic.Moves;
 
 namespace GameLogic.Pieces;
 
 public class KingPiece : Piece
 {
-    #region Constructor
+    public override PieceType PieceType => PieceType.King;
+    public override int Value => PieceValues.King;
 
-    /// <summary>
-    /// Initializes a new instance of the KingPiece class.
-    /// </summary>
-    /// <param name="board">The Board object the piece will be placed on.</param>
-    /// <param name="row">Row index from 0 to 7.</param>
-    /// <param name="col">Column index from 0 to 7.</param>
-    /// <param name="color">The Color of the piece.</param>
+
     public KingPiece(Board board, int row, int col, PieceColor color)
-        : base(board, row, col, color, PieceType.King, PieceValues.King)
+        : base(board, row, col, color)
     {
 
     }
 
-    #endregion
+    public KingPiece(Board board, Square square, PieceColor color) 
+        : this(board, square.Row, square.Col, color)
+    {
+        
+    }
 
 
-
-    #region Public Methods
-
-    public override List<(int row, int col)> GetTargetedSquares()
+    public override List<Square> GetTargetedSquares()
     {
         // Get all squares in range (including those out of bounds)
         var targetedSquares = GetAllTargetedSquares();
-
-        // Filter to keep only in bounds squares
-        targetedSquares = targetedSquares.Where(BoardHelpers.SquareIsInBounds);
-
+        targetedSquares = targetedSquares.Where(Board.IsInBounds);
         return targetedSquares.ToList();
     }
 
 
-    public override List<(int row, int col)> GetReachableSquares()
+    public override List<Square> GetReachableSquares()
     {
         // Get all squares in range (including those out of bounds)
         var squares = GetAllTargetedSquares();
-
-        // Filter to keep only in bounds squares
-        squares = squares.Where(BoardHelpers.SquareIsInBounds);
-
-        // Remove squares with a piece of the same color
-        squares = squares
-            .Where(s => _board.State[s.row, s.col]?.Color != Color);
+        squares = squares.Where(Board.IsInBounds);
+        squares = squares.Where(s => !_board.IsOccupiedByColor(s, Color));
             
-        return squares.ToList();;
+        return squares.ToList();
     }
 
 
@@ -82,9 +69,7 @@ public class KingPiece : Piece
             {
                 var kingTo = castleSquares.Value.kingTo;
                 var rookTo = castleSquares.Value.rookTo; 
-                validMoves.Add(
-                    new CastleMove(Square, kingTo, rook.Square, rookTo)
-                );
+                validMoves.Add(new CastleMove(Square, kingTo, rook.Square, rookTo));
             }
         }
 
@@ -97,14 +82,13 @@ public class KingPiece : Piece
     /// </summary>
     /// <param name="rook">The RookPiece to castle with</param>
     /// <returns></returns>
-    public ((int row, int col) kingTo, (int row, int col) rookTo)? GetCastleSquares(RookPiece rook)
+    public (Square kingTo, Square rookTo)? GetCastleSquares(RookPiece rook)
     {
         if (rook.Color == Color && rook.CanCastle())
         {
             int kingDirection = Math.Sign(rook.Col - Col);
-
-            (int row, int col) kingTo = (Row, Col + 2 * kingDirection);
-            (int row, int col) rookTo = (Row, kingTo.col - kingDirection);
+            Square kingTo = new(Row, Col + 2 * kingDirection);
+            Square rookTo = new(Row, kingTo.Col - kingDirection);
 
             return (kingTo, rookTo);
         }
@@ -117,25 +101,19 @@ public class KingPiece : Piece
     /// Determines if this KingPiece is under check.
     /// </summary>
     /// <returns>true if under check, otherwise false</returns>
-    public bool IsChecked()
+    public bool IsUnderCheck()
     {
         var enemyPieces = _board.Pieces[ColorHelpers.Opposite(Color)];
-
         return enemyPieces.Any(piece => piece.GetTargetedSquares().Contains(Square));
     }
 
-    #endregion
-
-
-
-    #region Private Methods
 
     /// <summary>
     /// Returns a List of all the squares the king could move to including those out of bounds.
     /// Does not include castling squares.
     /// </summary>
     /// <returns></returns>
-    private IEnumerable<(int row, int col)> GetAllTargetedSquares()
+    private IEnumerable<Square> GetAllTargetedSquares()
     {
         return [
             new(Row - 1, Col),
@@ -148,6 +126,4 @@ public class KingPiece : Piece
             new(Row + 1, Col + 1)
         ];
     }
-
-    #endregion
 }

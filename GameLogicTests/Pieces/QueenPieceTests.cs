@@ -1,9 +1,7 @@
-using FluentAssertions;
 using GameLogic;
-using GameLogic.Constants;
 using GameLogic.Enums;
-using GameLogic.Moves;
 using GameLogic.Pieces;
+using FluentAssertions;
 
 namespace GameLogicTests.Pieces;
 
@@ -17,38 +15,42 @@ public class QueenPieceTests
         // Arrange
         Board board = new();
 
-        var queen = board.AddNewPiece<QueenPiece>(4, 4, PieceColor.White);
+        var queen = new QueenPiece(board, 4, 4, PieceColor.White);
+        var rowBlockingPiece = new QueenPiece(board, 4, 5, PieceColor.White);
+        var colBlockingPiece = new QueenPiece(board, 5, 4, PieceColor.White);
+        var diagonalBlockingPiece = new QueenPiece(board, 5, 5, PieceColor.White);
 
-        var rowBlockingPiece = board.AddNewPiece<QueenPiece>(4, 5, PieceColor.White);
-        var colBlockingPiece = board.AddNewPiece<QueenPiece>(5, 4, PieceColor.White);
-        var diagonalBlockingPiece = board.AddNewPiece<QueenPiece>(5, 5, PieceColor.White);
+        board.AddPiece(queen);
+        board.AddPiece(rowBlockingPiece);
+        board.AddPiece(colBlockingPiece);
+        board.AddPiece(diagonalBlockingPiece);
 
-        List<(int row, int col)> expected = [
+        List<Square> expected = [
             // row squares
-            (4, 0),
-            (4, 1),
-            (4, 2),
-            (4, 3),
-            (4, 5),
+            new(4, 0),
+            new(4, 1),
+            new(4, 2),
+            new(4, 3),
+            new(4, 5),
             // column squares
-            (1, 4),
-            (2, 4),
-            (3, 4),
-            (0, 4),
-            (5, 4),
+            new(1, 4),
+            new(2, 4),
+            new(3, 4),
+            new(0, 4),
+            new(5, 4),
             // positive diagonal squares
-            (0, 0),
-            (1, 1),
-            (2, 2),
-            (3, 3),
-            (5, 5),
+            new(0, 0),
+            new(1, 1),
+            new(2, 2),
+            new(3, 3),
+            new(5, 5),
             // negative diagonal squares
-            (3, 5),
-            (2, 6),
-            (1, 7),
-            (5, 3),
-            (6, 2),
-            (7, 1)    
+            new(3, 5),
+            new(2, 6),
+            new(1, 7),
+            new(5, 3),
+            new(6, 2),
+            new(7, 1)    
         ];
 
         // Act
@@ -70,34 +72,39 @@ public class QueenPieceTests
         // Arrange
         Board board = new();
 
-        var queen = board.AddNewPiece<QueenPiece>(4, 4, PieceColor.White);
+        var queen = new QueenPiece(board, 4, 4, PieceColor.White);
+        var rowBlockingPiece = new QueenPiece(board, 4, 5, PieceColor.White);
+        var colBlockingPiece = new QueenPiece(board, 5, 4, PieceColor.White);
+        var diagonalBlockingPiece = new QueenPiece(board, 5, 5, PieceColor.White);
+        var enemyBlockingPiece = new QueenPiece(board, 3, 5, PieceColor.Black);
 
-        var rowBlockingPiece = board.AddNewPiece<QueenPiece>(4, 5, PieceColor.White);
-        var colBlockingPiece = board.AddNewPiece<QueenPiece>(5, 4, PieceColor.White);
-        var diagonalBlockingPiece = board.AddNewPiece<QueenPiece>(5, 5, PieceColor.White);
-        var enemyBlockingPiece = board.AddNewPiece<QueenPiece>(3, 5, PieceColor.Black);
+        board.AddPiece(queen);
+        board.AddPiece(rowBlockingPiece);
+        board.AddPiece(colBlockingPiece);
+        board.AddPiece(diagonalBlockingPiece);
+        board.AddPiece(enemyBlockingPiece);
 
-        List<(int row, int col)> expected = [
+        List<Square> expected = [
             // row squares
-            (4, 0),
-            (4, 1),
-            (4, 2),
-            (4, 3),
+            new(4, 0),
+            new(4, 1),
+            new(4, 2),
+            new(4, 3),
             // column squares
-            (1, 4),
-            (2, 4),
-            (3, 4),
-            (0, 4),
+            new(1, 4),
+            new(2, 4),
+            new(3, 4),
+            new(0, 4),
             // positive diagonal squares
-            (0, 0),
-            (1, 1),
-            (2, 2),
-            (3, 3),
+            new(0, 0),
+            new(1, 1),
+            new(2, 2),
+            new(3, 3),
             // negative diagonal squares
-            (3, 5),
-            (5, 3),
-            (6, 2),
-            (7, 1)    
+            new(3, 5),
+            new(5, 3),
+            new(6, 2),
+            new(7, 1)    
         ];
 
         // Act

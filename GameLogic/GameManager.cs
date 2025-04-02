@@ -1,6 +1,5 @@
 using GameLogic.Enums;
 using GameLogic.Helpers;
-using GameLogic.Interfaces;
 using GameLogic.Moves;
 using GameLogic.Pieces;
 
@@ -13,12 +12,12 @@ public class GameManager
     /// <summary>
     /// The Board of the active game.
     /// </summary>
-    public Board Board { get; private set; } = new();
+    public Board Board { get; private set; }
 
     /// <summary>
     /// The PieceColor of the player whose turn it is.
     /// </summary>
-    public PieceColor ActivePlayerColor { get; set; } = PieceColor.White;
+    public PieceColor ActivePlayerColor { get; private set; } = PieceColor.White;
 
     /// <summary>
     /// A cached 2D array of the available moves to the player whose turn it is.
@@ -33,10 +32,7 @@ public class GameManager
     /// <summary>
     /// The KingPiece of the active player.
     /// </summary>
-    public KingPiece ActivePlayerKing
-    {
-        get => Board.GetKing(ActivePlayerColor);
-    }
+    public KingPiece ActivePlayerKing => Board.GetKing(ActivePlayerColor);
 
     #endregion
 
@@ -45,7 +41,7 @@ public class GameManager
     #region Constructors
 
     public GameManager(Board? board = null)
-    {        
+    {
         // Avoids using StartNewGame so that a manually set up Board can be used in testing
         if (board == null)
         {
@@ -56,9 +52,9 @@ public class GameManager
         {
             Board = board;
         }
-        
+
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
-        ActivePlayerUnderCheck = Board.GetKing(ActivePlayerColor).IsChecked();
+        ActivePlayerUnderCheck = Board.GetKing(ActivePlayerColor).IsUnderCheck();
     }
 
     #endregion
@@ -76,7 +72,7 @@ public class GameManager
         Board.Initialize();
         ActivePlayerColor = PieceColor.White;
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
-        ActivePlayerUnderCheck = Board.GetKing(ActivePlayerColor).IsChecked();
+        ActivePlayerUnderCheck = Board.GetKing(ActivePlayerColor).IsUnderCheck();
     }
 
 
@@ -112,14 +108,14 @@ public class GameManager
     /// <returns>true for a valid move. Otherwise, false</returns>
     public bool IsValidMove(IMove move)
     {
-        var validMoves = ActivePlayerMoves[move.From.row, move.From.col];
+        var validMoves = ActivePlayerMoves[move.From.Row, move.From.Col];
 
         if (validMoves == null)
         {
             return false;
         }
 
-        return validMoves.Any(x => x.IsEquivalentTo(move));
+        return validMoves.Any(x => (Move)x == (Move)move);
     }
 
 
@@ -129,22 +125,7 @@ public class GameManager
     /// <param name="move">A move to carry out</param>
     public void HandleMove(IMove move)
     {
-        if (move.MoveType == MoveType.Standard)
-        {
-            Board.StandardMove((StandardMove)move);
-        }
-        else if (move.MoveType == MoveType.EnPassant)
-        {
-            Board.EnPassant((EnPassantMove)move);
-        }
-        else if (move.MoveType == MoveType.Promotion)
-        {
-            Board.PawnPromote((PromotionMove)move);
-        }
-        else if (move.MoveType == MoveType.Castle)
-        {
-            Board.Castle((CastleMove)move);
-        }
+        move.Apply(Board);
     }
 
 
@@ -156,7 +137,7 @@ public class GameManager
     {
         ActivePlayerColor = ColorHelpers.Opposite(ActivePlayerColor);
         ActivePlayerMoves = GetPlayerMoves(ActivePlayerColor);
-        ActivePlayerUnderCheck = Board.GetKing(ActivePlayerColor).IsChecked();
+        ActivePlayerUnderCheck = Board.GetKing(ActivePlayerColor).IsUnderCheck();
     }
 
 
@@ -174,9 +155,9 @@ public class GameManager
         }
 
         // If the active player has a valid move, returns false
-        for (int r = 0; r < Board.BoardSize; r++)
+        for (int r = 0; r < Board.BoardSize; ++r)
         {
-            for (int c = 0; c < Board.BoardSize; c++)
+            for (int c = 0; c < Board.BoardSize; ++c)
             {
                 var squareMoves = ActivePlayerMoves[r, c];
 
@@ -206,23 +187,20 @@ public class GameManager
 
         if (ActivePlayerUnderCheck)
         {
-            // Checkmate
             var winner = ColorHelpers.Opposite(ActivePlayerColor);
             return (winner, GameOverReason.Checkmate);
         }
         else
         {
-            // Insufficient Material
             if (Board.Pieces[PieceColor.White].Count == 1 &&
                 Board.Pieces[PieceColor.Black].Count == 1)
             {
                 return (PieceColor.None, GameOverReason.InsufficientMaterial);
             }
 
-            // Stalemate
             return (PieceColor.None, GameOverReason.Stalemate);
         }
-    }    
+    }
 
     #endregion
 

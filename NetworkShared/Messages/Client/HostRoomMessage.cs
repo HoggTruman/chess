@@ -1,4 +1,4 @@
-﻿using BetterGameLogic.Enums;
+﻿using GameLogic.Enums;
 using NetworkShared.Enums;
 
 namespace NetworkShared.Messages.Client;

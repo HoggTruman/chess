@@ -6,35 +6,31 @@ namespace GameLogic.Pieces;
 
 public class RookPiece : Piece
 {
-    /// <summary>
-    /// Initializes a new instance of the RookPiece class.
-    /// </summary>
-    /// <param name="board">The Board object the piece will be placed on.</param>
-    /// <param name="row">Row index from 0 to 7.</param>
-    /// <param name="col">Column index from 0 to 7.</param>
-    /// <param name="color">The Color of the piece.</param>
-    public RookPiece(Board board, int row, int col, PieceColor color)
-        : base(board, row, col, color, PieceType.Rook, PieceValues.Rook)
+    public override PieceType PieceType => PieceType.Rook;
+    public override int Value => PieceValues.Rook;
+
+    public RookPiece(Board board, int row, int col, PieceColor color, Square? startSquare = null)
+        : base(board, row, col, color, startSquare)
     {
 
     }
 
+    public RookPiece(Board board, Square square, PieceColor color, Square? startSquare = null) 
+        : base(board, square.Row, square.Col, color, startSquare)
+    {
+        
+    }
 
-    public override List<(int row, int col)> GetTargetedSquares()
+
+    public override List<Square> GetTargetedSquares()
     {
         return PieceHelpers.GetTargetedRowColSquares(Row, Col, _board);
     }
 
-
-    public override List<(int row, int col)> GetReachableSquares()
+    public override List<Square> GetReachableSquares()
     {
-        // Get targeted squares
-        var squares = PieceHelpers.GetTargetedRowColSquares(Row, Col, _board);
-
-        // Remove squares with a piece of the same color
-        squares = squares
-            .Where(s => _board.State[s.row, s.col]?.Color != Color)
-            .ToList();
+        var squares = PieceHelpers.GetTargetedRowColSquares(Row, Col, _board)
+            .Where(s => !_board.IsOccupiedByColor(s, Color)).ToList();
 
         return squares;
     }
@@ -49,16 +45,14 @@ public class RookPiece : Piece
         // Ensure there is a king to castle with
         var king = _board.GetKing(Color);
 
-        if (king == null)
+        if (king == null ||
+            HasMoved() || 
+            king.HasMoved() ||
+            Row != king.Row ||
+            Col == king.Col)
+        {
             return false;
-
-        // Ensure the rook and king have not moved
-        if (HasMoved() || king.HasMoved())
-            return false;
-
-        // Ensure the rook and king are on the same row
-        if (Row != king.Row)
-            return false;
+        }
 
         // Ensure the rook's start square is a rook start square
         if (StartSquare != StartSquares.WhiteRookK &&
@@ -70,25 +64,19 @@ public class RookPiece : Piece
         }
 
         // Ensure there are no pieces between the two
-        List<(int row, int col)> betweenSquares = [];
+        List<Square> betweenSquares = Col < king.Col?
+            [new(Row, Col + 1), new(Row, Col + 2), new(Row, Col + 3)]:
+            [new(Row, Col - 1), new(Row, Col - 2)];
 
-        if (Col < king.Col)
-            betweenSquares = [(Row, Col + 1), (Row, Col + 2), (Row, Col + 3)];
-        
-        if (Col > king.Col)
-            betweenSquares = [(Row, Col - 1), (Row, Col - 2)];
-
-        if (betweenSquares.Any(s => _board.State[s.row, s.col] != null))
+        if (betweenSquares.Any(s => _board.State[s.Row, s.Col] != null))
+        {
             return false;
+        }            
 
         // Ensure the king does not pass through check
-        List<(int row, int col)> kingSquares = [];
-
-        if (Col < king.Col)
-            kingSquares = [king.Square, (king.Row, king.Col - 1), (king.Row, king.Col - 2)];
-
-        if (Col > king.Col)
-            kingSquares = [king.Square, (king.Row, king.Col + 1), (king.Row, king.Col + 2)];
+        List<Square> kingSquares = Col < king.Col?
+            [king.Square, new(king.Row, king.Col - 1), new(king.Row, king.Col - 2)]:
+            [king.Square, new(king.Row, king.Col + 1), new(king.Row, king.Col + 2)];
         
         var enemyPieces = _board.Pieces[ColorHelpers.Opposite(Color)];
 
@@ -100,5 +88,4 @@ public class RookPiece : Piece
         
         return true;
     }
-
 }

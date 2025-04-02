@@ -1,6 +1,6 @@
-﻿using BetterGameLogic.Enums;
+﻿using GameLogic.Enums;
 
-namespace BetterGameLogic.Moves;
+namespace GameLogic.Moves;
 
 public interface IMove
 {

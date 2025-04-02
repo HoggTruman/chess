@@ -1,6 +1,6 @@
 using Client;
-using BetterGameLogic.Enums;
-using BetterGameLogic.Helpers;
+using GameLogic.Enums;
+using GameLogic.Helpers;
 using NetworkShared;
 using NetworkShared.Enums;
 using NetworkShared.Messages.Server;

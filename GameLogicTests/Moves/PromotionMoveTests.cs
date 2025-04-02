@@ -1,129 +1,191 @@
-﻿using GameLogic.Enums;
+﻿using GameLogic;
+using GameLogic.Enums;
 using GameLogic.Moves;
+using GameLogic.Pieces;
+using FluentAssertions;
 
 namespace GameLogicTests.Moves;
 
 public class PromotionMoveTests
 {
+    #region Apply Tests
+
+    [Fact]
+    public void Apply_WithoutCapture_UpdatesBoardAndCreatesPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        Square from = new(6, 4);
+        Square to = new(7, 4);
+
+        var movingPawn = new PawnPiece(board, from, PieceColor.White);
+        board.AddPiece(movingPawn);
+
+        PromotionMove move = new(from, to, PieceType.Queen);
+
+        // Act
+        move.Apply(board);
+        var promotedPiece = board.At(to);
+
+        // Assert
+        Assert.NotNull(promotedPiece);
+        promotedPiece.Square.Should().Be(to);
+        board.At(from).Should().BeNull();
+        board.Pieces[movingPawn.Color].Should().Contain(promotedPiece);
+    }
+
+
+    [Fact]
+    public void Apply_WitCapture_UpdatesBoardAndCreatesPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        Square from = new(6, 4);
+        Square to = new(7, 5);
+
+        var movingPawn = new PawnPiece(board, from, PieceColor.White);
+        var capturedPiece = new QueenPiece(board, to, PieceColor.Black);
+        board.AddPiece(movingPawn);
+        board.AddPiece(capturedPiece);
+
+        PromotionMove move = new(from, to, PieceType.Queen);
+
+        // Act
+        move.Apply(board);
+        var promotedPiece = board.At(to);
+
+        // Assert
+        Assert.NotNull(promotedPiece);
+        board.At(to).Should().NotBe(capturedPiece);
+        promotedPiece.Square.Should().Be(to);
+        board.At(from).Should().BeNull();
+        board.Pieces[movingPawn.Color].Should().Contain(promotedPiece);
+        board.Pieces[capturedPiece.Color].Should().NotContain(capturedPiece);
+    }
+
+
     [Theory]
-    [InlineData(0, 0, 0, 0, PieceType.Queen)]
-    [InlineData(0, 1, 2, 3, PieceType.Rook)]
-    [InlineData(2, 6, 2, 1, PieceType.Bishop)]
-    public void IsEquivalentTo_WhenEquivalent_ReturnsTrue(
-        int fromRow, int fromCol, int toRow, int toCol, PieceType promotedTo)
+    [InlineData(PieceColor.Black)]
+    [InlineData(PieceColor.White)]
+    public void Apply_CreatesPieceOfSameColor(PieceColor color)
     {
-        // Arrange 
-        PromotionMove move1 = new(
-            (fromRow, fromCol),
-            (toRow, toCol),
-            promotedTo);
+        // Arrange
+        Board board = new();
 
-        PromotionMove move2 = new(
-            (fromRow, fromCol),
-            (toRow, toCol),
-            promotedTo);
+        Square from = new(6, 4);
+        Square to = new(7, 4);
+
+        var movingPawn = new PawnPiece(board, from, color);
+        board.AddPiece(movingPawn);
+
+        PromotionMove move = new(from, to, PieceType.Queen);
 
         // Act
-        bool move1Result = move1.IsEquivalentTo(move2);
-        bool move2Result = move2.IsEquivalentTo(move1);
+        move.Apply(board);
+        var promotedPiece = board.At(to);
 
         // Assert
-        Assert.True(move1Result);
-        Assert.True(move2Result);
-    }
-
-
-    [Theory]
-    [InlineData(0, 0, 0, 0, PieceType.Queen, 1, 1, 1, 1, PieceType.Bishop)]
-    [InlineData(4, 5, 4, 5, PieceType.Queen, 5, 4, 5, 4, PieceType.Queen)]
-    [InlineData(0, 1, 2, 3, PieceType.Rook, 5, 6, 7, 6, PieceType.Knight)]
-    public void IsEquivalentTo_WhenNotEquivalent_ReturnsFalse(
-        int fromRow1, int fromCol1, int toRow1, int toCol1, PieceType promotedTo1,
-        int fromRow2, int fromCol2, int toRow2, int toCol2, PieceType promotedTo2)
-    {
-        // Arrange 
-        PromotionMove move1 = new(
-            (fromRow1, fromCol1),
-            (toRow1, toCol1),
-            promotedTo1);
-
-        PromotionMove move2 = new(
-            (fromRow2, fromCol2),
-            (toRow2, toCol2),
-            promotedTo2);
-
-        // Act
-        bool move1Result = move1.IsEquivalentTo(move2);
-        bool move2Result = move2.IsEquivalentTo(move1);
-
-        // Assert
-        Assert.False(move1Result);
-        Assert.False(move2Result);
+        Assert.NotNull(promotedPiece);
+        promotedPiece.Color.Should().Be(color);
     }
 
 
     [Fact]
-    public void IsEquivalentTo_CastleMove_ReturnsFalse()
+    public void Apply_PromotedToQueen_CreatesQueenPiece()
     {
-        // Arrange 
-        PromotionMove promotionMove = new(
-            (0, 0),
-            (0, 0),
-            PieceType.Queen);
+        // Arrange
+        Board board = new();
 
-        CastleMove castleMove = new(
-            (0, 0),
-            (0, 0),
-            (0, 0),
-            (0, 0));
+        Square from = new(6, 4);
+        Square to = new(7, 4);
+
+        var movingPawn = new PawnPiece(board, from, PieceColor.White);
+        board.AddPiece(movingPawn);
+
+        PromotionMove move = new(from, to, PieceType.Queen);
 
         // Act
-        bool result = promotionMove.IsEquivalentTo(castleMove);
+        move.Apply(board);
+        var promotedPiece = board.At(to);
 
         // Assert
-        Assert.False(result);
+        Assert.NotNull(promotedPiece);
+        promotedPiece.GetType().Should().Be(typeof(QueenPiece));
     }
 
 
     [Fact]
-    public void IsEquivalentTo_EnPassantMove_ReturnsFalse()
+    public void Apply_PromotedToRook_CreatesRookPiece()
     {
-        // Arrange 
-        PromotionMove promotionMove = new(
-            (0, 0),
-            (0, 0),
-            PieceType.Queen);
+        // Arrange
+        Board board = new();
 
-        EnPassantMove enPassantMove = new(
-            (0, 0),
-            (0, 0),
-            (0, 0));
+        Square from = new(6, 4);
+        Square to = new(7, 4);
+
+        var movingPawn = new PawnPiece(board, from, PieceColor.White);
+        board.AddPiece(movingPawn);
+
+        PromotionMove move = new(from, to, PieceType.Rook);
 
         // Act
-        bool result = promotionMove.IsEquivalentTo(enPassantMove);
+        move.Apply(board);
+        var promotedPiece = board.At(to);
 
         // Assert
-        Assert.False(result);
+        Assert.NotNull(promotedPiece);
+        promotedPiece.GetType().Should().Be(typeof(RookPiece));
     }
 
 
     [Fact]
-    public void IsEquivalentTo_StandardMove_ReturnsFalse()
+    public void Apply_PromotedToBishop_CreatesBishopPiece()
     {
-        // Arrange 
-        PromotionMove promotionMove = new(
-            (0, 0),
-            (0, 0),
-            PieceType.Queen);
+        // Arrange
+        Board board = new();
 
-        StandardMove standardMove = new(
-            (0, 0),
-            (0, 0));
+        Square from = new(6, 4);
+        Square to = new(7, 4);
+
+        var movingPawn = new PawnPiece(board, from, PieceColor.White);
+        board.AddPiece(movingPawn);
+
+        PromotionMove move = new(from, to, PieceType.Bishop);
 
         // Act
-        bool result = promotionMove.IsEquivalentTo(standardMove);
+        move.Apply(board);
+        var promotedPiece = board.At(to);
 
         // Assert
-        Assert.False(result);
+        Assert.NotNull(promotedPiece);
+        promotedPiece.GetType().Should().Be(typeof(BishopPiece));
     }
+
+
+    [Fact]
+    public void Apply_PromotedToKnight_CreatesKnightPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        Square from = new(6, 4);
+        Square to = new(7, 4);
+
+        var movingPawn = new PawnPiece(board, from, PieceColor.White);
+        board.AddPiece(movingPawn);
+
+        PromotionMove move = new(from, to, PieceType.Knight);
+
+        // Act
+        move.Apply(board);
+        var promotedPiece = board.At(to);
+
+        // Assert
+        Assert.NotNull(promotedPiece);
+        promotedPiece.GetType().Should().Be(typeof(KnightPiece));
+    }
+
+    #endregion
 }

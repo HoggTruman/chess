@@ -1,7 +1,7 @@
-﻿using BetterGameLogic.Enums;
-using BetterGameLogic.Moves;
+﻿using GameLogic.Enums;
+using GameLogic.Moves;
 
-namespace BetterGameLogic.Pieces;
+namespace GameLogic.Pieces;
 
 public interface IPiece
 {

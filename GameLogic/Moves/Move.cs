@@ -1,7 +1,7 @@
-using BetterGameLogic.Enums;
-using BetterGameLogic.Pieces;
+using GameLogic.Enums;
+using GameLogic.Pieces;
 
-namespace BetterGameLogic.Moves;
+namespace GameLogic.Moves;
 
 
 public abstract record Move : IMove

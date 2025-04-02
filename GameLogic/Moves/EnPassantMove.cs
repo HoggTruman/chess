@@ -1,36 +1,47 @@
 using GameLogic.Enums;
-using GameLogic.Interfaces;
+using GameLogic.Pieces;
 
 namespace GameLogic.Moves;
 
 /// <summary>
 /// An En Passant move. Contains the captured Pawn's square
 /// </summary>
-public class EnPassantMove : SinglePieceMove
+public record EnPassantMove : Move
 {
-    public (int row, int col) Captured { get; }
+    public override MoveType MoveType => MoveType.EnPassant;
+    public override Square Captured => new(From.Row, To.Col);
 
-    public EnPassantMove(
-        (int row, int col) from, 
-        (int row, int col) to,
-        (int row, int col) captured
-    ) 
-        :base(MoveType.EnPassant, from, to)
+    public EnPassantMove(Square from, Square to) 
+        :base(from, to)
     {
-        Captured = captured;
+        
     }
 
-    public override bool IsEquivalentTo(IMove move)
+
+    protected override void ApplyWithoutUpdatingHistory(Board board)
     {
-        if (move.MoveType != MoveType)
+        if (board.At(From) == null)
         {
-            return false;
+            throw new InvalidOperationException("The From square is empty");
         }
 
-        EnPassantMove enPassantMove = (EnPassantMove)move;
+        board.RemoveAt(Captured);
+        board.MovePiece(From, To);
+    }
 
-        return enPassantMove.From == From &&
-               enPassantMove.To == To &&
-               enPassantMove.Captured == Captured;
+    protected override void UndoWithoutUpdatingHistory(Board board, IPiece? capturedPiece)
+    {
+        if (capturedPiece == null)
+        {
+            throw new ArgumentException("capturedPiece can not be null for an EnPassantMove");
+        }
+
+        if (board.At(To) == null)
+        {
+            throw new InvalidOperationException("The To square is empty");
+        }
+
+        board.MovePiece(To, From);
+        board.AddPiece(capturedPiece);        
     }
 }

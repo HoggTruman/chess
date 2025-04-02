@@ -1,5 +1,5 @@
-﻿using BetterGameLogic.Enums;
-using BetterGameLogic.Pieces;
+﻿using GameLogic.Enums;
+using GameLogic.Pieces;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 

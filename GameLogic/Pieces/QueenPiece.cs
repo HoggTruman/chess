@@ -6,51 +6,39 @@ namespace GameLogic.Pieces;
 
 public class QueenPiece : Piece
 {
-    /// <summary>
-    /// Initializes a new instance of the QueenPiece class.
-    /// </summary>
-    /// <param name="board">The Board object the piece will be placed on.</param>
-    /// <param name="row">Row index from 0 to 7.</param>
-    /// <param name="col">Column index from 0 to 7.</param>
-    /// <param name="color">The Color of the piece.</param>
-    public QueenPiece(Board board, int row, int col, PieceColor color)
-        : base(board, row, col, color, PieceType.Queen, PieceValues.Queen)
+    public override PieceType PieceType => PieceType.Queen;
+    public override int Value => PieceValues.Queen;
+
+    public QueenPiece(Board board, int row, int col, PieceColor color, Square? startSquare = null)
+        : base(board, row, col, color, startSquare)
     {
 
     }
+
+    public QueenPiece(Board board, Square square, PieceColor color, Square? startSquare = null) 
+        : base(board, square.Row, square.Col, color, startSquare)
+    {
+        
+    }
     
 
-    public override List<(int row, int col)> GetTargetedSquares()
+    public override List<Square> GetTargetedSquares()
     {
-        List<(int row, int col)> targetedSquares = [];
-
-        // Get targeted squares on the piece's row and column
+        List<Square> targetedSquares = [];
         targetedSquares.AddRange(PieceHelpers.GetTargetedRowColSquares(Row, Col, _board));
-
-        // Get targeted squares on the piece's diagonals
         targetedSquares.AddRange(PieceHelpers.GetTargetedDiagonalSquares(Row, Col, _board));
 
         return targetedSquares;
     }
 
 
-    public override List<(int row, int col)> GetReachableSquares()
+    public override List<Square> GetReachableSquares()
     {
-        List<(int row, int col)> reachableSquares = [];
-
-        // Get targeted squares on the piece's row and column
-        reachableSquares.AddRange(PieceHelpers.GetTargetedRowColSquares(Row, Col, _board));
-
-        // Get targeted squares on the piece's diagonals
-        reachableSquares.AddRange(PieceHelpers.GetTargetedDiagonalSquares(Row, Col, _board));
-
-        // Remove squares with a piece of the same color as the moving piece
-        reachableSquares = reachableSquares
-            .Where(s => _board.State[s.row, s.col]?.Color != Color)
+        var reachableSquares = PieceHelpers.GetTargetedRowColSquares(Row, Col, _board)
+            .Concat(PieceHelpers.GetTargetedDiagonalSquares(Row, Col, _board))
+            .Where(s => !_board.IsOccupiedByColor(s, Color))
             .ToList();
 
         return reachableSquares;
     }
-
-
 }

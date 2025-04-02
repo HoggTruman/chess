@@ -17,23 +17,24 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var rook = board.AddNewPiece<RookPiece>(4, 4, PieceColor.White);
+        var rook = new RookPiece(board, 4, 4, PieceColor.White);
+        var blockingPiece = new RookPiece(board, 4, 5, PieceColor.White);
+        board.AddPiece(rook);
+        board.AddPiece(blockingPiece);
 
-        var blockingPiece = board.AddNewPiece<RookPiece>(4, 5, PieceColor.White);
-
-        List<(int row, int col)> expected = [
-            (4, 0),
-            (4, 1),
-            (4, 2),
-            (4, 3),
-            (4, 5),
-            (3, 4),
-            (2, 4),
-            (1, 4),
-            (0, 4),
-            (5, 4),
-            (6, 4),
-            (7, 4)            
+        List<Square> expected = [
+            new(4, 0),
+            new(4, 1),
+            new(4, 2),
+            new(4, 3),
+            new(4, 5),
+            new(3, 4),
+            new(2, 4),
+            new(1, 4),
+            new(0, 4),
+            new(5, 4),
+            new(6, 4),
+            new(7, 4)            
         ];
 
         // Act
@@ -55,23 +56,25 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var rook = board.AddNewPiece<RookPiece>(4, 4, PieceColor.White);
+        var rook = new RookPiece(board, 4, 4, PieceColor.White);
+        var blockingPiece = new RookPiece(board, 4, 5, PieceColor.White);
+        var nonBlockingPiece = new RookPiece(board, 7, 4, PieceColor.Black);
+        board.AddPiece(rook);
+        board.AddPiece(blockingPiece);
+        board.AddPiece(nonBlockingPiece);
 
-        var blockingPiece = board.AddNewPiece<RookPiece>(4, 5, PieceColor.White);
-        var nonblockingPiece = board.AddNewPiece<RookPiece>(7, 4, PieceColor.Black);
-
-        List<(int row, int col)> expected = [
-            (4, 0),
-            (4, 1),
-            (4, 2),
-            (4, 3),
-            (3, 4),
-            (2, 4),
-            (1, 4),
-            (0, 4),
-            (5, 4),
-            (6, 4),
-            (7, 4)            
+        List<Square> expected = [
+            new(4, 0),
+            new(4, 1),
+            new(4, 2),
+            new(4, 3),
+            new(3, 4),
+            new(2, 4),
+            new(1, 4),
+            new(0, 4),
+            new(5, 4),
+            new(6, 4),
+            new(7, 4)            
         ];
 
         // Act
@@ -93,8 +96,10 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, PieceColor.White);
+        var king = new KingPiece(board, StartSquares.WhiteKing, PieceColor.White);
+        var rook = new RookPiece(board, StartSquares.WhiteRookK, PieceColor.White);
+        board.AddPiece(king);
+        board.AddPiece(rook);
 
         // Act
         var result = rook.CanCastle();
@@ -112,10 +117,12 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, PieceColor.White);
-
-        var blockingPiece = board.AddNewPiece<QueenPiece>(StartSquares.WhiteKing.row, blockedCol, PieceColor.White);
+        var king = new KingPiece(board, StartSquares.WhiteKing, PieceColor.White);
+        var rook = new RookPiece(board, StartSquares.WhiteRookK, PieceColor.White);
+        var blockingPiece = new QueenPiece(board, StartSquares.WhiteKing.Row, blockedCol, PieceColor.White);
+        board.AddPiece(king);
+        board.AddPiece(rook);
+        board.AddPiece(blockingPiece);        
 
         // Act
         var result = rook.CanCastle();
@@ -137,10 +144,12 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, PieceColor.White);
-
-        var enemyRook = board.AddNewPiece<RookPiece>(StartSquares.BlackKing.row, targetedCol, PieceColor.Black);
+        var king = new KingPiece(board, StartSquares.WhiteKing, PieceColor.White);
+        var rook = new RookPiece(board, StartSquares.WhiteRookK, PieceColor.White);
+        var enemyRook = new RookPiece(board, StartSquares.BlackKing.Row, targetedCol, PieceColor.Black);
+        board.AddPiece(king);
+        board.AddPiece(rook);
+        board.AddPiece(enemyRook);        
 
         // Act
         var result = rook.CanCastle();
@@ -159,10 +168,12 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, PieceColor.White);
-
-        var enemyRook = board.AddNewPiece<RookPiece>(StartSquares.BlackKing.row, StartSquares.WhiteRookK.col, PieceColor.Black);
+        var king = new KingPiece(board, StartSquares.WhiteKing, PieceColor.White);
+        var rook = new RookPiece(board, StartSquares.WhiteRookK, PieceColor.White);
+        var enemyRook = new RookPiece(board, StartSquares.BlackKing.Row, StartSquares.WhiteRookK.Col, PieceColor.Black);
+        board.AddPiece(king);
+        board.AddPiece(rook);
+        board.AddPiece(enemyRook);
 
         // Act
         var result = rook.CanCastle();
@@ -178,11 +189,13 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing.row - 1, StartSquares.WhiteKing.col, PieceColor.White);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, PieceColor.White);
+        var king = new KingPiece(board, StartSquares.WhiteKing.Row - 1, StartSquares.WhiteKing.Col, PieceColor.White);
+        var rook = new RookPiece(board, StartSquares.WhiteRookK, PieceColor.White);
+        board.AddPiece(king);
+        board.AddPiece(rook);
 
         StandardMove kingMove = new(king.Square, StartSquares.WhiteKing);
-        board.StandardMove(kingMove);
+        kingMove.Apply(board);
 
         // Act
         var result = rook.CanCastle();
@@ -198,11 +211,13 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK.row - 1, StartSquares.WhiteRookK.col, PieceColor.White);
+        var king = new KingPiece(board, StartSquares.WhiteKing, PieceColor.White);
+        var rook = new RookPiece(board, StartSquares.WhiteRookK.Row - 1, StartSquares.WhiteRookK.Col, PieceColor.White);
+        board.AddPiece(king);
+        board.AddPiece(rook);
 
         StandardMove rookMove = new(rook.Square, StartSquares.WhiteRookK);
-        board.StandardMove(rookMove);
+        rookMove.Apply(board);
 
         // Act
         var result = rook.CanCastle();
@@ -222,8 +237,10 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.BlackRookK, PieceColor.White);
+        var king = new KingPiece(board, StartSquares.WhiteKing, PieceColor.White);
+        var rook = new RookPiece(board, StartSquares.BlackRookK, PieceColor.White);
+        board.AddPiece(king);
+        board.AddPiece(rook);
 
         // Act
         var result = rook.CanCastle();
@@ -243,8 +260,10 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.BlackKing, PieceColor.White);
+        var king = new KingPiece(board, StartSquares.WhiteKing, PieceColor.White);
+        var rook = new RookPiece(board, StartSquares.BlackKing, PieceColor.White);
+        board.AddPiece(king);
+        board.AddPiece(rook);
 
         // Act
         var result = rook.CanCastle();
@@ -264,8 +283,10 @@ public class RookPieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteKnightK, PieceColor.White);
+        var king = new KingPiece(board, StartSquares.WhiteKing, PieceColor.White);
+        var rook = new RookPiece(board, StartSquares.WhiteKnightK, PieceColor.White);
+        board.AddPiece(king);
+        board.AddPiece(rook);
 
         // Act
         var result = rook.CanCastle();

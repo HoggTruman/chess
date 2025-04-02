@@ -1,129 +1,156 @@
-﻿using GameLogic.Enums;
+﻿using GameLogic;
+using GameLogic.Constants;
+using GameLogic.Enums;
+using GameLogic.Helpers;
 using GameLogic.Moves;
+using GameLogic.Pieces;
+using FluentAssertions;
 
 namespace GameLogicTests.Moves;
 
 public class EnPassantMoveTests
 {
+    #region Apply Tests
+
+    [Fact]
+    public void Apply_UpdatesBoardAndPiece()
+    {
+        // Arrange
+        Board board = new();
+
+        Square from = new(4, 4);
+        Square to = new(5, 3);
+        Square captured = new(4, 3);
+
+        var movingPawn = new PawnPiece(board, from, PieceColor.White);
+        var capturedPawn = new PawnPiece(board, captured, PieceColor.Black);
+        board.AddPiece(movingPawn);
+        board.AddPiece(capturedPawn);
+
+        EnPassantMove move = new(from, to);
+
+        // Act
+        move.Apply(board);
+
+        // Assert
+        movingPawn.Square.Should().Be(to);
+        board.At(from).Should().BeNull();
+        board.At(to).Should().Be(movingPawn);
+        board.At(captured).Should().BeNull();
+        board.Pieces[capturedPawn.Color].Should().BeEmpty();
+    }
+
+    #endregion
+
+
+
+    #region LeavesPlayerInCheck Tests
+
     [Theory]
-    [InlineData(0, 0, 0, 0, 0, 0)]
-    [InlineData(0, 1, 2, 3, 4, 5)]
-    [InlineData(2, 6, 2, 1, 0, 4)]
-    public void IsEquivalentTo_WhenEquivalent_ReturnsTrue(
-        int fromRow, int fromCol, int toRow, int toCol, int capturedRow, int capturedCol)
+    [InlineData(PieceColor.White)]
+    [InlineData(PieceColor.Black)]
+    public void LeavesPlayerInCheck_EnPassantLeavingInCheck_ReturnsTrue(PieceColor playerColor)
     {
-        // Arrange 
-        EnPassantMove move1 = new(
-            (fromRow, fromCol),
-            (toRow, toCol),
-            (capturedRow, capturedCol));
+        // Arrange
+        Board board = new();
 
-        EnPassantMove move2 = new(
-            (fromRow, fromCol),
-            (toRow, toCol),
-            (capturedRow, capturedCol));
+        var playerKing = new KingPiece(board, 4, 0, playerColor);
+        var playerPawn = new PawnPiece(board, 4, 3, playerColor);
+        var enemyPawn = new PawnPiece(board, 4, 2, ColorHelpers.Opposite(playerColor));
+        var enemyRook = new RookPiece(board, 4, 7, ColorHelpers.Opposite(playerColor));
+        board.AddPiece(playerKing);
+        board.AddPiece(playerPawn);
+        board.AddPiece(enemyPawn);
+        board.AddPiece(enemyRook);
+
+        EnPassantMove enPassantMove = new(playerPawn.Square, new(5, 2));
 
         // Act
-        bool move1Result = move1.IsEquivalentTo(move2);
-        bool move2Result = move2.IsEquivalentTo(move1);
+        var result = enPassantMove.LeavesPlayerInCheck(board);
 
-        // Assert
-        Assert.True(move1Result);
-        Assert.True(move2Result);
+        // Assert 
+        result.Should().BeTrue();
     }
 
 
     [Theory]
-    [InlineData(0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1)]
-    [InlineData(4, 5, 4, 5, 4, 5, 5, 4, 5, 4, 5, 4)]
-    [InlineData(0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3)]
-    public void IsEquivalentTo_WhenNotEquivalent_ReturnsFalse(
-        int fromRow1, int fromCol1, int toRow1, int toCol1, int capturedRow1, int capturedCol1,
-        int fromRow2, int fromCol2, int toRow2, int toCol2, int capturedRow2, int capturedCol2)
+    [InlineData(PieceColor.White)]
+    [InlineData(PieceColor.Black)]
+    public void LeavesPlayerInCheck_EnPassantNotLeavingInCheck_ReturnsFalse(PieceColor playerColor)
     {
-        // Arrange 
-        EnPassantMove move1 = new(
-            (fromRow1, fromCol1),
-            (toRow1, toCol1),
-            (capturedRow1, capturedCol1));
+        // Arrange
+        Board board = new();
 
-        EnPassantMove move2 = new(
-            (fromRow2, fromCol2),
-            (toRow2, toCol2),
-            (capturedRow2, capturedCol2));
+        var playerKing = new KingPiece(board, 4, 0, playerColor);
+        var playerPawn = new PawnPiece(board, 4, 3, playerColor);
+        var enemyPawn = new PawnPiece(board, 4, 2, ColorHelpers.Opposite(playerColor));
+        board.AddPiece(playerKing);
+        board.AddPiece(playerPawn);
+        board.AddPiece(enemyPawn);
+
+        EnPassantMove enPassantMove = new(playerPawn.Square, new(5, 2));
 
         // Act
-        bool move1Result = move1.IsEquivalentTo(move2);
-        bool move2Result = move2.IsEquivalentTo(move1);
+        var result = enPassantMove.LeavesPlayerInCheck(board);
 
-        // Assert
-        Assert.False(move1Result);
-        Assert.False(move2Result);
+        // Assert 
+        result.Should().BeFalse();
     }
 
 
-    [Fact]
-    public void IsEquivalentTo_CastleMove_ReturnsFalse()
+    [Theory]
+    [InlineData(PieceColor.White)]
+    [InlineData(PieceColor.Black)]
+    public void LeavesPlayerInCheck_BoardIsTheSameBeforeAndAfterEnPassant(PieceColor playerColor)
     {
-        // Arrange 
-        EnPassantMove enPassantMove = new(
-            (0, 0),
-            (0, 0),
-            (0, 0));
+        // In this test the player's pawn will perform en passant
+        // After calling the method, the board's State and Kings properties should be unchanged.
+        // The Pieces lists should contain the same elements but dont't need to preserve order
 
-        CastleMove castleMove = new(
-            (0, 0),
-            (0, 0),
-            (0, 0),
-            (0, 0));
+
+        // Arrange
+        Board board = new();
+
+        var playerKing = new KingPiece(board, StartSquares.WhiteKing, playerColor);
+        var playerPawn = new PawnPiece(board, 4, 4, playerColor);
+        var enemyKing = new KingPiece(board, StartSquares.BlackKing, ColorHelpers.Opposite(playerColor));
+        var enemyPawn = new PawnPiece(board, 4, 3, ColorHelpers.Opposite(playerColor));
+        board.AddPiece(playerKing);
+        board.AddPiece(playerPawn);
+        board.AddPiece(enemyKing);
+        board.AddPiece(enemyPawn);
+
+        var playerKingBeforeSquare = playerKing.Square;
+        var playerPawnBeforeSquare = playerPawn.Square;
+        var enemyKingBeforeSquare = enemyKing.Square;
+        var enemyPawnBeforeSquare = enemyPawn.Square;
+
+        var whitePiecesBefore = board.Pieces[PieceColor.White].ToList();
+        var blackPiecesBefore = board.Pieces[PieceColor.Black].ToList();
+
+        var whiteKingBefore = board.GetKing(PieceColor.White);
+        var blackKingBefore = board.GetKing(PieceColor.Black);
+
+        var stateBefore = board.State.Clone();
 
         // Act
-        bool result = enPassantMove.IsEquivalentTo(castleMove);
+        EnPassantMove enPassantMove = new(playerPawn.Square, new(5, 3));
+        enPassantMove.LeavesPlayerInCheck(board);
 
         // Assert
-        Assert.False(result);
+        playerKing.Square.Should().Be(playerKingBeforeSquare);
+        playerPawn.Square.Should().Be(playerPawnBeforeSquare);
+        enemyKing.Square.Should().Be(enemyKingBeforeSquare);
+        enemyPawn.Square.Should().Be(enemyPawnBeforeSquare);
+
+        board.Pieces[PieceColor.White].Should().BeEquivalentTo(whitePiecesBefore);
+        board.Pieces[PieceColor.Black].Should().BeEquivalentTo(blackPiecesBefore);
+
+        board.GetKing(PieceColor.White).Should().Be(whiteKingBefore);
+        board.GetKing(PieceColor.Black).Should().Be(blackKingBefore);
+
+        board.State.Should().BeEquivalentTo(stateBefore, options => options.WithStrictOrdering());
     }
 
-
-    [Fact]
-    public void IsEquivalentTo_PromotionMove_ReturnsFalse()
-    {
-        // Arrange 
-        EnPassantMove enPassantMove = new(
-            (0, 0),
-            (0, 0),
-            (0, 0));
-
-        PromotionMove promotionMove = new(
-            (0, 0),
-            (0, 0),
-            PieceType.Queen);
-
-        // Act
-        bool result = enPassantMove.IsEquivalentTo(promotionMove);
-
-        // Assert
-        Assert.False(result);
-    }
-
-
-    [Fact]
-    public void IsEquivalentTo_StandardMove_ReturnsFalse()
-    {
-        // Arrange 
-        EnPassantMove enPassantMove = new(
-            (0, 0),
-            (0, 0),
-            (0, 0));
-
-        StandardMove standardMove = new(
-            (0, 0),
-            (0, 0));
-
-        // Act
-        bool result = enPassantMove.IsEquivalentTo(standardMove);
-
-        // Assert
-        Assert.False(result);
-    }
+    #endregion
 }

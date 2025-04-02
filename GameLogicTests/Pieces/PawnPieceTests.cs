@@ -1,10 +1,8 @@
-using FluentAssertions;
 using GameLogic;
-using GameLogic.Constants;
 using GameLogic.Enums;
-using GameLogic.Interfaces;
 using GameLogic.Moves;
 using GameLogic.Pieces;
+using FluentAssertions;
 
 namespace GameLogicTests.Pieces;
 
@@ -18,11 +16,12 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(6, 4, PieceColor.White);
+        var pawn = new PawnPiece(board, 6, 4, PieceColor.White);
+        board.AddPiece(pawn);
 
-        List<(int row, int col)> expected = [
-            (5, 4),
-            (4, 4)
+        List<Square> expected = [
+            new(5, 4),
+            new(4, 4)
         ];
 
         // Act
@@ -39,13 +38,14 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(6, 4, PieceColor.White);
+        var pawn = new PawnPiece(board, 6, 4, PieceColor.White);
+        board.AddPiece(pawn);
 
-        StandardMove move = new(pawn.Square, (5, 4));
-        board.StandardMove(move);
+        StandardMove move = new(pawn.Square, new(5, 4));
+        move.Apply(board);
 
-        List<(int row, int col)> expected = [
-            (4, 4)
+        List<Square> expected = [
+            new(4, 4)
         ];
 
         // Act
@@ -62,15 +62,18 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(6, 4, PieceColor.White);
-        var enemyPiece1 = board.AddNewPiece<PawnPiece>(5, 3, PieceColor.Black);
-        var enemyPiece2 = board.AddNewPiece<PawnPiece>(5, 5, PieceColor.Black);
+        var pawn = new PawnPiece(board, 6, 4, PieceColor.White);
+        var enemyPiece1 = new PawnPiece(board, 5, 3, PieceColor.Black);
+        var enemyPiece2 = new PawnPiece(board, 5, 5, PieceColor.Black);
+        board.AddPiece(pawn);
+        board.AddPiece(enemyPiece1);
+        board.AddPiece(enemyPiece2);
 
-        List<(int row, int col)> expected = [
-            (5, 4),
-            (4, 4),
-            (5, 3),
-            (5, 5)
+        List<Square> expected = [
+            new(5, 4),
+            new(4, 4),
+            new(5, 3),
+            new(5, 5)
         ];
 
         // Act
@@ -87,8 +90,10 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(6, 4, PieceColor.White);
-        var blockingPiece = board.AddNewPiece<PawnPiece>(5, 4, PieceColor.Black);
+        var pawn = new PawnPiece(board, 6, 4, PieceColor.White);
+        var blockingPiece = new PawnPiece(board, 5, 4, PieceColor.Black);
+        board.AddPiece(pawn);
+        board.AddPiece(blockingPiece);
 
         // Act
         var result = pawn.GetReachableSquares();
@@ -104,11 +109,12 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(4, 4, PieceColor.White);
+        var pawn = new PawnPiece(board, 4, 4, PieceColor.White);
+        board.AddPiece(pawn);
 
-        List<(int row, int col)> expected = [
-            (3, 3),
-            (3, 5)
+        List<Square> expected = [
+            new(3, 3),
+            new(3, 5)
         ];
 
         // Act
@@ -125,11 +131,12 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(4, 4, PieceColor.Black);
+        var pawn = new PawnPiece(board, 4, 4, PieceColor.Black);
+        board.AddPiece(pawn);
 
-        List<(int row, int col)> expected = [
-            (5, 3),
-            (5, 5)
+        List<Square> expected = [
+            new(5, 3),
+            new(5, 5)
         ];
 
         // Act
@@ -151,11 +158,12 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(1, 4, PieceColor.Black);
+        var pawn = new PawnPiece(board, 1, 4, PieceColor.Black);
+        board.AddPiece(pawn);
 
-        List<(int row, int col)> expected = [
-            (2, 4),
-            (3, 4)
+        List<Square> expected = [
+            new(2, 4),
+            new(3, 4)
         ];
 
         // Act
@@ -172,13 +180,14 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(1, 4, PieceColor.Black);
+        var pawn = new PawnPiece(board, 1, 4, PieceColor.Black);
+        board.AddPiece(pawn);
 
-        StandardMove move = new(pawn.Square, (2, 4));
-        board.StandardMove(move);
+        StandardMove move = new(pawn.Square, new(2, 4));
+        move.Apply(board);
 
-        List<(int row, int col)> expected = [
-            (3, 4)
+        List<Square> expected = [
+            new(3, 4)
         ];
 
         // Act
@@ -195,15 +204,18 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(1, 4, PieceColor.Black);
-        var enemyPiece1 = board.AddNewPiece<PawnPiece>(2, 3, PieceColor.White);
-        var enemyPiece2 = board.AddNewPiece<PawnPiece>(2, 5, PieceColor.White);
+        var pawn = new PawnPiece(board, 1, 4, PieceColor.Black);
+        var enemyPiece1 = new PawnPiece(board, 2, 3, PieceColor.White);
+        var enemyPiece2 = new PawnPiece(board, 2, 5, PieceColor.White);
+        board.AddPiece(pawn);
+        board.AddPiece(enemyPiece1);
+        board.AddPiece(enemyPiece2);
 
-        List<(int row, int col)> expected = [
-            (2, 4),
-            (3, 4),
-            (2, 3),
-            (2, 5)
+        List<Square> expected = [
+            new(2, 4),
+            new(3, 4),
+            new(2, 3),
+            new(2, 5)
         ];
 
         // Act
@@ -220,18 +232,17 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(1, 4, PieceColor.Black);
-        var blockingPiece = board.AddNewPiece<PawnPiece>(2, 4, PieceColor.White);
+        var pawn = new PawnPiece(board, 1, 4, PieceColor.Black);
+        var blockingPiece = new PawnPiece(board, 2, 4, PieceColor.White);
+        board.AddPiece(pawn);
+        board.AddPiece(blockingPiece);
 
         // Act
         var result = pawn.GetReachableSquares();
 
         // Assert
         result.Should().BeEmpty();
-    }
-
-
-    
+    }    
 
     #endregion
 
@@ -249,24 +260,23 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var blackPawn = board.AddNewPiece<PawnPiece>(1, 3, PieceColor.Black);
-        var whitePawn = board.AddNewPiece<PawnPiece>(3, 4, PieceColor.White);
+        var blackPawn = new PawnPiece(board, 1, 3, PieceColor.Black);
+        var whitePawn = new PawnPiece(board, 3, 4, PieceColor.White);
+        board.AddPiece(blackPawn);
+        board.AddPiece(whitePawn);
 
-        (int row, int col) blackTo = (3, 3);
-        StandardMove blackMove = new(blackPawn.Square, blackTo);
+        StandardMove blackMove = new(blackPawn.Square, new(3, 3));
 
-        (int row, int col) expectedTo = (2, 3);
-        (int row, int col) expectedCaptured = blackTo;
+        Square expected = new(2, 3);
 
 
         // Act
-        board.StandardMove(blackMove);
-        var result = whitePawn.GetEnPassantSquares();
+        blackMove.Apply(board);
+        var result = whitePawn.GetEnPassantSquare();
 
         // Assert 
         Assert.NotNull(result);
-        result.Value.to.Should().Be(expectedTo);
-        result.Value.captured.Should().Be(expectedCaptured);
+        result.Value.Should().Be(expected);
     }
 
 
@@ -280,24 +290,23 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var blackPawn = board.AddNewPiece<PawnPiece>(4, 3, PieceColor.Black);
-        var whitePawn = board.AddNewPiece<PawnPiece>(6, 4, PieceColor.White);
+        var blackPawn = new PawnPiece(board, 4, 3, PieceColor.Black);
+        var whitePawn = new PawnPiece(board, 6, 4, PieceColor.White);
+        board.AddPiece(blackPawn);
+        board.AddPiece(whitePawn);
 
-        (int row, int col) whiteTo = (4, 4);
-        StandardMove whiteMove = new(whitePawn.Square, whiteTo);
+        StandardMove whiteMove = new(whitePawn.Square, new(4, 4));
 
-        (int row, int col) expectedTo = (5, 4);
-        (int row, int col) expectedCaptured = whiteTo;
+        Square expected = new(5, 4);
 
 
         // Act
-        board.StandardMove(whiteMove);
-        var result = blackPawn.GetEnPassantSquares();
+        whiteMove.Apply(board);
+        var result = blackPawn.GetEnPassantSquare();
 
         // Assert 
         Assert.NotNull(result);
-        result.Value.to.Should().Be(expectedTo);
-        result.Value.captured.Should().Be(expectedCaptured);
+        result.Value.Should().Be(expected);
     }    
 
 
@@ -310,12 +319,13 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var blackPawn = board.AddNewPiece<PawnPiece>(4, 3, PieceColor.Black);
-        var whitePawn = board.AddNewPiece<PawnPiece>(4, 4, PieceColor.White);
-
+        var blackPawn = new PawnPiece(board, 4, 3, PieceColor.Black);
+        var whitePawn = new PawnPiece(board, 4, 4, PieceColor.White);
+        board.AddPiece(blackPawn);
+        board.AddPiece(whitePawn);
 
         // Act
-        var result = blackPawn.GetEnPassantSquares();
+        var result = blackPawn.GetEnPassantSquare();
 
         // Assert 
         result.Should().BeNull();
@@ -331,15 +341,16 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var blackPawn = board.AddNewPiece<PawnPiece>(2, 3, PieceColor.Black);
-        var whitePawn = board.AddNewPiece<PawnPiece>(3, 4, PieceColor.White);
+        var blackPawn = new PawnPiece(board, 2, 3, PieceColor.Black);
+        var whitePawn = new PawnPiece(board, 3, 4, PieceColor.White);
+        board.AddPiece(blackPawn);
+        board.AddPiece(whitePawn);
 
-        (int row, int col) blackTo = (3, 3);
-        StandardMove blackMove = new(blackPawn.Square, blackTo);
+        StandardMove blackMove = new(blackPawn.Square, new(3, 3));
 
         // Act
-        board.StandardMove(blackMove);
-        var result = whitePawn.GetEnPassantSquares();
+        blackMove.Apply(board);
+        var result = whitePawn.GetEnPassantSquare();
 
         // Assert 
         result.Should().BeNull();
@@ -355,15 +366,16 @@ public class PawnPieceTests
         // Arrange
         Board board = new();
 
-        var blackPawn = board.AddNewPiece<PawnPiece>(4, 3, PieceColor.Black);
-        var whitePawn = board.AddNewPiece<PawnPiece>(5, 4, PieceColor.White);
+        var blackPawn = new PawnPiece(board, 4, 3, PieceColor.Black);
+        var whitePawn = new PawnPiece(board, 5, 4, PieceColor.White);
+        board.AddPiece(blackPawn);
+        board.AddPiece(whitePawn);
 
-        (int row, int col) whiteTo = (4, 4);
-        StandardMove whiteMove = new(whitePawn.Square, whiteTo);
+        StandardMove whiteMove = new(whitePawn.Square, new(4, 4));
 
         // Act
-        board.StandardMove(whiteMove);
-        var result = blackPawn.GetEnPassantSquares();
+        whiteMove.Apply(board);
+        var result = blackPawn.GetEnPassantSquare();
 
         // Assert 
         result.Should().BeNull();

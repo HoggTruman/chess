@@ -1,15 +1,15 @@
 ﻿using Client;
 using GameApplication.Windows.Start;
-using BetterGameLogic;
-using BetterGameLogic.Enums;
-using BetterGameLogic.Helpers;
-using BetterGameLogic.Moves;
+using GameLogic;
+using GameLogic.Enums;
+using GameLogic.Helpers;
+using GameLogic.Moves;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using BetterGameLogic.Pieces;
+using GameLogic.Pieces;
 
 namespace GameApplication.Windows.Game;
 

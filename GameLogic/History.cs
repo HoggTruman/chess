@@ -1,7 +1,7 @@
-﻿using BetterGameLogic.Moves;
-using BetterGameLogic.Pieces;
+﻿using GameLogic.Moves;
+using GameLogic.Pieces;
 
-namespace BetterGameLogic;
+namespace GameLogic;
 
 public class History
 {

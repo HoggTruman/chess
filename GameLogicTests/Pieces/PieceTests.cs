@@ -20,7 +20,8 @@ public class PieceTests
         // Arrange
         Board board = new();
 
-        var piece = board.AddNewPiece<QueenPiece>(4, 4, PieceColor.White);
+        var piece = new QueenPiece(board, 4, 4, PieceColor.White);
+        board.AddPiece(piece);
 
         // Act
         var result = piece.HasMoved();
@@ -36,10 +37,11 @@ public class PieceTests
         // Arrange
         Board board = new();
 
-        var piece = board.AddNewPiece<QueenPiece>(4, 4, PieceColor.White);
+        var piece = new QueenPiece(board, 4, 4, PieceColor.White);
+        board.AddPiece(piece);
 
-        StandardMove move = new(piece.Square, (5, 5));
-        board.StandardMove(move);
+        StandardMove move = new(piece.Square, new(5, 5));
+        move.Apply(board);
 
         // Act
         var result = piece.HasMoved();
@@ -55,11 +57,13 @@ public class PieceTests
         // Arrange
         Board board = new();
 
-        var king = board.AddNewPiece<KingPiece>(StartSquares.WhiteKing, PieceColor.White);
-        var rook = board.AddNewPiece<RookPiece>(StartSquares.WhiteRookK, PieceColor.White);
+        var king = new KingPiece(board, StartSquares.WhiteKing, PieceColor.White);
+        var rook = new RookPiece(board, StartSquares.WhiteRookK, PieceColor.White);
+        board.AddPiece(king);
+        board.AddPiece(rook);
 
-        CastleMove move = new(king.Square, (0, 6), rook.Square, (0, 5));
-        board.Castle(move);
+        CastleMove move = new(king.Square, new(0, 6), rook.Square, new(0, 5));
+        move.Apply(board);
 
         // Act
         var kingResult = king.HasMoved();
@@ -77,14 +81,16 @@ public class PieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(4, 4, PieceColor.White);
-        var enemyPawn = board.AddNewPiece<PawnPiece>(6, 3, PieceColor.Black);
+        var pawn = new PawnPiece(board, 4, 4, PieceColor.White);
+        var enemyPawn = new PawnPiece(board, 6, 3, PieceColor.Black);
+        board.AddPiece(pawn);
+        board.AddPiece(enemyPawn);
 
-        StandardMove enemyMove = new(enemyPawn.Square, (4, 3));
-        EnPassantMove enPassantMove = new(pawn.Square, (5, 3), (4, 3));
+        StandardMove enemyMove = new(enemyPawn.Square, new(4, 3));
+        EnPassantMove enPassantMove = new(pawn.Square, new(5, 3));
 
-        board.StandardMove(enemyMove);
-        board.EnPassant(enPassantMove);
+        enemyMove.Apply(board);
+        enPassantMove.Apply(board);
 
         // Act
         var result = pawn.HasMoved();
@@ -100,19 +106,20 @@ public class PieceTests
         // Arrange
         Board board = new();
 
-        var pawn = board.AddNewPiece<PawnPiece>(6, 4, PieceColor.White);
-        (int row, int col) to = (7, 4);
+        var pawn = new PawnPiece(board, 6, 4, PieceColor.White);
+        board.AddPiece(pawn);
+        Square to = new(7, 4);
 
         PromotionMove promotionMove = new(pawn.Square, to, PieceType.Queen);
-        board.PawnPromote(promotionMove);
+        promotionMove.Apply(board);
 
-        var promotedPiece = board.State[to.row, to.col];
+        var promotedPiece = board.At(to);
 
         // Act
         var result = promotedPiece?.HasMoved();
 
         // Assert
-        result.Should().BeFalse();
+        result.Should().BeTrue();
     }
 
     #endregion

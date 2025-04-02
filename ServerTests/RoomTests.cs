@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
-using BetterGameLogic.Enums;
-using BetterGameLogic.Moves;
+using GameLogic.Enums;
+using GameLogic.Moves;
 using Moq;
 using Server;
 using Server.Interfaces;

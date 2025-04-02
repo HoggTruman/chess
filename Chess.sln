@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameLogic", "GameLogic\GameLogic.csproj", "{7E861023-8381-48CA-93B1-B797858C58CC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameLogicTests", "GameLogicTests\GameLogicTests.csproj", "{9E46E4AA-A223-4BA8-A6E7-6900959E2FD3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameApplication", "GameApplication\GameApplication.csproj", "{65DD847F-E80A-4B3A-9126-6E13684785D4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csproj", "{50FA3F4F-095E-40A7-9E05-75CED110EAEB}"
@@ -26,9 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetworkSharedTests", "Netwo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientTests", "ClientTests\ClientTests.csproj", "{89F628A9-8E3D-40FA-BF49-8F6527DF90E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterGameLogic", "BetterGameLogic\BetterGameLogic.csproj", "{3757812D-8CC8-461A-A8A5-115E4A25A4BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLogic", "GameLogic\GameLogic.csproj", "{3757812D-8CC8-461A-A8A5-115E4A25A4BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterGameLogicTests", "BetterGameLogicTests\BetterGameLogicTests.csproj", "{376DD21C-B4A0-49EB-A3F2-64E45EAD8FA6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLogicTests", "GameLogicTests\GameLogicTests.csproj", "{376DD21C-B4A0-49EB-A3F2-64E45EAD8FA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,14 +32,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7E861023-8381-48CA-93B1-B797858C58CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7E861023-8381-48CA-93B1-B797858C58CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7E861023-8381-48CA-93B1-B797858C58CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7E861023-8381-48CA-93B1-B797858C58CC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9E46E4AA-A223-4BA8-A6E7-6900959E2FD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9E46E4AA-A223-4BA8-A6E7-6900959E2FD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9E46E4AA-A223-4BA8-A6E7-6900959E2FD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9E46E4AA-A223-4BA8-A6E7-6900959E2FD3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{65DD847F-E80A-4B3A-9126-6E13684785D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{65DD847F-E80A-4B3A-9126-6E13684785D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65DD847F-E80A-4B3A-9126-6E13684785D4}.Release|Any CPU.ActiveCfg = Release|Any CPU

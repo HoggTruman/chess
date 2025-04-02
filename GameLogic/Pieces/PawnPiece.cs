@@ -1,65 +1,53 @@
 using GameLogic.Constants;
 using GameLogic.Enums;
 using GameLogic.Helpers;
-using GameLogic.Interfaces;
 using GameLogic.Moves;
 
 namespace GameLogic.Pieces;
 
 public class PawnPiece : Piece
 {
-    #region Fields
-
     /// <summary>
     /// The forward direction for the piece (+1 for White, -1 for Black)
     /// </summary>
     private readonly int _fwd;
 
-    #endregion
+    public override PieceType PieceType => PieceType.Pawn;
+    public override int Value => PieceValues.Pawn;
 
 
-
-    #region Constructors
-
-    /// <summary>
-    /// Initializes a new instance of the PawnPiece class.
-    /// </summary>
-    /// <param name="board">The Board object the piece will be placed on.</param>
-    /// <param name="row">Row index from 0 to 7.</param>
-    /// <param name="col">Column index from 0 to 7.</param>
-    /// <param name="color">The Color of the piece.</param>
-    public PawnPiece(Board board, int row, int col, PieceColor color)
-        : base(board, row, col, color, PieceType.Pawn, PieceValues.Pawn)
+    public PawnPiece(Board board, int row, int col, PieceColor color, Square? startSquare = null)
+        : base(board, row, col, color, startSquare)
     {
         _fwd = color == PieceColor.White? -1: 1;
     }
 
-    #endregion
+    public PawnPiece(Board board, Square square, PieceColor color, Square? startSquare = null) 
+        : this(board, square.Row, square.Col, color, startSquare)
+    {
+        
+    }
 
 
-
-    #region Public Methods
 
     /// <summary>
     /// Returns the targeted squares diagonally in front of a pawn.
     /// En Passant is not considered here.
     /// </summary>
     /// <returns>A list of (row, col) tuples</returns>
-    public override List<(int row, int col)> GetTargetedSquares()
+    public override List<Square> GetTargetedSquares()
     {
-        List<(int row, int col)> targetedSquares = [];
+        List<Square> targetedSquares = [];
 
-        // Add targeted squares (if in bounds)
-        if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col - 1)))
+        if (Board.IsInBounds(Row + _fwd, Col - 1))
         {
-            targetedSquares.Add((Row + _fwd, Col - 1));
+            targetedSquares.Add(new(Row + _fwd, Col - 1));
         }
             
-        if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col + 1)))
+        if (Board.IsInBounds(Row + _fwd, Col + 1))
         {
-            targetedSquares.Add((Row + _fwd, Col + 1));
-        }
-            
+            targetedSquares.Add(new(Row + _fwd, Col + 1));
+        }            
 
         return targetedSquares;
     }
@@ -70,33 +58,33 @@ public class PawnPiece : Piece
     /// This does not include En Passant squares.
     /// </summary>
     /// <returns>A list of (row, col) tuples</returns>
-    public override List<(int row, int col)> GetReachableSquares()
+    public override List<Square> GetReachableSquares()
     {
-        List<(int row, int col)> squares = [];
+        List<Square> squares = [];
 
         // Add non-capturing move squares
-        if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col)) && 
+        if (Board.IsInBounds(Row + _fwd, Col) && 
             _board.State[Row + _fwd, Col] == null)
         {
-            squares.Add((Row + _fwd, Col));
+            squares.Add(new(Row + _fwd, Col));
 
             if (HasMoved() == false && _board.State[Row + 2 * _fwd, Col] == null)
             {
-                squares.Add((Row + 2 * _fwd, Col));
+                squares.Add(new(Row + 2 * _fwd, Col));
             }
         }
 
         // Add standard capturing moves (not En Passant)
-        if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col - 1)) && 
-            _board.State[Row + _fwd, Col - 1]?.Color == ColorHelpers.Opposite(Color))
+        if (Board.IsInBounds(Row + _fwd, Col - 1) && 
+            _board.IsOccupiedByColor(Row + _fwd, Col - 1, ColorHelpers.Opposite(Color)))
         {
-            squares.Add((Row + _fwd, Col - 1));
+            squares.Add(new(Row + _fwd, Col - 1));
         }
             
-        if (BoardHelpers.SquareIsInBounds((Row + _fwd, Col + 1)) && 
-            _board.State[Row + _fwd, Col + 1]?.Color == ColorHelpers.Opposite(Color))
+        if (Board.IsInBounds(Row + _fwd, Col + 1) && 
+            _board.IsOccupiedByColor(Row + _fwd, Col + 1, ColorHelpers.Opposite(Color)))
         {
-            squares.Add((Row + _fwd, Col + 1));
+            squares.Add(new(Row + _fwd, Col + 1));
         }
         
         return squares;
@@ -112,39 +100,36 @@ public class PawnPiece : Piece
         List<IMove> validMoves = [];
 
         // Get valid moves for standard and promotion moves
-        foreach (var toSquare in GetReachableSquares())
+        foreach (Square to in GetReachableSquares())
         {
-            if (_board.MoveLeavesPlayerInCheck(Square, toSquare) == false)
+            // Only the standard move needs to be tested for leaving in check (promotion moves give the same result)
+            StandardMove standardMove = new(Square, to);
+            if (!standardMove.LeavesPlayerInCheck(_board))
             {
-                if (toSquare.row == Board.MinIndex || toSquare.row == Board.MaxIndex)
+                if (to.Row == 0 || to.Row == Board.BoardSize - 1)
                 {
-                    validMoves.Add(new PromotionMove(Square, toSquare, PieceType.Queen));
-                    validMoves.Add(new PromotionMove(Square, toSquare, PieceType.Rook));
-                    validMoves.Add(new PromotionMove(Square, toSquare, PieceType.Knight));
-                    validMoves.Add(new PromotionMove(Square, toSquare, PieceType.Bishop));
+                    validMoves.Add(new PromotionMove(Square, to, PieceType.Queen));
+                    validMoves.Add(new PromotionMove(Square, to, PieceType.Rook));
+                    validMoves.Add(new PromotionMove(Square, to, PieceType.Knight));
+                    validMoves.Add(new PromotionMove(Square, to, PieceType.Bishop));
                 }
                 else
                 {
-                    validMoves.Add(
-                        new StandardMove(Square, toSquare)
-                    );
+                    validMoves.Add(standardMove);
                 }
             }
         }
 
         // Add En Passant move if available
-        var enPassantSquares = GetEnPassantSquares();
+        var enPassantSquare = GetEnPassantSquare();
 
-        if (enPassantSquares != null)
+        if (enPassantSquare != null)
         {
-            var to = enPassantSquares.Value.to;
-            var captured = enPassantSquares.Value.captured;
+            EnPassantMove enPassantMove = new(Square, enPassantSquare.Value);
 
-            if (_board.MoveLeavesPlayerInCheck(Square, to, captured) == false)
+            if (!enPassantMove.LeavesPlayerInCheck(_board))
             {
-                validMoves.Add(
-                    new EnPassantMove(Square, to, captured)
-                );
+                validMoves.Add(enPassantMove);
             }
         }
 
@@ -153,10 +138,10 @@ public class PawnPiece : Piece
 
 
     /// <summary>
-    /// Returns a (row, col) tuple if En Passant is possible. Otherwise, returns null
+    /// Returns the "To" square if En Passant is possible. Otherwise, returns null
     /// </summary>
     /// <returns></returns>
-    public ((int row, int col) to, (int row, int col) captured)? GetEnPassantSquares()
+    public Square? GetEnPassantSquare()
     {
         // 1) Checks that there is a last move and that it is a standard move
         // 2) Checks that the last moving piece was a pawn
@@ -164,18 +149,16 @@ public class PawnPiece : Piece
         // 4) Checks that the enemy pawn is on the same row as this piece
         // 5) Checks that the enemy pawn is on an adjacent column to this piece
 
-        if (_board.MoveHistory.LastOrDefault() is StandardMove lastMove &&       
-            _board.State[lastMove.To.row, lastMove.To.col]?.PieceType == PieceType.Pawn &&
-            Math.Abs(lastMove.From.row - lastMove.To.row) == 2 &&
-            lastMove.To.row == Row &&
-            (Col == lastMove.To.col - 1 || Col == lastMove.To.col + 1))
+        if (_board.History.LastOrDefault()?.Move is StandardMove lastMove &&       
+            _board.At(lastMove.To)?.PieceType == PieceType.Pawn &&
+            Math.Abs(lastMove.From.Row - lastMove.To.Row) == 2 &&
+            lastMove.To.Row == Row &&
+            (Col == lastMove.To.Col - 1 || Col == lastMove.To.Col + 1))
         {
-            (int row, int col) to = (Row + _fwd, lastMove.To.col);
-            (int row, int col) captured = lastMove.To;
-            return (to, captured);
+            Square to = new(Row + _fwd, lastMove.To.Col);
+            return to;
         }
 
         return null;
     }
-    #endregion
 }
