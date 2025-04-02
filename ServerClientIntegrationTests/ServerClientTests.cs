@@ -39,7 +39,7 @@ public sealed class ServerClientTests : IAsyncLifetime
 
 
     [Fact(Timeout = 1000)]
-    public async void ServerStartsAndShutsDownWithClient()
+    public async Task ServerStartsAndShutsDownWithClient()
     {
         GameClient gameClient = new();
         await gameClient.ConnectToServer();
@@ -48,7 +48,7 @@ public sealed class ServerClientTests : IAsyncLifetime
 
 
     [Fact(Timeout = 1000)]
-    public async void ClientSendsHostRoom_ReceivesRoomHosted()
+    public async Task ClientSendsHostRoom_ReceivesRoomHosted()
     {
         GameClient gameClient = new();
         await gameClient.ConnectToServer();
@@ -63,7 +63,7 @@ public sealed class ServerClientTests : IAsyncLifetime
 
 
     [Fact(Timeout = 1000)]
-    public async void ClientSendsJoinRoom_WithNoHostedRooms_ReceivesRoomNotFound()
+    public async Task ClientSendsJoinRoom_WithNoHostedRooms_ReceivesRoomNotFound()
     {
         GameClient gameClient = new();
         await gameClient.ConnectToServer();
@@ -79,7 +79,7 @@ public sealed class ServerClientTests : IAsyncLifetime
 
 
     [Fact(Timeout = 1000)]
-    public async void ClientSendsJoinRoom_WithRoomAlreadyFull_ReceivesRoomFull()
+    public async Task ClientSendsJoinRoom_WithRoomAlreadyFull_ReceivesRoomFull()
     {
         // Connect Clients
         GameClient hostClient = new();
@@ -110,7 +110,7 @@ public sealed class ServerClientTests : IAsyncLifetime
 
 
     [Fact(Timeout = 1000)]
-    public async void ClientJoinsRoom_HostAndJoinerReceiveStartGame_WithCorrectColors()
+    public async Task ClientJoinsRoom_HostAndJoinerReceiveStartGame_WithCorrectColors()
     {
         // Connect Clients
         GameClient hostClient = new();
@@ -149,7 +149,7 @@ public sealed class ServerClientTests : IAsyncLifetime
 
 
     [Fact(Timeout = 1000)]
-    public async void RoomCancelled_BeforeJoined_JoinerGetsRoomNotFound()
+    public async Task RoomCancelled_BeforeJoined_JoinerGetsRoomNotFound()
     {
         // Connect Host
         GameClient hostClient = new();
@@ -180,7 +180,7 @@ public sealed class ServerClientTests : IAsyncLifetime
 
 
     [Fact(Timeout = 1000)]
-    public async void RoomCancelled_AfterJoined_JoinerGetsStartGame()
+    public async Task RoomCancelled_AfterJoined_JoinerGetsStartGame()
     {
         // Connect Host
         GameClient hostClient = new();

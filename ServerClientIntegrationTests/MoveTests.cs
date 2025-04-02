@@ -71,7 +71,7 @@ public sealed class MoveTests : IAsyncLifetime
 
 
     [Fact(Timeout = 1000)]
-    public async void ValidMoves_ReceivedSuccessfully()
+    public async Task ValidMoves_ReceivedSuccessfully()
     {
         // Host send move (host is white so moves first)
         StandardMove hostMove = new(new(6, 7), new(4, 7));
@@ -94,7 +94,7 @@ public sealed class MoveTests : IAsyncLifetime
 
 
     [Fact(Timeout = 1000)]
-    public async void SendValidMove_WhenNotPlayersTurn_ClosesRoom()
+    public async Task SendValidMove_WhenNotPlayersTurn_ClosesRoom()
     {
         // Joiner sends move
         StandardMove joinerMove = new(new(1, 0), new(3, 0));
@@ -119,7 +119,7 @@ public sealed class MoveTests : IAsyncLifetime
 
 
     [Fact(Timeout = 1000)]
-    public async void SendInvalidMove_WhenPlayersTurn_ClosesRoom()
+    public async Task SendInvalidMove_WhenPlayersTurn_ClosesRoom()
     {
         // Host send move (host is white so moves first)
         StandardMove invalidMove = new(new(6, 7), new(3, 7)); // pawn moving forward 3 squares
@@ -144,7 +144,7 @@ public sealed class MoveTests : IAsyncLifetime
 
 
     [Fact(Timeout = 1000)]
-    public async void TryToMoveEnemyPiece_WhenPlayersTurn_ClosesRoom()
+    public async Task TryToMoveEnemyPiece_WhenPlayersTurn_ClosesRoom()
     {
         // Host send move (host is white so moves first)
         StandardMove enemyPieceMove = new(new(1, 0), new(3, 0)); // move enemy pawn forward two
@@ -169,7 +169,7 @@ public sealed class MoveTests : IAsyncLifetime
 
 
     [Fact(Timeout = 1000)]
-    public async void RoomClosed_WhenGameOver()
+    public async Task RoomClosed_WhenGameOver()
     {
         /// Completes a very short game to checkmate, to test that the room is closed
         /// at the end of it.

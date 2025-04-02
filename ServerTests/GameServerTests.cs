@@ -19,7 +19,7 @@ public class GameServerTests
     
 
     [Fact]
-    public async void ServerStartsAndShutsDown()
+    public async Task ServerStartsAndShutsDown()
     {
         // Arrange 
         GameServer server = new(_tcpListener);
